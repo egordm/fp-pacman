@@ -31,6 +31,9 @@ library
       Controller
       Model
       View
+      Constants
+      Resources
+      SpriteModel
   other-modules:
       Paths_fp_pacman
   hs-source-dirs:
