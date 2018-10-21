@@ -1,15 +1,22 @@
-module SpriteModel (
-    Sprite,
+module Engine.Graphics.Models (
+    Sprite(..),
     createAnimatedSprite,
     createStaticSprite,
-    Animation,
-    AnimationType,
-    AnimationState
+    createEmptySprite,
+    Animation(..),
+    AnimationType(..),
+    AnimationState(..),
+    DrawInstruction(..)
 ) where
 
-import Graphics.Gloss (Picture)
+import Constants
+import Graphics.Gloss (Picture(Blank), translate)
+import Engine.Coordinates
 
-data AnimationType = Single | Repeating deriving (Show)
+-- Data structures
+data AnimationType = Single
+                   | Repeating
+                   deriving (Show)
 
 data AnimationState = AnimationState {
                           current :: Int,         -- Current sprite in loop
@@ -25,7 +32,11 @@ data Animation = Animation {
 
 data Sprite = StaticSprite Picture
             | AnimatedSprite Animation [Picture]
+            deriving (Show)
 
+data DrawInstruction = DrawInstruction Coordinate Sprite
+
+-- Creation functions
 emptyAnimationState :: AnimationState
 emptyAnimationState = AnimationState 0 0
 
@@ -35,3 +46,7 @@ createAnimatedSprite animType frames interval = AnimatedSprite anim frames
 
 createStaticSprite :: Picture -> Sprite
 createStaticSprite frame = StaticSprite frame
+
+createEmptySprite :: Sprite
+createEmptySprite = StaticSprite Blank
+
