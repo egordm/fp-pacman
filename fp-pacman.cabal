@@ -33,6 +33,9 @@ library
       Engine.Graphics.Sprite
       Engine.Core.Coordinate
       Engine.Core.Classes
+      Game.Agents.AgentTypes
+      Game.Internal
+      Game.Input
       Game.GameState
       Game.World
       Game

@@ -20,9 +20,6 @@ data Sprite = StaticSprite Picture
             deriving (Show)
 
 {- Classes -}
-class Drawable a where
-    draw :: a -> Sprite
-
 class Renderable a where
     render :: a -> Picture
 

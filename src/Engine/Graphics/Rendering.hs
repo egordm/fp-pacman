@@ -14,6 +14,8 @@ import Engine.Graphics.Sprite
 data DrawInstruction = DrawInstruction Coordinate Sprite
 
 {- Classes -}
+class Drawable a where
+    draw :: a -> DrawInstruction
 
 {- Instances -}
 instance Renderable DrawInstruction where

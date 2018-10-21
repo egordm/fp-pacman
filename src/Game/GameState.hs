@@ -4,13 +4,15 @@ module Game.GameState (
     Renderable(..)
 ) where
     
-import Game.World
 import Engine.Core.Classes
+import Game.World
+import Game.Input
 
 {- Data structures -}
 data GameState = GameState {
                      t :: Float,
-                     world :: World
+                     world :: World,
+                     inputs :: [InputData]
                  } deriving (Show)
 
 {- Classes -}
@@ -18,10 +20,10 @@ data GameState = GameState {
 
 {- Instances -}
 instance Updateable GameState where
-    update dt t (GameState pt world) = GameState t (update dt t world)
+    update dt nt s@(GameState{t=pt, world=pworld}) = s{t=nt, world=(update dt nt pworld)}
 
 instance Renderable GameState where
-    render (GameState t world) = render world
+    render (GameState{world=world}) = render world
 
 {- Functions -}
 

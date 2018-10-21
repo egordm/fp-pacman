@@ -14,7 +14,7 @@ import Game.GameState
 
 {- Functions -}
 initialState :: GameState
-initialState = GameState 0 (World spritePacmanDie)
+initialState = GameState 0 (World spritePacmanDie []) []
 
 -- TODO: these functions update game state. In the future there is Context around like MainMenu, Game, EndGame.
 updateGame :: Float -> GameState -> GameState
