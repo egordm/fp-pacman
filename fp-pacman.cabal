@@ -27,18 +27,17 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
-      Controller
-      Model
-      View
-      Constants
-      Resources
       Engine.Graphics.Animation
       Engine.Graphics.Loading
       Engine.Graphics.Rendering
       Engine.Graphics.Sprite
       Engine.Core.Coordinate
       Engine.Core.Classes
+      Game.GameState
+      Game.World
+      Game
+      Constants
+      Resources
   other-modules:
       Paths_fp_pacman
   hs-source-dirs:
