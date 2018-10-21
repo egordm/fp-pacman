@@ -1,18 +1,17 @@
-module Lib
-    ( start
-    ) where
+module Lib (
+    start
+) where
+
+import Constants
 
 import Controller
 import Model
 import View
 
-import Graphics.Gloss.Interface.IO.Game
+import Graphics.Gloss.Interface.Pure.Game
+
+window :: Display
+window = InWindow gameName (width, height) (offset, offset)
 
 start :: IO ()
-start = playIO (InWindow "Counter" (400, 400) (0, 0)) -- Or FullScreen
-              black            -- Background color
-              10               -- Frames per second
-              initialState     -- Initial state
-              view             -- View function
-              input            -- Event function
-              step             -- Step function
+start = play window background fps initialState render input update
