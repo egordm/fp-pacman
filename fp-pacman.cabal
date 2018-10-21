@@ -1,0 +1,78 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c6cbde9538edaba6a4704089ccd588dca86f7d1ebf86c74dbb9da686a3608f32
+
+name:           fp-pacman
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/EgorDm/fp-pacman#readme>
+homepage:       https://github.com/EgorDm/fp-pacman#readme
+bug-reports:    https://github.com/EgorDm/fp-pacman/issues
+author:         Egor Dmitriev
+maintainer:     egordmitriev2@gmail.com
+copyright:      2018 Egor Dmitriev
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/EgorDm/fp-pacman
+
+library
+  exposed-modules:
+      Lib
+      Controller
+      Model
+      View
+  other-modules:
+      Paths_fp_pacman
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5,
+      gloss,
+      gloss-game,
+      containers,
+      random
+
+  default-language: Haskell2010
+
+executable fp-pacman-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_fp_pacman
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5,
+      gloss,
+      gloss-game,
+      containers,
+      random,
+      fp-pacman
+  default-language: Haskell2010
+
+test-suite fp-pacman-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_fp_pacman
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5,
+      gloss,
+      gloss-game,
+      containers,
+      random,
+      fp-pacman
+  default-language: Haskell2010
