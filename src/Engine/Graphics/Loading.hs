@@ -6,7 +6,8 @@ module Engine.Graphics.Loading (
 import Text.Printf
 import Graphics.Gloss.Game
 import Graphics.Gloss (Picture(..))
-import Engine.Graphics.Models
+import Engine.Graphics.Sprite
+import Engine.Graphics.Animation
 import Constants
 
 -- | Loads creates filenames for given resource by identifier and amount of sprites

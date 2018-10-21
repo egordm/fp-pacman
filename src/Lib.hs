@@ -14,4 +14,4 @@ window :: Display
 window = InWindow gameName (width, height) (offset, offset)
 
 start :: IO ()
-start = play window background fps initialState render input update
+start = play window background fps initialState render input updateGame

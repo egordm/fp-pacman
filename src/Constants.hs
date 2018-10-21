@@ -24,4 +24,4 @@ spriteScale = 2
 
 -- | Sprite Interval
 spriteInterval :: Float
-spriteInterval = 1
+spriteInterval = 0.08

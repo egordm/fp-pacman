@@ -1,23 +1,30 @@
 module Engine.Graphics.Rendering (
-    drawInstruction,
-    Drawable(..)
+    drawInstructions,
+    DrawInstruction(..),
+    Renderable(..),
+    Updateable(..)
 ) where
 
 import Graphics.Gloss
-import Engine.Coordinates
-import Engine.Graphics.Models
+import Engine.Core.Classes
+import Engine.Core.Coordinate
+import Engine.Graphics.Sprite
 
-drawInstruction :: [DrawInstruction] -> Picture
-drawInstruction instructions = pictures (map draw instructions)
+{- Data structures -}
+data DrawInstruction = DrawInstruction Coordinate Sprite
 
--- Drawable implementations for popular classes
-class Drawable a where
-    draw :: a -> Picture
+{- Classes -}
 
-instance Drawable Sprite where
-    draw (StaticSprite frame) = frame
-    draw (AnimatedSprite Animation{animState=AnimationState current _} frames) = frames!!current
+{- Instances -}
+instance Renderable DrawInstruction where
+    render (DrawInstruction coordinate sprite) = let (Coordinate x y) = coordinate - halfScreenSize
+                                                 in translate x (-y) (render sprite)
 
-instance Drawable DrawInstruction where
-    draw (DrawInstruction coordinate sprite) = let (Coordinate x y) = coordinate - halfScreenSize
-                                               in translate x (-y) (draw sprite)
+{- Functions -}
+drawInstructions :: [DrawInstruction] -> Picture
+drawInstructions instructions = pictures (map render instructions)
+
+
+
+
+

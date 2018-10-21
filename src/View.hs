@@ -6,9 +6,8 @@ import Graphics.Gloss
 import Model
 
 import Resources
-import Engine.Graphics.Models
 import Engine.Graphics.Rendering
-import Engine.Coordinates
+import Engine.Core.Coordinate
 
 render :: GameState -> Picture
-render _ = draw (DrawInstruction halfScreenSize spritePacmanDie)
+render (GameState sprite t) = drawInstructions [DrawInstruction halfScreenSize sprite]

@@ -33,10 +33,12 @@ library
       View
       Constants
       Resources
-      Engine.Graphics.Models
+      Engine.Graphics.Animation
       Engine.Graphics.Loading
       Engine.Graphics.Rendering
-      Engine.Coordinates
+      Engine.Graphics.Sprite
+      Engine.Core.Coordinate
+      Engine.Core.Classes
   other-modules:
       Paths_fp_pacman
   hs-source-dirs:

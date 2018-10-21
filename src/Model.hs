@@ -2,14 +2,18 @@
 --   which represent the state of the game
 module Model where
 
+import Resources
+import Engine.Graphics.Sprite
+
+
 data InfoToShow = ShowNothing
                 | ShowANumber Int
                 | ShowAChar   Char
 
 data GameState = GameState {
-                   infoToShow  :: InfoToShow
+                   test  :: Sprite
                  , elapsedTime :: Float
                  }
 
 initialState :: GameState
-initialState = GameState ShowNothing 0
+initialState = GameState spritePacmanRight 0
