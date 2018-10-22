@@ -17,7 +17,7 @@ data Sprite = StaticSprite Picture
                 animation :: Animation,
                 frames :: [Picture]
             }
-            deriving (Show)
+            deriving (Show, Eq)
 
 {- Classes -}
 class Renderable a where

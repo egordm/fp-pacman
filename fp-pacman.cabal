@@ -34,8 +34,10 @@ library
       Engine.Core.Coordinate
       Engine.Core.Classes
       Game.Agents.AgentTypes
+      Game.Agents.Pacman
       Game.Internal
       Game.Input
+      Game.Agent
       Game.GameState
       Game.World
       Game

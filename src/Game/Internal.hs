@@ -1,6 +1,9 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game.Internal (
     World(..),
-    Agent(..)
+    Agent(..),
+    AgentBehaviour(..)
 ) where
 
 import Engine.Core.Coordinate
@@ -10,7 +13,6 @@ import Game.Input
 
 {- Data structures -}
 data World = World {
-                 test :: Sprite, -- TODO: temporary. while we have nothing
                  agents :: [Agent]
              } deriving (Show)
 
@@ -22,14 +24,14 @@ data Agent = Agent {
                  direction :: Direction,
                  sprite :: Sprite,
                  behaviour :: AgentBehaviour
-             }
+             } deriving (Show)
 
 {- Classes -}
 
 
 {- Instances -}
-instance Show Agent where
-    show (Agent agentType position direction sprite _) = show agentType ++ show position ++ show direction
+instance Show AgentBehaviour where
+    show (AIBehaviour _) = "AI"
+    show (InputBehaviour inputData) = show inputData
 
 {- Functions -}
-

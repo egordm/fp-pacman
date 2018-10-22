@@ -28,7 +28,7 @@ loadImages = map loadImage
 -- | Load Sprites
 loadStaticSprite :: String -> Sprite
 loadStaticSprite identifier = createStaticSprite frame
-                              where frame = head (loadImages (spriteFileNames identifier 1))
+                              where frame = head (loadImages (spriteFileNames identifier 0))
 
 loadAnimatedSprite :: String -> Int -> AnimationType -> Float -> Sprite
 loadAnimatedSprite identifier n animType interval = createAnimatedSprite animType frames interval

@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game.World (
     World(..),
     Updateable(..),
@@ -7,8 +9,10 @@ module Game.World (
 import Engine.Graphics.Sprite
 import Engine.Graphics.Rendering
 import Engine.Core.Classes
-import Game.Internal(World(..))
 import Engine.Core.Coordinate
+import Game.Internal(World(..))
+import Game.Input
+import Game.Agent
 
 {- Data structures -}
 
@@ -16,10 +20,16 @@ import Engine.Core.Coordinate
 
 {- Instances -}
 instance Updateable World where
-    update dt t (World test agents) = World (update dt t test) agents
+    update dt t w@World{agents} = w{agents=nagents}
+                                  where nagents = map (updateAgent dt t w) agents
 
 instance Renderable World where
-    render (World test agents) = render (DrawInstruction halfScreenSize test)
+    render World{agents} = renderInstructions agentDrawings
+                                 where agentDrawings = map draw agents
+
+instance Inputable World where
+    input event w@World{agents} = w{agents = nagents}
+                                  where nagents = map (input event) agents
 
 {- Functions -}
 

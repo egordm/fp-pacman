@@ -12,12 +12,12 @@ import Engine.Core.Classes
 {- Data structures -}
 data AnimationType = Single
                    | Repeating
-                   deriving (Show)
+                   deriving (Show, Eq)
 
 data AnimationState = AnimationState {
                           current :: Int,         -- Current sprite in loop
                           changeTime :: Float     -- Time till sprite change
-                      } deriving (Show)
+                      } deriving (Show, Eq)
 
 data Animation = Animation {
                      animType :: AnimationType,
@@ -29,6 +29,9 @@ data Animation = Animation {
 {- Classes -}
 
 {- Instances -}
+instance Eq Animation where
+    (==) Animation{animType=animType1} Animation{animType=animType2} = animType1 == animType2
+
 instance Updateable Animation where
     update dt t a@(Animation animType (AnimationState current changeTime) frameCount interval)
         = a{animState = AnimationState nCurrent nChangeTime}

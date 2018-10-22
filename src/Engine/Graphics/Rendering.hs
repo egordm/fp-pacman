@@ -1,8 +1,9 @@
 module Engine.Graphics.Rendering (
-    drawInstructions,
+    renderInstructions,
     DrawInstruction(..),
     Renderable(..),
-    Updateable(..)
+    Updateable(..),
+    Drawable(..)
 ) where
 
 import Graphics.Gloss
@@ -23,8 +24,8 @@ instance Renderable DrawInstruction where
                                                  in translate x (-y) (render sprite)
 
 {- Functions -}
-drawInstructions :: [DrawInstruction] -> Picture
-drawInstructions instructions = pictures (map render instructions)
+renderInstructions :: [DrawInstruction] -> Picture
+renderInstructions instructions = pictures (map render instructions)
 
 
 
