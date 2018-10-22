@@ -8,6 +8,7 @@ module Game.Agent (
     updateAgentDirection
 ) where
     
+import Debug.Trace
 import Engine.Core.Classes
 import Engine.Core.Coordinate
 import Engine.Graphics.Rendering
@@ -15,7 +16,6 @@ import Engine.Graphics.Sprite
 import Game.Internal(Agent(..), AgentBehaviour(..), World(..))
 import Game.Input
 import Game.Agents.AgentTypes
-import Debug.Trace
 
 {- Data structures -}
 
@@ -23,7 +23,7 @@ import Debug.Trace
 
 {- Instances -}
 instance Inputable Agent where
-    input event a@Agent{behaviour=InputBehaviour inputData} = trace (show agent) agent
+    input event a@Agent{behaviour=InputBehaviour inputData} = agent -- trace (show agent) agent
                                                               where agent = a{behaviour=InputBehaviour (input event inputData)}
     input _ a = a
 
@@ -32,11 +32,12 @@ instance Drawable Agent where
 
 {- Functions -}
 updateAgent :: Float -> Float -> World -> Agent -> Agent
-updateAgent dt t world a@Agent{sprite, agentType, direction, behaviour}
-     = a{sprite=nsprite, direction=ndirection}
+updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour}
+     = a{sprite=nsprite, direction=ndirection, position=nposition}
        where
           ndirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
+          nposition = position + (directionToCoordinate direction) * (fromFloat (speed * dt))
 
 
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction

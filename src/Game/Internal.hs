@@ -22,6 +22,7 @@ data Agent = Agent {
                  agentType :: AgentType,
                  position :: Coordinate,
                  direction :: Direction,
+                 speed :: Float,
                  sprite :: Sprite,
                  behaviour :: AgentBehaviour
              } deriving (Show)

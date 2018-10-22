@@ -1,8 +1,10 @@
 module Engine.Core.Coordinate (
     Coordinate(..),
     Direction(..),
+    fromFloat,
     screenSize,
-    halfScreenSize
+    halfScreenSize,
+    directionToCoordinate
 ) where
 
 import Constants
@@ -27,5 +29,15 @@ instance Fractional Coordinate where
     fromRational r = Coordinate (fromRational r) (fromRational r)
 
 {- Functions -}
+fromFloat :: Float -> Coordinate
+fromFloat f = Coordinate f f
+
 screenSize = Coordinate (fromIntegral width) (fromIntegral height)
 halfScreenSize = screenSize / 2
+
+directionToCoordinate :: Direction -> Coordinate
+directionToCoordinate direction = case direction of DNone  -> Coordinate 0    0
+                                                    DUp    -> Coordinate 0    (-1)
+                                                    DDown  -> Coordinate 0    1
+                                                    DLeft  -> Coordinate (-1) 0
+                                                    DRight -> Coordinate 1    0
