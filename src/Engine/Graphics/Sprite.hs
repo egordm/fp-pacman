@@ -38,7 +38,7 @@ createAnimatedSprite animType frames interval = AnimatedSprite anim frames
                                                 where anim = Animation animType emptyAnimationState (length frames) interval
 
 createStaticSprite :: Picture -> Sprite
-createStaticSprite frame = StaticSprite frame
+createStaticSprite = StaticSprite
 
 createEmptySprite :: Sprite
 createEmptySprite = StaticSprite Blank

@@ -1,12 +1,14 @@
 module Game.GameState (
     GameState(..),
     Updateable(..),
-    Renderable(..)
+    Renderable(..),
+    Inputable(..)
 ) where
     
 import Engine.Core.Classes
 import Game.World
 import Game.Input
+import Debug.Trace
 
 {- Data structures -}
 data GameState = GameState {
@@ -20,10 +22,13 @@ data GameState = GameState {
 
 {- Instances -}
 instance Updateable GameState where
-    update dt nt s@(GameState{t=pt, world=pworld}) = s{t=nt, world=(update dt nt pworld)}
+    update dt nt s@GameState{t=pt, world=pworld} = s{t=nt, world=update dt nt pworld}
 
 instance Renderable GameState where
-    render (GameState{world=world}) = render world
+    render GameState{world=world} = render world
+
+instance Inputable GameState where
+    input event s@GameState{inputs=pinputs} = s{inputs=map (input event) pinputs}
 
 {- Functions -}
 

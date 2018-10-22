@@ -10,7 +10,7 @@ import Constants
 {- Data structures -}
 data Coordinate = Coordinate Float Float deriving (Eq, Ord, Show)
 
-data Direction = None | Up | Down | Left | Right deriving (Eq, Ord, Show)
+data Direction = DNone | DUp | DDown | DLeft | DRight deriving (Eq, Ord, Show)
 
 {- Classes -}
 instance Num Coordinate where

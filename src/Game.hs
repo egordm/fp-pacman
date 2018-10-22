@@ -10,21 +10,22 @@ import Constants
 import Resources
 import Game.World
 import Game.GameState
+import Game.Input
 
 
 {- Functions -}
 initialState :: GameState
-initialState = GameState 0 (World spritePacmanDie []) []
+initialState = GameState 0 (World spritePacmanDie []) [arrowInput]
 
 -- TODO: these functions update game state. In the future there is Context around like MainMenu, Game, EndGame.
 updateGame :: Float -> GameState -> GameState
-updateGame dt state@(GameState{t}) = update dt (t + dt) state
+updateGame dt state@GameState{t} = update dt (t + dt) state
 
 checkInput :: Event -> GameState -> GameState
-checkInput e state = state
+checkInput e state = input e state
 
 renderGame :: GameState -> Picture
-renderGame state = render state
+renderGame = render
 
 window :: Display
 window = InWindow gameName (width, height) (offset, offset)
