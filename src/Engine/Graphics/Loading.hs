@@ -1,6 +1,7 @@
 module Engine.Graphics.Loading (
     loadStaticSprite,
-    loadAnimatedSprite
+    loadAnimatedSprite,
+    loadStaticSpriteFile
 ) where
 
 import Text.Printf
@@ -29,6 +30,9 @@ loadImages = map loadImage
 loadStaticSprite :: String -> Sprite
 loadStaticSprite identifier = createStaticSprite frame
                               where frame = head (loadImages (spriteFileNames identifier 0))
+
+loadStaticSpriteFile :: String -> Sprite
+loadStaticSpriteFile identifier = createStaticSprite (loadImage (resourceDir ++ identifier ++ ".png"))
 
 loadAnimatedSprite :: String -> Int -> AnimationType -> Float -> Sprite
 loadAnimatedSprite identifier n animType interval = createAnimatedSprite animType frames interval

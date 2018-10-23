@@ -24,8 +24,9 @@ instance Updateable World where
                                   where nagents = map (updateAgent dt t w) agents
 
 instance Renderable World where
-    render World{agents} = renderInstructions agentDrawings
-                                 where agentDrawings = map draw agents
+    render World{agents, level} = renderInstructions (levelDrawings ++ agentDrawings)
+                                  where agentDrawings = concat (map draw agents)
+                                        levelDrawings = draw level
 
 instance Inputable World where
     input event w@World{agents} = w{agents = nagents}
