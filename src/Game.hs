@@ -15,7 +15,6 @@ import Game.Input
 import Game.Agent
 import Game.Agents.Pacman
 
-
 testPacman = pacman halfScreenSize (InputBehaviour (arrowInput))
 
 {- Functions -}
