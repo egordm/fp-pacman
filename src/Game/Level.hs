@@ -20,6 +20,7 @@ import Engine.Graphics.Sprite
 import Engine.Graphics.Rendering
 import Resources
 import Constants
+import Debug.Trace
 
 
 {- Data structures -}
@@ -27,12 +28,14 @@ data Powerup = PacDot | PowerPill | Cherry deriving (Show, Eq)
 
 data Tile = TileEmpty | TilePowerup Powerup | TileWall Sprite deriving (Show, Eq)
 
+data IsWallTile = Wall Tile | NotWall Tile deriving (Show, Eq)
+
 data Table a = Table (Vec.Vector (Vec.Vector a)) Int Int deriving (Show, Eq)
 
 data Level = Level (Table Tile) deriving (Show, Eq)
 
 data TileMatcher = TileMatcher {
-                      none, up, down, left, right, upLeft, upRight, downLeft, downRight :: Tile
+                      none, up, down, left, right, upLeft, upRight, downLeft, downRight :: IsWallTile
                    } deriving (Show)
 
 {- Classes -}
@@ -67,20 +70,26 @@ tileToSprite tile = case tile of TileEmpty               -> createEmptySprite
 
 createTileMatcher :: Pos -> Level -> TileMatcher
 createTileMatcher p (Level t) = TileMatcher{
-                                    none      = t ! (p),
-                                    up        = t ! (p + Pos 0 1),
-                                    down      = t ! (p + Pos 0 (-1)),
-                                    left      = t ! (p + Pos (-1) 0),
-                                    right     = t ! (p + Pos 1 0),
-                                    upLeft    = t ! (p + Pos (-1) 1),
-                                    upRight   = t ! (p + Pos 1 1),
-                                    downLeft  = t ! (p + Pos (-1) (-1)),
-                                    downRight = t ! (p + Pos 1 (-1))
+                                    none      = isWallTile $ t ! (p),
+                                    up        = isWallTile $ t ! (p + Pos 0    (-1)),
+                                    down      = isWallTile $ t ! (p + Pos 0    1),
+                                    left      = isWallTile $ t ! (p + Pos (-1) 0),
+                                    right     = isWallTile $ t ! (p + Pos 1    0),
+                                    upLeft    = isWallTile $ t ! (p + Pos (-1) (-1)),
+                                    upRight   = isWallTile $ t ! (p + Pos 1    (-1)),
+                                    downLeft  = isWallTile $ t ! (p + Pos (-1) 1),
+                                    downRight = isWallTile $ t ! (p + Pos 1    1)
                                 }
 
+isWallTile :: Tile -> IsWallTile
+isWallTile t@(TileWall a) = Wall t
+isWallTile t = NotWall t
+
 matchWallSprite :: Pos -> TileMatcher -> Tile
-matchWallSprite _ TileMatcher{none=TileWall _, left = TileWall _, down = TileWall _, downLeft = TileWall _, upRight = TileWall _} = TileWall spriteTileSCornerLD
-matchWallSprite _ TileMatcher{none} = none
+matchWallSprite p TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = NotWall _, down = Wall _, upRight = NotWall _, downLeft = NotWall _} = TileWall spriteTileSCornerLD
+matchWallSprite _ TileMatcher{none=Wall _, left = NotWall _, right = Wall _, up = NotWall _, down = Wall _, upLeft = NotWall _, downRight = NotWall _ } = TileWall spriteTileSCornerRD
+matchWallSprite _ TileMatcher{none=Wall r} = r
+matchWallSprite _ TileMatcher{none=NotWall r} = r
 
 -- Split this into level loading
 -- | Reads raw level into a character map
@@ -108,7 +117,13 @@ parseLevel :: [[Char]] -> Level
 parseLevel rawLevel = Level (createTable tiles)
                       where tiles = map (map parseTile) rawLevel
 
+updateLevelWalls :: Level -> Level
+updateLevelWalls l@(Level (Table vec w h)) = Level (Table nvec w h)
+                                             where nvec = Vec.fromList [nrow y | y <- [0.. h-1]]
+                                                   nrow y = Vec.fromList [ntile (Pos x y) | x <- [0.. w-1]]
+                                                   ntile p = matchWallSprite p (createTileMatcher p l)
+
 -- | Reads level from a file. Warning IO
 readLevel :: String -> IO Level
 readLevel file = do rawLevel <- readRawLevel file
-                    return (parseLevel rawLevel)
+                    return (updateLevelWalls (parseLevel rawLevel))
