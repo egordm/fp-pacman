@@ -14,13 +14,14 @@ import Game.GameState
 import Game.Input
 import Game.Agent
 import Game.Agents.Pacman
+import Game.Level
 
 
 testPacman = pacman halfScreenSize (InputBehaviour (arrowInput))
 
 {- Functions -}
-initialState :: GameState
-initialState = GameState 0 (World [testPacman])
+initialState :: Level -> GameState
+initialState level = GameState 0 (World level [testPacman])
 
 -- TODO: these functions update game state. In the future there is Context around like MainMenu, Game, EndGame.
 updateGame :: Float -> GameState -> GameState
@@ -36,4 +37,6 @@ window :: Display
 window = InWindow gameName (width, height) (offset, offset)
 
 start :: IO ()
-start = play window background fps initialState renderGame checkInput [updateGame]
+start = do level <- readLevel levelClassic
+           playFun <- play window background fps (initialState level) renderGame checkInput [updateGame]
+           return playFun
