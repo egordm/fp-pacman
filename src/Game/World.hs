@@ -33,4 +33,3 @@ instance Inputable World where
                                   where nagents = map (input event) agents
 
 {- Functions -}
-

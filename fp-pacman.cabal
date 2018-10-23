@@ -41,6 +41,7 @@ library
       Game.GameState
       Game.World
       Game.Level
+      Game.Room
       Game
       Constants
       Resources
