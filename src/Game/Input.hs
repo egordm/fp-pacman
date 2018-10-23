@@ -2,7 +2,8 @@ module Game.Input (
     InputType(..),
     InputData(..),
     Inputable(..),
-    arrowInput
+    arrowInput,
+    wasdInput
 ) where
 
 import Prelude hiding (Left, Right)
@@ -41,5 +42,7 @@ updateDirection Graphics.Gloss.Game.Up currentDirection inputDirection | current
                                                                        | otherwise = currentDirection
 
 {- Constants -}
-arrowInput :: InputData
+arrowInput, wasdInput :: InputData
 arrowInput = InputData (Keyboard [(SpecialKey KeyUp, DUp), (SpecialKey KeyDown, DDown), (SpecialKey KeyLeft, DLeft), (SpecialKey KeyRight, DRight)]) DNone
+
+wasdInput = InputData (Keyboard [(Char 'w', DUp), (Char 's', DDown), (Char 'a', DLeft), (Char 'd', DRight)]) DNone
