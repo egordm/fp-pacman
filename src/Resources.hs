@@ -5,6 +5,8 @@ import Engine.Graphics.Loading
 import Constants
 
 
+levelClassic = resourceDir ++ "levels/classic.txt"
+
 spritePacmanDie   = loadAnimatedSprite "pacman/die" 11 Single spriteInterval
 spritePacmanStill = loadStaticSprite "pacman/up"
 spritePacmanUp    = loadAnimatedSprite "pacman/up" 2 Repeating spriteInterval
@@ -43,6 +45,10 @@ spriteEyesRight   = loadStaticSprite "ghosts/eyes/right"
 
 spriteScatterRight  = loadAnimatedSprite "ghosts/scatter" 1 Repeating spriteInterval
 
+-- Powerups
+spritePowerupPacDot      = loadStaticSpriteFile "powerups/pacdot"
+spritePowerupPowerPellet = loadStaticSpriteFile "powerups/power_pellet"
+spritePowerupCherry      = loadStaticSpriteFile "powerups/01"
 
 -- Tiles. (Pls send help)
 spriteTileSCornerLD        = loadStaticSpriteFile "tiles/01"
