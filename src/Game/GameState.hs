@@ -4,7 +4,8 @@ module Game.GameState (
     GameState(..),
     Updateable(..),
     Renderable(..),
-    Inputable(..)
+    Inputable(..),
+    makeState
 ) where
     
 import Engine.Core.Classes
@@ -34,3 +35,4 @@ instance Inputable GameState where
 
 {- Functions -}
 
+makeState level bois = GameState 0 (World level bois)
