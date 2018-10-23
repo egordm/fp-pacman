@@ -28,7 +28,7 @@ instance Inputable Agent where
     input _ a = a
 
 instance Drawable Agent where
-    draw a@Agent{position, sprite} = DrawInstruction position sprite
+    draw a@Agent{position, sprite} = [DrawInstruction position sprite]
 
 {- Functions -}
 updateAgent :: Float -> Float -> World -> Agent -> Agent

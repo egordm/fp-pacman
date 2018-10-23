@@ -5,6 +5,8 @@ import Engine.Graphics.Loading
 import Constants
 
 
+levelClassic = resourceDir ++ "levels/classic.txt"
+
 spritePacmanDie   = loadAnimatedSprite "pacman/die" 11 Single spriteInterval
 spritePacmanStill = loadStaticSprite "pacman/up"
 spritePacmanUp    = loadAnimatedSprite "pacman/up" 2 Repeating spriteInterval
@@ -42,3 +44,43 @@ spriteEyesLeft    = loadStaticSprite "ghosts/eyes/left"
 spriteEyesRight   = loadStaticSprite "ghosts/eyes/right"
 
 spriteScatterRight  = loadAnimatedSprite "ghosts/scatter" 1 Repeating spriteInterval
+
+-- Powerups
+spritePowerupPacDot      = loadStaticSpriteFile "powerups/pacdot"
+spritePowerupPowerPellet = loadStaticSpriteFile "powerups/power_pellet"
+spritePowerupCherry      = loadStaticSpriteFile "powerups/01"
+
+-- Tiles. (Pls send help)
+spriteTileSCornerLD        = loadStaticSpriteFile "tiles/01"
+spriteTileSCornerRD        = loadStaticSpriteFile "tiles/02"
+spriteTileSCornerLU        = loadStaticSpriteFile "tiles/05"
+spriteTileSCornerRU        = loadStaticSpriteFile "tiles/06"
+spriteTileSStraightR       = loadStaticSpriteFile "tiles/03"
+spriteTileSStraightL       = loadStaticSpriteFile "tiles/04"
+spriteTileSStraightU       = loadStaticSpriteFile "tiles/11"
+spriteTileSStraightD       = loadStaticSpriteFile "tiles/13"
+spriteTileSSplitLU         = loadStaticSpriteFile "tiles/07"
+spriteTileSSplitRU         = loadStaticSpriteFile "tiles/08"
+spriteTileSSplitLD         = loadStaticSpriteFile "tiles/09"
+spriteTileSSplitRD         = loadStaticSpriteFile "tiles/10"
+
+spriteTileFStraightD       = loadStaticSpriteFile "tiles/15"
+spriteTileFStraightU       = loadStaticSpriteFile "tiles/21"
+spriteTileFStraightL       = loadStaticSpriteFile "tiles/25"
+spriteTileFStraightR       = loadStaticSpriteFile "tiles/26"
+
+spriteTileFCornerLUUR      = loadStaticSpriteFile "tiles/17"
+spriteTileFCornerRUUL      = loadStaticSpriteFile "tiles/18"
+spriteTileFCornerLDDR      = loadStaticSpriteFile "tiles/19"
+spriteTileFCornerRDDL      = loadStaticSpriteFile "tiles/20"
+spriteTileFCornerLDDL      = loadStaticSpriteFile "tiles/23"
+spriteTileFCornerRDDR      = loadStaticSpriteFile "tiles/24"
+spriteTileFCornerLUUL      = loadStaticSpriteFile "tiles/25"
+spriteTileFCornerRUUR      = loadStaticSpriteFile "tiles/25"
+
+spriteTileCCornerLD        = loadStaticSpriteFile "tiles/29"
+spriteTileCCornerRD        = loadStaticSpriteFile "tiles/30"
+spriteTileCCornerLU        = loadStaticSpriteFile "tiles/31"
+spriteTileCCornerRU        = loadStaticSpriteFile "tiles/32"
+spriteTileCEndL            = loadStaticSpriteFile "tiles/33"
+spriteTileCEndR            = loadStaticSpriteFile "tiles/34"

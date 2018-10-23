@@ -10,9 +10,11 @@ import Engine.Core.Coordinate
 import Engine.Graphics.Sprite
 import Game.Agents.AgentTypes
 import Game.Input
+import Game.Level
 
 {- Data structures -}
 data World = World {
+                 level :: Level,
                  agents :: [Agent]
              } deriving (Show)
 
