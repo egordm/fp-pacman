@@ -3,7 +3,8 @@
 module Game.Internal (
     World(..),
     Agent(..),
-    AgentBehaviour(..)
+    AgentBehaviour(..),
+    ContextSwitch(..)
 ) where
 
 import Engine.Core.Coordinate
@@ -28,6 +29,8 @@ data Agent = Agent {
                  sprite :: Sprite,
                  behaviour :: AgentBehaviour
              } deriving (Show)
+
+data ContextSwitch = ContextStay | ContextSwitch String deriving(Show)
 
 {- Classes -}
 
