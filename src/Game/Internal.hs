@@ -4,7 +4,8 @@ module Game.Internal (
     World(..),
     Agent(..),
     AgentBehaviour(..),
-    ContextSwitch(..)
+    SwitchRoom(..),
+    SwitchRoomMode(..)
 ) where
 
 import Engine.Core.Coordinate
@@ -30,7 +31,8 @@ data Agent = Agent {
                  behaviour :: AgentBehaviour
              } deriving (Show)
 
-data ContextSwitch = ContextStay | ContextSwitch String deriving(Show)
+data SwitchRoomMode = ResumeRoom | ReloadRoom deriving(Show)
+data SwitchRoom = RoomStay | RoomSwitch String SwitchRoomMode deriving(Show)
 
 {- Classes -}
 

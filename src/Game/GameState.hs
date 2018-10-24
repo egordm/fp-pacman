@@ -19,7 +19,7 @@ import Game.Internal
 data GameState = GameState {
                      t :: Float,
                      world :: World,
-                     switch :: ContextSwitch
+                     switch :: SwitchRoom
                  } deriving (Show)
 
 {- Classes -}
@@ -37,4 +37,4 @@ instance Inputable GameState where
 
 {- Functions -}
 
-makeState level bois = GameState 0 (World level bois) ContextStay
+makeState level bois = GameState 0 (World level bois) RoomStay

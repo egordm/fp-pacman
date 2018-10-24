@@ -25,10 +25,10 @@ pacBoi1 = pacman halfScreenSize (InputBehaviour (wasdInput))
 updateGame :: RoomUpdateFunc
 updateGame dt state@GameState{t} = update dt (t + dt) state
 
-inputGame0 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = ContextSwitch "b"}
+inputGame0 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "b" ReloadRoom}
 inputGame0 e state = input e state
 
-inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = ContextSwitch "a"}
+inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "a" ResumeRoom}
 inputGame1 e state = input e state
 
 window :: Display
@@ -37,11 +37,7 @@ window = InWindow gameName (width, height) (offset, offset)
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
-playContext context@Context{room,rooms,cInput,cRender,cUpdate} = 
-    play window background fps context cRender cInput [cUpdate]
-
-playRoom Room{ initState, rRender, rInput, rUpdate } = 
-    play window background fps initState rRender rInput [rUpdate]
+stdPlay = play window background fps
 
 start :: IO ()
 start = do  level <- readLevel levelClassic
@@ -51,6 +47,5 @@ start = do  level <- readLevel levelClassic
             let room1 = makeRoom init1 (inputGame1, render, updateGame)
             let rooms = RoomCollection ("a", room0) [("b", room1)]
             let context = makeContext rooms
-            --playFun <- playRoom room0
-            playFun <- playContext context
+            playFun <- playContext stdPlay context
             return playFun
