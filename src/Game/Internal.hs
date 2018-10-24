@@ -3,7 +3,7 @@
 module Game.Internal (
     World(..),
     Agent(..),
-    AgentBehaviour(..)
+    AgentBehaviour(..),
 ) where
 
 import Engine.Core.Coordinate

@@ -16,6 +16,7 @@ import Game.Agent
 import Game.Agents.Pacman
 import Game.Level
 import Game.Room
+import Game.SwitchRoom
 
 pacBoi0 = pacman coordinateZero (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
@@ -24,26 +25,27 @@ pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
 updateGame :: RoomUpdateFunc
 updateGame dt state@GameState{t} = update dt (t + dt) state
 
+inputGame0 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "b" ReloadRoom}
+inputGame0 e state = input e state
+
+inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "a" ResumeRoom}
+inputGame1 e state = input e state
+
 window :: Display
 window = InWindow gameName (width, height) (offset, offset)
 
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
-playContext context@Context{room,initRoom,cInput,cRender,cUpdate} = 
-    play window background fps context cRender cInput [cUpdate]
-
-playRoom Room{ initState, rRender, rInput, rUpdate } = 
-    play window background fps initState rRender rInput [rUpdate]
+stdPlay = play window background fps
 
 start :: IO ()
 start = do  level <- readLevel levelClassic
             let init0 = makeState level [pacBoi0]
             let init1 = makeState level [pacBoi0, pacBoi1]
-            let room0 = makeRoom init0 stdFuncs
-            let room1 = makeRoom init1 stdFuncs
-            let cont0 = makeContext room0
-            let cont1 = makeContext room1
-            --playFun <- playRoom room0
-            playFun <- playContext cont1
+            let room0 = makeRoom init0 (inputGame0, render, updateGame)
+            let room1 = makeRoom init1 (inputGame1, render, updateGame)
+            let rooms = RoomCollection ("a", room0) [("b", room1)]
+            let context = makeContext rooms
+            playFun <- playContext stdPlay context
             return playFun

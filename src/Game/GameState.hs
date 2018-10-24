@@ -13,11 +13,13 @@ import Game.World
 import Game.Input
 import Game.Agent
 import Debug.Trace
+import Game.SwitchRoom
 
 {- Data structures -}
 data GameState = GameState {
                      t :: Float,
-                     world :: World
+                     world :: World,
+                     switch :: SwitchRoom
                  } deriving (Show)
 
 {- Classes -}
@@ -35,4 +37,4 @@ instance Inputable GameState where
 
 {- Functions -}
 
-makeState level bois = GameState 0 (World level bois)
+makeState level bois = GameState 0 (World level bois) RoomStay
