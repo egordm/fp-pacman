@@ -16,7 +16,7 @@ import Game.Agent
 import Game.Agents.Pacman
 import Game.Level
 import Game.Room
-import Game.Internal
+import Game.SwitchRoom
 
 pacBoi0 = pacman halfScreenSize (InputBehaviour (arrowInput))
 pacBoi1 = pacman halfScreenSize (InputBehaviour (wasdInput))

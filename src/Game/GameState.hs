@@ -13,7 +13,7 @@ import Game.World
 import Game.Input
 import Game.Agent
 import Debug.Trace
-import Game.Internal
+import Game.SwitchRoom
 
 {- Data structures -}
 data GameState = GameState {

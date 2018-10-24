@@ -42,6 +42,7 @@ library
       Game.World
       Game.Level
       Game.Room
+      Game.SwitchRoom
       Game
       Constants
       Resources
