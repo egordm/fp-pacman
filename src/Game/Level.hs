@@ -47,7 +47,10 @@ instance Functor Table where
 instance Drawable Level where
     draw (Level t@(Table _ w h)) = [drawTile (Pos x y) | x <- [0.. w-1], y <- [0.. h-1]]
                                    where drawTile p = DrawInstruction (newCoord p) (tileToSprite (t ! p))
-                                         newCoord (Pos x y) = (Coordinate (fromIntegral x) (fromIntegral y)) * (fromInteger tileSize)
+                                         newCoord (Pos x y) = (Coordinate (cx x) (cy y)) * (fromInteger tileSize)
+                                         cx x = (realToFrac x) - (realToFrac w)/2
+                                         cy y = (realToFrac y) - (realToFrac h)/2
+
 
 {- Functions -}
 (!) :: Table Tile -> Pos -> Tile

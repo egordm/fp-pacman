@@ -9,7 +9,7 @@ background = black
 -- | Windows size constants
 width, height, offset :: Int
 width = 496
-height = 496
+height = 560
 offset = 100
 
 -- | FPS ofcourse
@@ -28,7 +28,7 @@ spriteInterval = 0.08
 
 -- | Game specifics
 pacmanSpeed :: Float
-pacmanSpeed = 140
+pacmanSpeed = 100
 
 tileSize :: Integer
 tileSize = floor (8 * spriteScale)
