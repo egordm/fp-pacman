@@ -40,7 +40,8 @@ library
       Game.Agent
       Game.GameState
       Game.World
-      Game.Level
+      Game.Level.Level
+      Game.Level.Loading
       Game.Room
       Game.SwitchRoom
       Game

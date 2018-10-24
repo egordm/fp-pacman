@@ -23,7 +23,6 @@ import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
 import Game.World
 import Game.GameState
-import Game.Level
 import Game.Internal
 import Game.SwitchRoom
 import qualified Data.Map as Map

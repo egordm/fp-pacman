@@ -10,7 +10,7 @@ import Engine.Core.Coordinate
 import Engine.Graphics.Sprite
 import Game.Agents.AgentTypes
 import Game.Input
-import Game.Level
+import Game.Level.Level
 
 {- Data structures -}
 data World = World {

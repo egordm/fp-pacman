@@ -25,7 +25,7 @@ instance Updateable World where
 
 instance Renderable World where
     render World{agents, level} = renderInstructions (levelDrawings ++ agentDrawings)
-                                  where agentDrawings = concat (map draw agents)
+                                  where agentDrawings = concatMap draw agents
                                         levelDrawings = draw level
 
 instance Inputable World where
