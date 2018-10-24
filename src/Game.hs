@@ -30,8 +30,11 @@ window = InWindow gameName (width, height) (offset, offset)
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
-playRoom Room{ initState, fRender, fInput, fUpdate } = 
-    play window background fps initState fRender fInput [fUpdate]
+playContext context@Context{room,initRoom,cInput,cRender,cUpdate} = 
+    play window background fps context cRender cInput [cUpdate]
+
+playRoom Room{ initState, rRender, rInput, rUpdate } = 
+    play window background fps initState rRender rInput [rUpdate]
 
 start :: IO ()
 start = do  level <- readLevel levelClassic
@@ -39,5 +42,8 @@ start = do  level <- readLevel levelClassic
             let init1 = makeState level [pacBoi0, pacBoi1]
             let room0 = makeRoom init0 stdFuncs
             let room1 = makeRoom init1 stdFuncs
-            playFun <- playRoom room1
+            let cont0 = makeContext room0
+            let cont1 = makeContext room1
+            --playFun <- playRoom room0
+            playFun <- playContext cont1
             return playFun
