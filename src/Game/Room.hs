@@ -9,10 +9,6 @@ module Game.Room(
     makeRoom,
     playRoom,
     Context,
-    ContextInputFunc,
-    ContextRenderFunc,
-    ContextUpdateFunc,
-    ContextFunctions,
     makeContext,
     playContext,
     RoomCollection(..),
@@ -24,7 +20,6 @@ import Graphics.Gloss.Game
 import Game.World
 import Game.GameState
 import Game.Level
-import Game.Internal
 import Game.SwitchRoom
 import qualified Data.Map as Map
 
@@ -46,30 +41,22 @@ type RoomFunctions = (RoomInputFunc, RoomRenderFunc, RoomUpdateFunc)
 data Context = Context {
     room :: Room,
     roomName :: String,
-    rooms :: Map.Map String Room,
-    cInput :: ContextInputFunc,
-    cRender :: ContextRenderFunc,
-    cUpdate :: ContextUpdateFunc
+    rooms :: Map.Map String Room
 }
-
-type ContextInputFunc = (Event -> Context -> Context)
-type ContextRenderFunc = (Context -> Picture)
-type ContextUpdateFunc = (Float -> Context -> Context)
-type ContextFunctions = (ContextInputFunc, ContextRenderFunc, ContextUpdateFunc)
 
 type RoomEntry = (String, Room)
 data RoomCollection = RoomCollection RoomEntry [RoomEntry]
 
 {- Functions -}
 
-stdConInput :: ContextInputFunc
+stdConInput :: Event -> Context -> Context
 stdConInput e c@Context{room = cr} = 
     c{room = newRoom cr}
     where
         newRoom r@Room{state = cs,rInput = rfi} = 
             r{state = rfi e cs}
 
-stdConRender :: ContextRenderFunc
+stdConRender :: Context -> Picture
 stdConRender Context{room} = 
     pictureFromRoom room
     where
@@ -77,7 +64,7 @@ stdConRender Context{room} =
             rRender state
 
 --TODO, here we can switch to a context with a new room and its functions
-stdConUpdate :: ContextUpdateFunc
+stdConUpdate :: Float -> Context -> Context
 stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} = 
     case cr of
         Room{state = GameState{switch = RoomStay}} -> nextContext
@@ -98,19 +85,16 @@ stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} =
                     in
                 c{roomName = name, rooms = newRooms, room = foundRoom{state = newState{t = 0, switch = RoomStay}}}
 
-stdConFuncs :: ContextFunctions
-stdConFuncs = (stdConInput, stdConRender, stdConUpdate)
-
 makeContext :: RoomCollection -> Context
-makeContext (RoomCollection first@(name,start) others) = Context start name roomMap stdConInput stdConRender stdConUpdate
+makeContext (RoomCollection first@(name,start) others) = Context start name roomMap
     where
         roomMap = Map.fromList $ first:others
 
 makeRoom :: GameState -> RoomFunctions -> Room
 makeRoom istate (i,r,u) = Room istate istate i r u
 
-playContext f context@Context{room,rooms,cInput,cRender,cUpdate} = 
-    f context cRender cInput [cUpdate]
+playContext f context@Context{room,rooms} = 
+    f context stdConRender stdConInput [stdConUpdate]
 
 playRoom f Room{ initState, rRender, rInput, rUpdate } = 
     f initState rRender rInput [rUpdate]
