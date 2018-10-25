@@ -1,11 +1,13 @@
 module Game.Agents.AgentTypes (
     AgentType(..),
     GhostType(..),
-    agentTypeToSprite
+    agentTypeToSprite,
+    agentTypeToMarker
 ) where
 
 import Engine.Core.Coordinate
 import Engine.Graphics.Sprite
+import Game.Level.Level(Marker(..))
 import Resources
 
 {- Data structures -}
@@ -25,6 +27,14 @@ data AgentType = Pacman
 
 
 {- Functions -}
+agentTypeToMarker :: AgentType -> Marker
+agentTypeToMarker agent = case agent of Pacman                  -> Marker 'M'
+                                        Ghost{ghostType=Blinky} -> Marker 'B'
+                                        Ghost{ghostType=Pinky}  -> Marker 'P'
+                                        Ghost{ghostType=Inky}   -> Marker 'I'
+                                        Ghost{ghostType=Clyde}  -> Marker 'C'
+                                        _                       -> Marker '_'
+
 agentTypeToSprite :: Direction -> AgentType -> Sprite
 agentTypeToSprite direction Pacman = case direction of
     DNone  -> spritePacmanStill

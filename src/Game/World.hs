@@ -3,7 +3,8 @@
 module Game.World (
     World(..),
     Updateable(..),
-    Renderable(..)
+    Renderable(..),
+    addAgent
 ) where
 
 import Engine.Graphics.Sprite
@@ -12,7 +13,10 @@ import Engine.Core.Classes
 import Engine.Core.Coordinate
 import Game.Internal(World(..))
 import Game.Input
+import Game.Agents.AgentTypes
 import Game.Agent
+import Game.Level.Level
+import Debug.Trace
 
 {- Data structures -}
 
@@ -22,6 +26,7 @@ import Game.Agent
 instance Updateable World where
     update dt t w@World{agents} = w{agents=nagents}
                                   where nagents = map (updateAgent dt t w) agents
+                                        --tets = trace ("upd " ++ show (agents)) w
 
 instance Renderable World where
     render World{agents, level} = renderInstructions (levelDrawings ++ agentDrawings)
@@ -33,3 +38,7 @@ instance Inputable World where
                                   where nagents = map (input event) agents
 
 {- Functions -}
+addAgent :: Agent -> World -> World
+addAgent a@Agent{agentType} w@World{level, agents} = w{agents=nagents}
+                                             where nagents = a{position=coord}:agents
+                                                   coord = markerCoordinate (agentTypeToMarker agentType) level

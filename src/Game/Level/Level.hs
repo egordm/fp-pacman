@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game.Level.Level (
     Powerup(..),
     Tile(..),
@@ -7,7 +9,8 @@ module Game.Level.Level (
     (!),
     set,
     tileToCoordinate,
-    coordinateToTile
+    coordinateToTile,
+    markerCoordinate
 ) where
     
 import Prelude hiding (length)
@@ -27,7 +30,7 @@ data Marker = Marker Char deriving (Show, Eq, Ord)
 
 data Tile = TileEmpty | TilePowerup Powerup | TileWall Sprite | TileDoor | TileMarker Marker deriving (Show, Eq)
 
-data Level = Level {tiles :: Table Tile, markers :: [(Coordinate, Marker)]} deriving (Show, Eq)
+data Level = Level {tiles :: Table Tile, markers :: [(Marker, Coordinate)]} deriving (Show, Eq)
 
 {- Classes -}
 
@@ -64,3 +67,6 @@ tileToCoordinate (Table _ w h) (Pos x y) = (coordinate x y - coordinate w h / 2)
 
 coordinateToTile :: Table Tile -> Coordinate -> Pos
 coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + coordinate w h / 2)
+
+markerCoordinate :: Marker -> Level -> Coordinate
+markerCoordinate m Level{markers} = case lookup m markers of Just c -> c; Nothing -> coordinateZero

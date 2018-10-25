@@ -77,7 +77,7 @@ readLevel file = do rawLevel <- readRawLevel file
                     return (processLevel (parseLevel rawLevel))
 
 -- | Reads markers from the level and averages their position of more of the same is placed.
-extractMarkers :: Table Tile -> [(Coordinate, Marker)]
+extractMarkers :: Table Tile -> [(Marker, Coordinate)]
 extractMarkers t@(Table vec w h) = map mergeMarkers groupedMarkerTiles
                                    where markerTiles  = [(tileToCoordinate t (Pos x y), marker x y) | x <- [0.. w-1], y <- [0.. h-1], isMarker x y]
                                          isMarker x y = case (t!(Pos x y)) of TileMarker _ -> True; _ -> False
@@ -85,7 +85,7 @@ extractMarkers t@(Table vec w h) = map mergeMarkers groupedMarkerTiles
                                          sortedMarkerTiles = sortBy (\a b -> compare (snd a) (snd b)) markerTiles
                                          groupedMarkerTiles = groupBy (\a b -> snd a == snd b) sortedMarkerTiles
                                          sumMarkers ms = foldr (\(fa, sa) (fb,_) -> (fa + fb, sa)) (coordinateZero, Marker ' ') ms
-                                         mergeMarkers ms = (fst (sumMarkers ms) / fromIntegral (length ms), snd (sumMarkers ms))
+                                         mergeMarkers ms = (snd (sumMarkers ms), fst (sumMarkers ms) / fromIntegral (length ms))
 
 
 -- LEVEL DECORATION =====================================

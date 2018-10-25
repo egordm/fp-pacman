@@ -39,8 +39,7 @@ updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, be
        where
           ndirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
-          nposition = position + (directionToCoordinate direction) * (fromFloat (speed * dt))
-          sposition = updateAgentPosition dt world a{position=nposition}
+          sposition = updateAgentPosition dt world a
 
 
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction
@@ -55,8 +54,10 @@ updateAgentSprite old new | old == new = old
 
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
 updateAgentPosition dt World{level} a@Agent{position, direction, speed}
-    = coord
-      where tilePos = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position)
+    = position + delta
+      where deltaTarget = (directionToCoordinate direction) * (fromFloat (speed * dt))
+            deltaTile = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position) - position
             orthDir = orthagonalDirection direction
             canTurn = distance tilePos position < epsilon
-            coord = coordinateComponent direction position + coordinateComponent orthDir tilePos
+            delta = coordinateComponent direction deltaTarget + coordinateComponent orthDir tilePos
+

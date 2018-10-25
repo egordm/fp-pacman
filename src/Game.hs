@@ -18,7 +18,7 @@ import Game.Level.Loading
 import Game.Room
 import Game.SwitchRoom
 
-pacBoi0 = pacman coordinateZero (InputBehaviour (arrowInput))
+pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
 
 -- TODO: these functions update game state. In the future there is Context around like MainMenu, Game, EndGame.
