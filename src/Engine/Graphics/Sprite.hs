@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Engine.Graphics.Sprite (
     Sprite(..),
     Renderable(..),
@@ -12,11 +14,14 @@ import Engine.Core.Classes
 import Engine.Graphics.Animation
 
 {- Data structures -}
-data Sprite = StaticSprite Picture
+data Sprite = StaticSprite {
+                frame :: Picture,
+                source :: String
+              }
             | AnimatedSprite {
                 animation :: Animation,
-                frames :: [Picture]
-            }
+                frames :: [Sprite]
+              }
             deriving (Show, Eq)
 
 {- Classes -}
@@ -25,20 +30,20 @@ class Renderable a where
 
 {- Instances -}
 instance Renderable Sprite where
-    render (StaticSprite frame) = frame
-    render (AnimatedSprite Animation{animState=AnimationState current _} frames) = frames!!current
+    render (StaticSprite{frame}) = frame
+    render (AnimatedSprite Animation{animState=AnimationState current _} frames) = frame (frames!!current)
 
 instance Updateable Sprite where
-    update dt t s@(StaticSprite _) = s
+    update dt t s@(StaticSprite{}) = s
     update dt t s@(AnimatedSprite a _) = s{animation = update dt t a}
 
 {- Functions -}
-createAnimatedSprite :: AnimationType -> [Picture] -> Float -> Sprite
+createAnimatedSprite :: AnimationType -> [Sprite] -> Float -> Sprite
 createAnimatedSprite animType frames interval = AnimatedSprite anim frames
                                                 where anim = Animation animType emptyAnimationState (length frames) interval
 
-createStaticSprite :: Picture -> Sprite
+createStaticSprite :: Picture -> String -> Sprite
 createStaticSprite = StaticSprite
 
 createEmptySprite :: Sprite
-createEmptySprite = StaticSprite Blank
+createEmptySprite = StaticSprite Blank "blank"

@@ -21,19 +21,18 @@ loadImage file = case img of Bitmap{} -> Scale spriteScale spriteScale img
                              _        -> error ("Cannot load " ++ file)
                  where img = png file
 
-
--- | Loads sprites for all given images. Errors if none is found
-loadImages :: [String] -> [Picture]
-loadImages = map loadImage
-
 -- | Load Sprites
+loadStaticSpriteFromPath :: String -> Sprite
+loadStaticSpriteFromPath path = createStaticSprite (loadImage path) path
+
 loadStaticSprite :: String -> Sprite
-loadStaticSprite identifier = createStaticSprite frame
-                              where frame = head (loadImages (spriteFileNames identifier 0))
+loadStaticSprite identifier = loadStaticSpriteFromPath source
+                              where source = head (spriteFileNames identifier 0)
 
 loadStaticSpriteFile :: String -> Sprite
-loadStaticSpriteFile identifier = createStaticSprite (loadImage (resourceDir ++ identifier ++ ".png"))
+loadStaticSpriteFile identifier = loadStaticSpriteFromPath (resourceDir ++ identifier ++ ".png")
 
 loadAnimatedSprite :: String -> Int -> AnimationType -> Float -> Sprite
 loadAnimatedSprite identifier n animType interval = createAnimatedSprite animType frames interval
-                                                    where frames = loadImages (spriteFileNames identifier n)
+                                                    where frames = map loadStaticSpriteFromPath (spriteFileNames identifier n)
+

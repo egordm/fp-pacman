@@ -19,7 +19,6 @@ import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
 import Game.World
 import Game.GameState
-import Game.Level
 import Game.SwitchRoom
 import qualified Data.Map as Map
 
@@ -63,7 +62,6 @@ stdConRender Context{room} =
         pictureFromRoom Room{state,rRender} = 
             rRender state
 
---TODO, here we can switch to a context with a new room and its functions
 stdConUpdate :: Float -> Context -> Context
 stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} = 
     case cr of

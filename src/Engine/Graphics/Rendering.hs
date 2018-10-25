@@ -20,8 +20,7 @@ class Drawable a where
 
 {- Instances -}
 instance Renderable DrawInstruction where
-    render (DrawInstruction coordinate sprite) = let (Coordinate x y) = coordinate - halfScreenSize
-                                                 in translate x (-y) (render sprite)
+    render (DrawInstruction (Coordinate x y) sprite) = translate x (-y) (render sprite)
 
 {- Functions -}
 renderInstructions :: [DrawInstruction] -> Picture

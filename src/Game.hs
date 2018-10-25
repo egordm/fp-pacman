@@ -14,12 +14,12 @@ import Game.GameState
 import Game.Input
 import Game.Agent
 import Game.Agents.Pacman
-import Game.Level
+import Game.Level.Loading
 import Game.Room
 import Game.SwitchRoom
 
-pacBoi0 = pacman halfScreenSize (InputBehaviour (arrowInput))
-pacBoi1 = pacman halfScreenSize (InputBehaviour (wasdInput))
+pacBoi0 = pacman coordinateZero (InputBehaviour (arrowInput))
+pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
 
 -- TODO: these functions update game state. In the future there is Context around like MainMenu, Game, EndGame.
 updateGame :: RoomUpdateFunc
