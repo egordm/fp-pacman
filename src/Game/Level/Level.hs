@@ -10,7 +10,8 @@ module Game.Level.Level (
     set,
     tileToCoordinate,
     coordinateToTile,
-    markerCoordinate
+    markerCoordinate,
+    isWall
 ) where
     
 import Prelude hiding (length)
@@ -70,3 +71,7 @@ coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + c
 
 markerCoordinate :: Marker -> Level -> Coordinate
 markerCoordinate m Level{markers} = case lookup m markers of Just c -> c; Nothing -> coordinateZero
+
+isWall :: Tile -> Bool
+isWall (TileWall _) = True
+isWall _ = False

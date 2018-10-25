@@ -33,5 +33,8 @@ epsilon = 0.5
 pacmanSpeed :: Float
 pacmanSpeed = 100
 
+turnTolerance :: Float
+turnTolerance = fromInteger tileSize * 0.2
+
 tileSize :: Integer
 tileSize = floor (8 * spriteScale)

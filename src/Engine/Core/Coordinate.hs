@@ -6,13 +6,15 @@ module Engine.Core.Coordinate (
     screenSize,
     halfScreenSize,
     directionToCoordinate,
+    directionToPos,
     coordinateZero,
     coordinateToPos,
     coordinate,
     coordinateComponent,
     orthagonalDirection,
     dotprod,
-    distance
+    distance,
+    dirsAreOrthagonal
 ) where
 
 import Constants
@@ -94,3 +96,6 @@ dotprod (Coordinate x y) = x*x + y*y
 
 distance :: Coordinate -> Coordinate -> Float
 distance a b = sqrt (dotprod (a - b))
+
+dirsAreOrthagonal :: Direction -> Direction -> Bool
+dirsAreOrthagonal d1 d2 = dotprod (directionToCoordinate d1 * directionToCoordinate d2) < epsilon

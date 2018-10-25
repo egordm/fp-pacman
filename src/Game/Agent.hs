@@ -37,16 +37,16 @@ updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour}
      = a{sprite=nsprite, direction=ndirection, position=sposition}
        where
-          ndirection = updateAgentDirection t world a behaviour
+          desiredDirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
           sposition = updateAgentPosition dt world a
+          ndirection = adjustDirection desiredDirection (level world) a
 
 
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction
 updateAgentDirection t world agent (AIBehaviour aiFn) = aiFn t agent world
 updateAgentDirection _ _ a@Agent{direction} (InputBehaviour (InputData _ newDirection))
-    = case newDirection of DNone -> direction
-                           _     -> newDirection
+    = case newDirection of DNone -> direction; _ -> newDirection
 
 updateAgentSprite :: Sprite -> Sprite -> Sprite
 updateAgentSprite old new | old == new = old
@@ -54,10 +54,34 @@ updateAgentSprite old new | old == new = old
 
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
 updateAgentPosition dt World{level} a@Agent{position, direction, speed}
-    = position + delta
-      where deltaTarget = (directionToCoordinate direction) * (fromFloat (speed * dt))
-            deltaTile = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position) - position
+    = position + deltaTileSnap + deltaDirection
+      where tileCoord = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position)
             orthDir = orthagonalDirection direction
-            canTurn = distance tilePos position < epsilon
-            delta = coordinateComponent direction deltaTarget + coordinateComponent orthDir tilePos
+            deltaDesired = coordinateComponent direction ((directionToCoordinate direction) * (fromFloat (speed * dt)))
+            deltaTileSnap = coordinateComponent orthDir (tileCoord - position)
+            deltaDirection = adjustCollision direction level position deltaDesired
 
+--            canTurn = distance tilePos position < epsilon
+
+adjustDirection desiredDir level a@Agent{position, direction}
+  --  | (direction /= desiredDir) && not canTurn = adjustDirection direction level a{direction=DNone}
+    | isObstructed = adjustDirection direction level a{direction=DNone}
+    | otherwise = desiredDir
+      where tilePos = coordinateToTile (tiles level) position
+            tileCoord = tileToCoordinate (tiles level) tilePos
+            nextTilePos = directionToPos desiredDir + tilePos
+            nextTileCoord = tileToCoordinate (tiles level) nextTilePos
+            orthDir = orthagonalDirection desiredDir
+            canTurn = distance (coordinateComponent orthDir nextTileCoord) (coordinateComponent orthDir position) < turnTolerance
+            nextTile = tiles level ! nextTilePos
+            isObstructed = isWall nextTile && distance (coordinateComponent desiredDir nextTileCoord) (coordinateComponent desiredDir position) <= fromInteger tileSize
+
+adjustCollision :: Direction -> Level -> Coordinate -> Coordinate -> Coordinate
+adjustCollision dir level pos deltaDesired
+    = case nextTile of TileWall _ -> correctedDelta
+                       _          -> deltaDesired
+      where tilePos = coordinateToTile (tiles level) pos
+            deltaTile = coordinateComponent dir (tileToCoordinate (tiles level) tilePos - pos)
+            nextTile = tiles level ! (directionToPos dir + tilePos)
+            wallNormal = directionToCoordinate dir * (-1337)
+            correctedDelta = snd (min (distance deltaDesired wallNormal, deltaDesired) (distance deltaTile wallNormal, deltaTile))
