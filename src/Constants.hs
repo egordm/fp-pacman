@@ -27,6 +27,9 @@ spriteInterval :: Float
 spriteInterval = 0.08
 
 -- | Game specifics
+epsilon :: Float
+epsilon = 0.5
+
 pacmanSpeed :: Float
 pacmanSpeed = 100
 

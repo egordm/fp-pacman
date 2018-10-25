@@ -16,6 +16,8 @@ import Engine.Graphics.Sprite
 import Game.Internal(Agent(..), AgentBehaviour(..), World(..))
 import Game.Input
 import Game.Agents.AgentTypes
+import Game.Level.Level
+import Constants
 
 {- Data structures -}
 
@@ -33,11 +35,12 @@ instance Drawable Agent where
 {- Functions -}
 updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour}
-     = a{sprite=nsprite, direction=ndirection, position=nposition}
+     = a{sprite=nsprite, direction=ndirection, position=sposition}
        where
           ndirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
           nposition = position + (directionToCoordinate direction) * (fromFloat (speed * dt))
+          sposition = updateAgentPosition dt world a{position=nposition}
 
 
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction
@@ -49,3 +52,11 @@ updateAgentDirection _ _ a@Agent{direction} (InputBehaviour (InputData _ newDire
 updateAgentSprite :: Sprite -> Sprite -> Sprite
 updateAgentSprite old new | old == new = old
                           | otherwise = new
+
+updateAgentPosition :: Float -> World -> Agent -> Coordinate
+updateAgentPosition dt World{level} a@Agent{position, direction, speed}
+    = coord
+      where tilePos = tileToCoordinate level (coordinateToTile level position)
+            orthDir = orthagonalDirection direction
+            canTurn = distance tilePos position < epsilon
+            coord = coordinateComponent direction position + coordinateComponent orthDir tilePos

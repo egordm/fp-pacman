@@ -4,7 +4,9 @@ module Game.Level.Level (
     Table(..),
     Level(..),
     (!),
-    set
+    set,
+    tileToCoordinate,
+    coordinateToTile
 ) where
     
 import Prelude hiding (length)
@@ -32,11 +34,8 @@ instance Functor Table where
     fmap f (Table vec w h) = Table vecn w h where vecn = Vec.map (Vec.map f) vec
 
 instance Drawable Level where
-    draw (Level t@(Table _ w h)) = [drawTile (Pos x y) | x <- [0.. w-1], y <- [0.. h-1]]
-                                   where drawTile p = DrawInstruction (newCoord p) (tileToSprite (t ! p))
-                                         newCoord (Pos x y) = (Coordinate (cx x) (cy y)) * fromInteger tileSize
-                                         cx x = realToFrac x - realToFrac w/2
-                                         cy y = realToFrac y - realToFrac h/2
+    draw l@(Level t@(Table _ w h)) = [drawTile (Pos x y) | x <- [0.. w-1], y <- [0.. h-1]]
+                                     where drawTile p = DrawInstruction (tileToCoordinate l p) (tileToSprite (t ! p))
 
 {- Functions -}
 (!) :: Table Tile -> Pos -> Tile
@@ -56,3 +55,9 @@ tileToSprite tile = case tile of TileEmpty               -> createEmptySprite
                                  (TilePowerup Cherry)    -> spritePowerupCherry
                                  (TileWall sprite)       -> sprite
                                  TileDoor              -> createEmptySprite
+
+tileToCoordinate :: Level -> Pos -> Coordinate
+tileToCoordinate Level{tiles=Table _ w h} (Pos x y) = (coordinate x y - coordinate w h / 2) * fromInteger tileSize
+
+coordinateToTile :: Level -> Coordinate -> Pos
+coordinateToTile Level{tiles=Table _ w h} c = coordinateToPos (c / fromInteger tileSize + coordinate w h / 2)

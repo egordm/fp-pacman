@@ -6,7 +6,13 @@ module Engine.Core.Coordinate (
     screenSize,
     halfScreenSize,
     directionToCoordinate,
-    coordinateZero
+    coordinateZero,
+    coordinateToPos,
+    coordinate,
+    coordinateComponent,
+    orthagonalDirection,
+    dotprod,
+    distance
 ) where
 
 import Constants
@@ -62,3 +68,29 @@ directionToPos direction = case direction of DNone  -> Pos 0    0
                                              DDown  -> Pos 0    1
                                              DLeft  -> Pos (-1) 0
                                              DRight -> Pos 1    0
+
+coordinateToPos :: Coordinate -> Pos
+coordinateToPos (Coordinate x y) = Pos (round x) (round y)
+
+coordinate :: Int -> Int -> Coordinate
+coordinate x y = Coordinate (realToFrac x) (realToFrac y)
+
+coordinateComponent :: Direction -> Coordinate -> Coordinate
+coordinateComponent d (Coordinate x y) = case d of DNone  -> coordinateZero
+                                                   DUp    -> Coordinate 0 y
+                                                   DDown  -> Coordinate 0 y
+                                                   DLeft  -> Coordinate x 0
+                                                   DRight -> Coordinate x 0
+
+orthagonalDirection :: Direction -> Direction
+orthagonalDirection d = case d of DNone   -> DNone
+                                  DUp     -> DLeft
+                                  DDown   -> DLeft
+                                  DLeft   -> DUp
+                                  DRight  -> DUp
+
+dotprod :: Coordinate -> Float
+dotprod (Coordinate x y) = x*x + y*y
+
+distance :: Coordinate -> Coordinate -> Float
+distance a b = sqrt (dotprod (a - b))
