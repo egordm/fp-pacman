@@ -8,8 +8,8 @@ import Engine.Graphics.Sprite
 import Game.Level.Level
 import Resources
 import Constants
+import Data.List
 
-    
 {- Data structures -}
 data IsWallTile = Wall Tile | NotWall Tile deriving (Show, Eq)
 
@@ -21,9 +21,7 @@ data TileMatcher = TileMatcher {
 
 {- Classes -}
 
-
 {- Instances -}
-
 
 {- Functions -}
 -- Split this into level loading
@@ -42,7 +40,9 @@ parseTile char = case char of '#' -> TileWall createEmptySprite
                               'd' -> TileWall spriteTileSStraightD
                               'l' -> TileWall spriteTileSStraightL
                               'r' -> TileWall spriteTileSStraightR
-                              _   -> TileEmpty
+                              _   -> otherTile char
+                              where otherTile c | c `elem` ['A'.. 'Z'] = TileMarker (Marker c)
+                                                | otherwise            = TileEmpty
 
 -- | Creates table from given list of lists of a type
 createTable :: [[a]] -> Table a
@@ -54,38 +54,54 @@ createTable input = Table tableData width height
 
 -- | Parses level from character table
 parseLevel :: [[Char]] -> Level
-parseLevel rawLevel = Level (createTable tiles)
+parseLevel rawLevel = Level (createTable tiles) []
                       where tiles = map (map parseTile) rawLevel
 
-updateLevelWalls :: Level -> Level
-updateLevelWalls l@(Level (Table vec w h)) = Level (Table nvec w h)
-                                             where nvec = Vec.fromList [nrow y | y <- [0.. h-1]]
-                                                   nrow y = Vec.fromList [ntile (Pos x y) | x <- [0.. w-1]]
-                                                   ntile p = matchWallSprite (createTileMatcher p l)
+-- | Updates walls by matching a sprite to their surroundings
+updateWalls :: Table Tile -> Table Tile
+updateWalls t@(Table vec w h) = Table nvec w h
+                                     where nvec = Vec.fromList [nrow y | y <- [0.. h-1]]
+                                           nrow y = Vec.fromList [ntile (Pos x y) | x <- [0.. w-1]]
+                                           ntile p = matchWallSprite (createTileMatcher p t)
 
-
+-- | Processes level by initializing all the tiles and extracting markers
+processLevel :: Level -> Level
+processLevel level = level{
+                        tiles = updateWalls (updateWalls (tiles level)),
+                        markers = extractMarkers (tiles level)
+                     }
 
 -- | Reads level from a file. Warning IO
 readLevel :: String -> IO Level
 readLevel file = do rawLevel <- readRawLevel file
-                    return (updateLevelWalls (updateLevelWalls (parseLevel rawLevel)))
+                    return (processLevel (parseLevel rawLevel))
 
+-- | Reads markers from the level and averages their position of more of the same is placed.
+extractMarkers :: Table Tile -> [(Coordinate, Marker)]
+extractMarkers t@(Table vec w h) = map mergeMarkers groupedMarkerTiles
+                                   where markerTiles  = [(tileToCoordinate t (Pos x y), marker x y) | x <- [0.. w-1], y <- [0.. h-1], isMarker x y]
+                                         isMarker x y = case (t!(Pos x y)) of TileMarker _ -> True; _ -> False
+                                         marker x y = case (t!(Pos x y)) of TileMarker m -> m; _ -> Marker ' '
+                                         sortedMarkerTiles = sortBy (\a b -> compare (snd a) (snd b)) markerTiles
+                                         groupedMarkerTiles = groupBy (\a b -> snd a == snd b) sortedMarkerTiles
+                                         sumMarkers ms = foldr (\(fa, sa) (fb,_) -> (fa + fb, sa)) (coordinateZero, Marker ' ') ms
+                                         mergeMarkers ms = (fst (sumMarkers ms) / fromIntegral (length ms), snd (sumMarkers ms))
 
 
 -- LEVEL DECORATION =====================================
 
-createTileMatcher :: Pos -> Level -> TileMatcher
-createTileMatcher p (Level t) = TileMatcher{
-                                    none      = isWallTile $ t ! p,
-                                    up        = isWallTile $ t ! (p + Pos 0    (-1)),
-                                    down      = isWallTile $ t ! (p + Pos 0    1),
-                                    left      = isWallTile $ t ! (p + Pos (-1) 0),
-                                    right     = isWallTile $ t ! (p + Pos 1    0),
-                                    upLeft    = isWallTile $ t ! (p + Pos (-1) (-1)),
-                                    upRight   = isWallTile $ t ! (p + Pos 1    (-1)),
-                                    downLeft  = isWallTile $ t ! (p + Pos (-1) 1),
-                                    downRight = isWallTile $ t ! (p + Pos 1    1)
-                                }
+createTileMatcher :: Pos -> Table Tile -> TileMatcher
+createTileMatcher p t = TileMatcher{
+                            none      = isWallTile $ t ! p,
+                            up        = isWallTile $ t ! (p + Pos 0    (-1)),
+                            down      = isWallTile $ t ! (p + Pos 0    1),
+                            left      = isWallTile $ t ! (p + Pos (-1) 0),
+                            right     = isWallTile $ t ! (p + Pos 1    0),
+                            upLeft    = isWallTile $ t ! (p + Pos (-1) (-1)),
+                            upRight   = isWallTile $ t ! (p + Pos 1    (-1)),
+                            downLeft  = isWallTile $ t ! (p + Pos (-1) 1),
+                            downRight = isWallTile $ t ! (p + Pos 1    1)
+                        }
 
 isWallTile :: Tile -> IsWallTile
 isWallTile t@(TileWall a) = Wall t

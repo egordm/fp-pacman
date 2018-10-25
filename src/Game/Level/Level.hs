@@ -2,6 +2,7 @@ module Game.Level.Level (
     Powerup(..),
     Tile(..),
     Table(..),
+    Marker(..),
     Level(..),
     (!),
     set,
@@ -22,9 +23,11 @@ data Table a = Table (Vec.Vector (Vec.Vector a)) Int Int deriving (Show, Eq)
 
 data Powerup = PacDot | PowerPill | Cherry deriving (Show, Eq)
 
-data Tile = TileEmpty | TilePowerup Powerup | TileWall Sprite | TileDoor deriving (Show, Eq)
+data Marker = Marker Char deriving (Show, Eq, Ord)
 
-data Level = Level {tiles :: Table Tile} deriving (Show, Eq)
+data Tile = TileEmpty | TilePowerup Powerup | TileWall Sprite | TileDoor | TileMarker Marker deriving (Show, Eq)
+
+data Level = Level {tiles :: Table Tile, markers :: [(Coordinate, Marker)]} deriving (Show, Eq)
 
 {- Classes -}
 
@@ -34,9 +37,8 @@ instance Functor Table where
     fmap f (Table vec w h) = Table vecn w h where vecn = Vec.map (Vec.map f) vec
 
 instance Drawable Level where
-    draw l@(Level t@(Table _ w h)) = [drawTile (Pos x y) | x <- [0.. w-1], y <- [0.. h-1]]
-                                     where drawTile p = DrawInstruction (tileToCoordinate l p) (tileToSprite (t ! p))
-
+    draw l@(Level{tiles=t@(Table _ w h)}) = [drawTile (Pos x y) | x <- [0.. w-1], y <- [0.. h-1]]
+                                             where drawTile p = DrawInstruction (tileToCoordinate t p) (tileToSprite (t ! p))
 {- Functions -}
 (!) :: Table Tile -> Pos -> Tile
 (!) (Table vec w h) (Pos x y) | x < 0 || x >= w || y < 0 || y >= h = TileEmpty
@@ -54,10 +56,11 @@ tileToSprite tile = case tile of TileEmpty               -> createEmptySprite
                                  (TilePowerup PowerPill) -> spritePowerupPowerPellet
                                  (TilePowerup Cherry)    -> spritePowerupCherry
                                  (TileWall sprite)       -> sprite
-                                 TileDoor              -> createEmptySprite
+                                 TileDoor                -> createEmptySprite
+                                 (TileMarker _)          -> createEmptySprite
 
-tileToCoordinate :: Level -> Pos -> Coordinate
-tileToCoordinate Level{tiles=Table _ w h} (Pos x y) = (coordinate x y - coordinate w h / 2) * fromInteger tileSize
+tileToCoordinate :: Table Tile -> Pos -> Coordinate
+tileToCoordinate (Table _ w h) (Pos x y) = (coordinate x y - coordinate w h / 2) * fromInteger tileSize
 
-coordinateToTile :: Level -> Coordinate -> Pos
-coordinateToTile Level{tiles=Table _ w h} c = coordinateToPos (c / fromInteger tileSize + coordinate w h / 2)
+coordinateToTile :: Table Tile -> Coordinate -> Pos
+coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + coordinate w h / 2)

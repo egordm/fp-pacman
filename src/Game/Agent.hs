@@ -56,7 +56,7 @@ updateAgentSprite old new | old == new = old
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
 updateAgentPosition dt World{level} a@Agent{position, direction, speed}
     = coord
-      where tilePos = tileToCoordinate level (coordinateToTile level position)
+      where tilePos = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position)
             orthDir = orthagonalDirection direction
             canTurn = distance tilePos position < epsilon
             coord = coordinateComponent direction position + coordinateComponent orthDir tilePos
