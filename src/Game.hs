@@ -16,6 +16,7 @@ import Game.Agent
 import Game.Agents.Pacman
 import Game.Level.Loading
 import Game.Room
+import Game.Context
 import Game.SwitchRoom
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
