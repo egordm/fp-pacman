@@ -13,7 +13,9 @@ import Graphics.Gloss.Game
 import Game.SwitchRoom
 import Game.GameState
 import Game.Room
+import Game.Rule
 import qualified Data.Map as Map
+import Control.Arrow
 
 {- Data structures -}
 
@@ -49,9 +51,9 @@ stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} =
         Room{state = GameState{switch = (RoomSwitch req mode)}} -> newContext req mode
     where
         nextContext = c{room = nextRoom cr}
-        nextRoom r@Room{state = cs,rUpdate = rfu} = 
-            r{state = rfu time cs}
-        newContext name mode = 
+        nextRoom r@Room{state = cs,rUpdate = rfu,rules = rls} = 
+            r{state = applyRules rls $ rfu time cs}
+        newContext name mode =
             case (Map.lookup name rm) of
             Nothing -> nextContext
             Just foundRoom@Room{state = foundState, initState = foundInit} ->

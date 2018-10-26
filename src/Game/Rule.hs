@@ -1,5 +1,5 @@
 module Game.Rule (
-    Rule(..)
+    Rule
 ) where
 
 import Game.GameState
