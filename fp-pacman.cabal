@@ -45,7 +45,9 @@ library
       Game.Level.Level
       Game.Level.Loading
       Game.Room
+      Game.Context
       Game.SwitchRoom
+      Game.Rule
       Game
       Constants
       Resources

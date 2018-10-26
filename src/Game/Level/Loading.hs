@@ -123,11 +123,6 @@ matchWallSprite TileMatcher{none=Wall _, left = NotWall _, right = Wall rw, up =
     | rw == TileWall spriteTileSStraightU && dw == TileWall spriteTileSStraightL = TileWall spriteTileSCornerRD
     | otherwise = TileWall spriteTileFCornerRDDR
 
-matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = NotWall _, down = Wall _, upRight = NotWall _, downLeft = NotWall _} = TileWall spriteTileSCornerLD
-matchWallSprite TileMatcher{none=Wall _, left = NotWall _, right = Wall _, up = NotWall _, down = Wall _, upLeft = NotWall _, downRight = NotWall _ } = TileWall spriteTileSCornerRD
-matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = Wall _, down = NotWall _, upLeft = NotWall _, downRight = NotWall _ } = TileWall spriteTileSCornerLU
-matchWallSprite TileMatcher{none=Wall _, left = NotWall _, right = Wall _, up = Wall _, down = NotWall _, upRight = NotWall _, downRight = NotWall _ } = TileWall spriteTileSCornerRU
-
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = Wall _, down = Wall _, upRight = NotWall _, upLeft = NotWall _} = TileWall spriteTileSSplitUDL
 matchWallSprite TileMatcher{none=Wall _, left = NotWall _, right = Wall _, up = Wall _, down = Wall _, upRight = NotWall _, upLeft = NotWall _} = TileWall spriteTileSSplitUDR
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = Wall _, down = Wall _, downRight = NotWall _, downLeft = NotWall _} = TileWall spriteTileSSplitDUL
@@ -140,7 +135,6 @@ matchWallSprite TileMatcher{none=Wall _, right = Wall _, upRight = NotWall _, up
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, downLeft = NotWall _, down = Wall _} = TileWall spriteTileFCornerLDDL
 matchWallSprite TileMatcher{none=Wall _, right = Wall _, downRight = NotWall _, down = Wall _} = TileWall spriteTileFCornerRDDR
 
-matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = Wall _, up = NotWall _, down = Wall _} = TileWall spriteTileFStraightD
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = Wall _, up = NotWall _, down = Wall _} = TileWall spriteTileFStraightD
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = Wall _, up = Wall _, down = NotWall _} = TileWall spriteTileFStraightU
 matchWallSprite TileMatcher{none=Wall _, left = Wall _, right = NotWall _, up = Wall _, down = Wall _} = TileWall spriteTileFStraightL

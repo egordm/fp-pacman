@@ -7,7 +7,7 @@ module Game.GameState (
     Inputable(..),
     makeState
 ) where
-    
+
 import Engine.Core.Classes
 import Game.World
 import Game.Input
