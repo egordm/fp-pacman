@@ -35,6 +35,8 @@ library
       Engine.Core.Classes
       Game.Agents.AgentTypes
       Game.Agents.Pacman
+      Game.Agents.Ghosts
+      Game.Agents.Helpers
       Game.Internal
       Game.Input
       Game.Agent

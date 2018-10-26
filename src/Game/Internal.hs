@@ -26,7 +26,8 @@ data Agent = Agent {
                  direction :: Direction,
                  speed :: Float,
                  sprite :: Sprite,
-                 behaviour :: AgentBehaviour
+                 behaviour :: AgentBehaviour,
+                 lastTurn :: Pos
              } deriving (Show)
 
 {- Classes -}

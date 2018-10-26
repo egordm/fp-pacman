@@ -33,6 +33,9 @@ epsilon = 0.5
 pacmanSpeed :: Float
 pacmanSpeed = 100
 
+ghostSpeed :: Float
+ghostSpeed = 80
+
 turnTolerance :: Float
 turnTolerance = fromInteger tileSize * 0.2
 

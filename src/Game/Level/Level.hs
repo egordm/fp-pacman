@@ -74,4 +74,5 @@ markerCoordinate m Level{markers} = case lookup m markers of Just c -> c; Nothin
 
 isWall :: Tile -> Bool
 isWall (TileWall _) = True
+isWall TileDoor = True
 isWall _ = False

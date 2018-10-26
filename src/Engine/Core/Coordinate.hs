@@ -14,7 +14,10 @@ module Engine.Core.Coordinate (
     orthagonalDirection,
     dotprod,
     distance,
-    dirsAreOrthagonal
+    dirsAreOrthagonal,
+    oppositeDirection,
+    directions,
+    posZero
 ) where
 
 import Constants
@@ -57,6 +60,11 @@ halfScreenSize = screenSize / 2
 
 coordinateZero = Coordinate 0 0
 
+posZero = Pos 0 0
+
+directions :: [Direction]
+directions = [DNone, DUp, DDown, DLeft, DRight]
+
 directionToCoordinate :: Direction -> Coordinate
 directionToCoordinate direction = case direction of DNone  -> Coordinate 0    0
                                                     DUp    -> Coordinate 0    (-1)
@@ -90,6 +98,14 @@ orthagonalDirection d = case d of DNone   -> DNone
                                   DDown   -> DLeft
                                   DLeft   -> DUp
                                   DRight  -> DUp
+
+oppositeDirection :: Direction -> Direction
+oppositeDirection d = case d of DNone   -> DNone
+                                DUp     -> DDown
+                                DDown   -> DUp
+                                DLeft   -> DRight
+                                DRight  -> DLeft
+
 
 dotprod :: Coordinate -> Float
 dotprod (Coordinate x y) = x*x + y*y

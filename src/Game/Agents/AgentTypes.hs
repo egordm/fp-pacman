@@ -2,7 +2,8 @@ module Game.Agents.AgentTypes (
     AgentType(..),
     GhostType(..),
     agentTypeToSprite,
-    agentTypeToMarker
+    agentTypeToMarker,
+    ghost
 ) where
 
 import Engine.Core.Coordinate
@@ -17,16 +18,23 @@ data AgentType = Pacman
                | Ghost {
                   ghostType :: GhostType,
                   scatterMode :: Bool,
-                  died :: Bool
-               } deriving (Eq, Show)
+                  died :: Bool,
+                  homePosition :: Coordinate
+               } deriving (Show)
 
 {- Classes -}
 
 
 {- Instances -}
-
+instance Eq AgentType where
+    Pacman == Pacman = True
+    Ghost{ghostType=ga} == Ghost{ghostType=gb} = ga == gb
+    _ == _ = False
 
 {- Functions -}
+ghost :: GhostType -> Coordinate -> AgentType
+ghost t h = Ghost t False False h
+
 agentTypeToMarker :: AgentType -> Marker
 agentTypeToMarker agent = case agent of Pacman                  -> Marker 'M'
                                         Ghost{ghostType=Blinky} -> Marker 'B'

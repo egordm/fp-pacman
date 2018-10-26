@@ -7,6 +7,7 @@ module Game.World (
     addAgent
 ) where
 
+import Data.List
 import Engine.Graphics.Sprite
 import Engine.Graphics.Rendering
 import Engine.Core.Classes
@@ -26,7 +27,6 @@ import Debug.Trace
 instance Updateable World where
     update dt t w@World{agents} = w{agents=nagents}
                                   where nagents = map (updateAgent dt t w) agents
-                                        --tets = trace ("upd " ++ show (agents)) w
 
 instance Renderable World where
     render World{agents, level} = renderInstructions (levelDrawings ++ agentDrawings)

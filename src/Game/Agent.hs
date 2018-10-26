@@ -5,6 +5,7 @@ module Game.Agent (
     Drawable(..),
     AgentBehaviour(..),
     updateAgent,
+    agent,
 ) where
     
 import Debug.Trace
@@ -32,15 +33,19 @@ instance Drawable Agent where
     draw a@Agent{position, sprite} = [DrawInstruction position sprite]
 
 {- Functions -}
+agent :: AgentType -> Float -> AgentBehaviour -> Agent
+agent t s b = Agent t coordinateZero DNone s createEmptySprite b posZero
+
 updateAgent :: Float -> Float -> World -> Agent -> Agent
-updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour}
-     = a{sprite=nsprite, direction=ndirection, position=sposition}
+updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour, lastTurn}
+     = a{sprite=nsprite, direction=ndirection, position=sposition, lastTurn=nlastTurn}
        where
           desiredDirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
           sposition = updateAgentPosition dt world a
           ndirection = adjustDirection desiredDirection (level world) a
-
+          nlastTurn | direction /= ndirection && direction /= DNone = coordinateToTile (tiles (level world)) position
+                    | otherwise = lastTurn
 
 -- | Updates agent direction if it is not none. We keep the premise of contineous movement
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction

@@ -20,4 +20,4 @@ import Constants
 
 {- Functions -}
 pacman :: Coordinate -> AgentBehaviour -> Agent
-pacman position behaviour = Agent Pacman position DNone pacmanSpeed spritePacmanStill behaviour
+pacman position behaviour = Agent Pacman position DNone pacmanSpeed spritePacmanStill behaviour posZero

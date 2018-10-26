@@ -14,6 +14,7 @@ import Game.GameState
 import Game.Input
 import Game.Agent
 import Game.Agents.Pacman
+import Game.Agents.Ghosts
 import Game.Level.Loading
 import Game.Room
 import Game.SwitchRoom
@@ -41,7 +42,7 @@ stdPlay = play window background fps
 
 start :: IO ()
 start = do  level <- readLevel levelClassic
-            let init0 = makeState level [pacBoi0]
+            let init0 = makeState level [pacBoi0, blinky, pinky]
             let init1 = makeState level [pacBoi0, pacBoi1]
             let room0 = makeRoom init0 (inputGame0, render, updateGame)
             let room1 = makeRoom init1 (inputGame1, render, updateGame)
