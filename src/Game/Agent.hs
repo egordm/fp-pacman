@@ -5,7 +5,6 @@ module Game.Agent (
     Drawable(..),
     AgentBehaviour(..),
     updateAgent,
-    updateAgentDirection
 ) where
     
 import Debug.Trace
@@ -43,15 +42,19 @@ updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, be
           ndirection = adjustDirection desiredDirection (level world) a
 
 
+-- | Updates agent direction if it is not none. We keep the premise of contineous movement
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction
 updateAgentDirection t world agent (AIBehaviour aiFn) = aiFn t agent world
 updateAgentDirection _ _ a@Agent{direction} (InputBehaviour (InputData _ newDirection))
-    = case newDirection of DNone -> direction; _ -> newDirection
+    = case newDirection of DNone -> direction
+                           _     -> newDirection
 
+-- | Updates agent sprite if it has changed
 updateAgentSprite :: Sprite -> Sprite -> Sprite
 updateAgentSprite old new | old == new = old
                           | otherwise = new
 
+-- | Update agent position by applying movement in given direction. Also snaps agent orthogonal component to direction to the tile center
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
 updateAgentPosition dt World{level} a@Agent{position, direction, speed}
     = position + deltaTileSnap + deltaDirection
@@ -59,12 +62,13 @@ updateAgentPosition dt World{level} a@Agent{position, direction, speed}
             orthDir = orthagonalDirection direction
             deltaDesired = coordinateComponent direction ((directionToCoordinate direction) * (fromFloat (speed * dt)))
             deltaTileSnap = coordinateComponent orthDir (tileCoord - position)
+            -- Adjust for collision is agent is moving towards a wall
             deltaDirection = adjustCollision direction level position deltaDesired
 
---            canTurn = distance tilePos position < epsilon
-
+-- | Adjusts the desired position. If direction is obstructed, it will not be applied.
+adjustDirection :: Direction -> Level -> Agent -> Direction
 adjustDirection desiredDir level a@Agent{position, direction}
-  --  | (direction /= desiredDir) && not canTurn = adjustDirection direction level a{direction=DNone}
+    | (direction /= desiredDir) && not canTurn = adjustDirection direction level a{direction=DNone}
     | isObstructed = adjustDirection direction level a{direction=DNone}
     | otherwise = desiredDir
       where tilePos = coordinateToTile (tiles level) position
@@ -72,16 +76,21 @@ adjustDirection desiredDir level a@Agent{position, direction}
             nextTilePos = directionToPos desiredDir + tilePos
             nextTileCoord = tileToCoordinate (tiles level) nextTilePos
             orthDir = orthagonalDirection desiredDir
+            -- Can turn of close enough to center of the tile
             canTurn = distance (coordinateComponent orthDir nextTileCoord) (coordinateComponent orthDir position) < turnTolerance
+            -- Check whether next tile is a wall and agent is close enough to it
             nextTile = tiles level ! nextTilePos
             isObstructed = isWall nextTile && distance (coordinateComponent desiredDir nextTileCoord) (coordinateComponent desiredDir position) <= fromInteger tileSize
 
+-- | Adjusts position by checking for collisions and clamping position to possible travel distance
 adjustCollision :: Direction -> Level -> Coordinate -> Coordinate -> Coordinate
 adjustCollision dir level pos deltaDesired
     = case nextTile of TileWall _ -> correctedDelta
                        _          -> deltaDesired
       where tilePos = coordinateToTile (tiles level) pos
+            -- Delta position to the nearest tile center
             deltaTile = coordinateComponent dir (tileToCoordinate (tiles level) tilePos - pos)
             nextTile = tiles level ! (directionToPos dir + tilePos)
             wallNormal = directionToCoordinate dir * (-1337)
+            -- Take farthest option from the wall we are moving towards
             correctedDelta = snd (min (distance deltaDesired wallNormal, deltaDesired) (distance deltaTile wallNormal, deltaTile))

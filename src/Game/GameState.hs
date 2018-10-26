@@ -37,7 +37,6 @@ instance Inputable GameState where
 
 {- Functions -}
 
-makeState level bois = GameState 0 tets RoomStay
+makeState level bois = GameState 0 world RoomStay
                        where baseWorld = World level []
                              world = foldr addAgent baseWorld bois
-                             tets = trace (show (agents world)) world
