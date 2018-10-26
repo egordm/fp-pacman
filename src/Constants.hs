@@ -17,6 +17,7 @@ fps :: Int
 fps = 60
 
 -- | Paths
+-- resourceDir = "../res/" --for interpreter
 resourceDir = "res/"
 
 spriteScale :: Float

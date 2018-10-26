@@ -50,7 +50,7 @@ instance Drawable Level where
 
 set :: Table a -> Pos -> a -> Table a
 set t@(Table vec w h) (Pos x y) v | x < 0 || x >= w || y < 0 || y >= h = t
-                                  | otherwise = Table vec x y
+                                  | otherwise = Table nvec x y
                                     where nvec = Vec.update vec (Vec.singleton (y, nrow))
                                           nrow = Vec.update (vec Vec.! y) (Vec.singleton (x, v))
 
