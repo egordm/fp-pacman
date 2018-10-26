@@ -48,6 +48,7 @@ library
       Game.Context
       Game.SwitchRoom
       Game.Rule
+      Game.Rules
       Game
       Constants
       Resources

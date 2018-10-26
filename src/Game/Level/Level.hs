@@ -49,10 +49,12 @@ instance Drawable Level where
                               | otherwise = vec Vec.! y Vec.! x
 
 set :: Table a -> Pos -> a -> Table a
-set t@(Table vec w h) (Pos x y) v | x < 0 || x >= w || y < 0 || y >= h = t
-                                  | otherwise = Table vec x y
-                                    where nvec = Vec.update vec (Vec.singleton (y, nrow))
-                                          nrow = Vec.update (vec Vec.! y) (Vec.singleton (x, v))
+set t@(Table vec w h) (Pos x y) v 
+    | x < 0 || x >= w || y < 0 || y >= h = t
+    | otherwise = Table nvec w h
+    where 
+        nvec = vec Vec.// [(y, nrow)]
+        nrow = (vec Vec.! y) Vec.// [(x, v)]
 
 tileToSprite :: Tile -> Sprite
 tileToSprite tile = case tile of TileEmpty               -> createEmptySprite

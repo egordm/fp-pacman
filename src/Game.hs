@@ -19,16 +19,10 @@ import Game.Level.Loading
 import Game.Room
 import Game.Context
 import Game.SwitchRoom
-import Game.Rule
+import qualified Game.Rules as Rules
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
-
---TODO: rules in own module, this is just to test
-testRule :: Rule
-testRule state@GameState{t = time}
-    | time > 10 = state{switch = RoomSwitch "a" ResumeRoom}
-    | otherwise = state
 
 updateGame :: RoomUpdateFunc
 updateGame dt state@GameState{t} = update dt (t + dt) state
@@ -51,8 +45,8 @@ start :: IO ()
 start = do  level <- readLevel levelClassic
             let init0 = makeState level [pacBoi0, blinky, pinky]
             let init1 = makeState level [pacBoi0, pacBoi1]
-            let room0 = makeRoom init0 [] (inputGame0, render, updateGame)
-            let room1 = makeRoom init1 [testRule] (inputGame1, render, updateGame)
+            let room0 = makeRoom init0 [Rules.pacdotsRule] (inputGame0, render, updateGame)
+            let room1 = makeRoom init1 [Rules.pacdotsRule] (inputGame1, render, updateGame)
             let rooms = RoomCollection ("a", room0) [("b", room1)]
             let context = makeContext rooms
             playFun <- playContext stdPlay context

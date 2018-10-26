@@ -18,6 +18,7 @@ import Game.SwitchRoom
 {- Data structures -}
 data GameState = GameState {
                      t :: Float,
+                     score :: Int,
                      world :: World,
                      switch :: SwitchRoom
                  } deriving (Show)
@@ -37,6 +38,6 @@ instance Inputable GameState where
 
 {- Functions -}
 
-makeState level bois = GameState 0 world RoomStay
+makeState level bois = GameState 0 0 world RoomStay
                        where baseWorld = World level []
                              world = foldr addAgent baseWorld bois
