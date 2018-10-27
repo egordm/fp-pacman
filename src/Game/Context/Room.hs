@@ -13,12 +13,11 @@ module Game.Context.Room(
 
 import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
+import Engine.Base
 import Game.Structure.GameState
 import Game.Rules.Rule
-import Control.Arrow
 
 {- Data structures -}
-
 data Room = Room {
     state :: GameState,
     initState :: GameState,
@@ -33,11 +32,18 @@ type RoomRenderFunc = (GameState -> Picture)
 type RoomUpdateFunc = (Float -> GameState -> GameState)
 type RoomFunctions = (RoomInputFunc, RoomRenderFunc, RoomUpdateFunc)
 
+{- Instances -}
+instance Inputable Room where
+    input e r@Room{state, rInput} = r{state=nstate} where nstate = rInput e state
+
+instance Renderable Room where
+    render r@Room{state, rRender} = rRender state
+
+instance BaseUpdateable Room where
+    baseUpdate dt r@Room{rules, rUpdate, state} = r{state=nstate} where nstate = applyRules rules $ rUpdate dt state
+
+
 {- Functions -}
-
-applyRules :: [Rule] -> GameState -> GameState
-applyRules rls st = (foldl (>>>) id rls) st
-
 makeRoom :: GameState -> [Rule] -> RoomFunctions -> Room
 makeRoom istate rules (i,r,u) = Room istate istate rules i r u
 

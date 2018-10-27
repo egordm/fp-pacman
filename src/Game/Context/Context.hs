@@ -10,10 +10,12 @@ module Game.Context.Context(
 
 import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
+import Engine.Base
 import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Structure.GameState
 import Game.Rules.Base
+import Game.Input.Base
 import qualified Data.Map as Map
 import Control.Arrow
 
@@ -28,48 +30,35 @@ data Context = Context {
 type RoomEntry = (String, Room)
 data RoomCollection = RoomCollection RoomEntry [RoomEntry]
 
+{- Instances -}
+instance Inputable Context where
+    input e c@Context{room=r} = c{room=input e r}
+
+instance Renderable Context where
+    render c@Context{room} = render room
+
+instance BaseUpdateable Context where
+    baseUpdate dt c@Context{room=r, rooms, roomName} -- TODO: Function still does too much
+        = case r of
+            Room{state = GameState{switch = RoomStay}} -> c{room = baseUpdate dt r}
+            Room{state = GameState{switch = RoomReload}} -> roomAction roomName ReloadRoom
+            Room{state = GameState{switch = (RoomSwitch req mode)}} -> roomAction req mode
+          where
+              roomAction newRoomName mode = case (Map.lookup newRoomName rooms) of
+                  Nothing -> c{room = baseUpdate dt r}
+                  Just nr@Room{state, initState} ->
+                      let nrooms = Map.insert roomName r rooms
+                          nstate = case mode of
+                              ResumeRoom -> state
+                              ReloadRoom -> initState
+                      in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
+
+
 {- Functions -}
-
-stdConInput :: Event -> Context -> Context
-stdConInput e c@Context{room = cr} = 
-    c{room = newRoom cr}
-    where
-        newRoom r@Room{state = cs,rInput = rfi} = 
-            r{state = rfi e cs}
-
-stdConRender :: Context -> Picture
-stdConRender Context{room} = 
-    pictureFromRoom room
-    where
-        pictureFromRoom Room{state,rRender} = 
-            rRender state
-
-stdConUpdate :: Float -> Context -> Context
-stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} = 
-    case cr of
-        Room{state = GameState{switch = RoomStay}} -> nextContext
-        Room{state = GameState{switch = RoomReload}} -> newContext crm ReloadRoom
-        Room{state = GameState{switch = (RoomSwitch req mode)}} -> newContext req mode
-    where
-        nextContext = c{room = nextRoom cr}
-        nextRoom r@Room{state = cs,rUpdate = rfu,rules = rls} = 
-            r{state = applyRules rls $ rfu time cs}
-        newContext name mode =
-            case (Map.lookup name rm) of
-            Nothing -> nextContext
-            Just foundRoom@Room{state = foundState, initState = foundInit} ->
-                let 
-                    newRooms = Map.insert crm cr rm 
-                    newState = case mode of
-                        ResumeRoom -> foundState
-                        ReloadRoom -> foundInit
-                    in
-                c{roomName = name, rooms = newRooms, room = foundRoom{state = newState{t = 0, switch = RoomStay}}}
-
 makeContext :: RoomCollection -> Context
 makeContext (RoomCollection first@(name,start) others) = Context start name roomMap
     where
         roomMap = Map.fromList $ first:others
 
 playContext f context@Context{room,rooms} = 
-    f context stdConRender stdConInput [stdConUpdate]
+    f context render input [baseUpdate]
