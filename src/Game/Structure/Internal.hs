@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Game.Structure.Internal (
     World(..),
     Agent(..),
