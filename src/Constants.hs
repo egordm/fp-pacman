@@ -8,7 +8,7 @@ background = black
 
 -- | Windows size constants
 width, height, offset :: Int
-width = 496
+width = 448
 height = 560
 offset = 100
 

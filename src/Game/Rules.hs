@@ -8,8 +8,7 @@ import Game.Rule
 import Game.Level.Level
 import Game.Agents.AgentTypes
 import Game.Agent
---TODO, uses internal??!
-import Game.Internal
+import Game.World
 
 testRule :: Rule
 testRule state@GameState{t = time}

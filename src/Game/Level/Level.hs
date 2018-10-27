@@ -67,10 +67,10 @@ tileToSprite tile = case tile of TileEmpty               -> createEmptySprite
                                  (TileMarker _)          -> createEmptySprite
 
 tileToCoordinate :: Table Tile -> Pos -> Coordinate
-tileToCoordinate (Table _ w h) (Pos x y) = (coordinate x y - coordinate w h / 2) * fromInteger tileSize
+tileToCoordinate (Table _ w h) (Pos x y) = (coordinate x y - coordinate (w-1) (h-1) / 2) * fromInteger tileSize
 
 coordinateToTile :: Table Tile -> Coordinate -> Pos
-coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + coordinate w h / 2)
+coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + coordinate (w-1) (h-1) / 2)
 
 markerCoordinate :: Marker -> Level -> Coordinate
 markerCoordinate m Level{markers} = case lookup m markers of Just c -> c; Nothing -> coordinateZero
