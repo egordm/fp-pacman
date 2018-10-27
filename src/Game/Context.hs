@@ -48,6 +48,7 @@ stdConUpdate :: Float -> Context -> Context
 stdConUpdate time c@Context{room = cr, rooms = rm, roomName = crm} = 
     case cr of
         Room{state = GameState{switch = RoomStay}} -> nextContext
+        Room{state = GameState{switch = RoomReload}} -> newContext crm ReloadRoom
         Room{state = GameState{switch = (RoomSwitch req mode)}} -> newContext req mode
     where
         nextContext = c{room = nextRoom cr}
