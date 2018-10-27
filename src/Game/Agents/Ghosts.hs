@@ -52,7 +52,7 @@ pinkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, l
     | otherwise = ndirection
       where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
             target = case pacmans of
-                (Agent{position=p, direction=d}:as) -> p + directionToCoordinate d * 4
+                (Agent{position=p, direction=d}:as) -> p + directionToCoordinate d * fromInteger tileSize * 4
                 _ -> homePosition
             ndirection = pathFindDumb a w target
             agentPos = coordinateToTile (tiles level) position
@@ -65,7 +65,7 @@ inkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, la
       where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
             blinkies = sortClosestAgents position (filterAgentsByType (ghost Blinky coordinateZero) agents)
             targetFn (Agent{position=pp, direction=pd}:_) (Agent{position=bp, direction=bd}:_)
-                = (pp + directionToCoordinate pd * 2 - bp) * 2 + position
+                = (pp + directionToCoordinate pd * fromInteger tileSize * 2 - bp) * 2 + position
             targetFn _ _ = homePosition
             target = targetFn pacmans blinkies
             ndirection = pathFindDumb a w target

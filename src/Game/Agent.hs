@@ -36,6 +36,16 @@ instance Drawable Agent where
 agent :: AgentType -> Float -> AgentBehaviour -> Agent
 agent t s b = Agent t coordinateZero DNone s createEmptySprite b posZero
 
+overflowPosition :: Level -> Coordinate -> Coordinate
+overflowPosition l@Level{tiles = Table _ w h} c@(Coordinate x y)
+    | x >= halfWidth = overflowPosition l (Coordinate (x - halfWidth * 2) y)
+    | x < -halfWidth = overflowPosition l (Coordinate (x + halfWidth * 2) y)
+    | y >= halfHeight = overflowPosition l (Coordinate x (y - halfHeight * 2))
+    | y < -halfHeight = overflowPosition l (Coordinate x (y + halfHeight * 2))
+    | otherwise = c
+      where halfWidth = realToFrac (w + 1) * fromInteger tileSize / 2
+            halfHeight = realToFrac (h + 1) * fromInteger tileSize / 2
+
 updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour, lastTurn}
      = a{sprite=nsprite, direction=ndirection, position=sposition, lastTurn=nlastTurn}
@@ -62,7 +72,7 @@ updateAgentSprite old new | old == new = old
 -- | Update agent position by applying movement in given direction. Also snaps agent orthogonal component to direction to the tile center
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
 updateAgentPosition dt World{level} a@Agent{position, direction, speed}
-    = position + deltaTileSnap + deltaDirection
+    = overflowPosition level (position + deltaTileSnap + deltaDirection)
       where tileCoord = tileToCoordinate (tiles level) (coordinateToTile (tiles level) position)
             orthDir = orthagonalDirection direction
             deltaDesired = coordinateComponent direction ((directionToCoordinate direction) * (fromFloat (speed * dt)))
