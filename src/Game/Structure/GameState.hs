@@ -35,8 +35,11 @@ instance Renderable GameState where
 instance Inputable GameState where
     input event s@GameState{world=pworld} = s{world=input event pworld}
 
-{- Functions -}
+instance Resetable GameState where
+    reset s@GameState{world=pworld} = s{world=reset pworld}
 
+{- Functions -}
 makeState level bois = GameState 0 world scoreholder RoomStay
                        where baseWorld = World level []
-                             world = foldr addAgent baseWorld bois
+                             world = addAgents bois baseWorld
+

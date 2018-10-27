@@ -32,6 +32,10 @@ instance Eq AgentType where
     Ghost{ghostType=ga} == Ghost{ghostType=gb} = ga == gb
     _ == _ = False
 
+instance Resetable AgentType where
+    reset a@Pacman{} = a{died=False}
+    reset a@Ghost{} = a{died=False, scatterTicks=0}
+
 {- Functions -}
 ghost :: GhostType -> Coordinate -> AgentType
 ghost t h = Ghost t 0 False h

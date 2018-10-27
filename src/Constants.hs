@@ -42,3 +42,6 @@ turnTolerance = fromInteger tileSize * 0.2
 
 tileSize :: Integer
 tileSize = floor (8 * spriteScale)
+
+liveCount :: Int
+liveCount = 3

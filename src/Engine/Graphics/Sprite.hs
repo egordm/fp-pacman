@@ -6,7 +6,8 @@ module Engine.Graphics.Sprite (
     Updateable(..),
     createAnimatedSprite,
     createStaticSprite,
-    createEmptySprite
+    createEmptySprite,
+    animationEnded
 ) where
 
 import Graphics.Gloss (Picture(..))
@@ -47,3 +48,10 @@ createStaticSprite = StaticSprite
 
 createEmptySprite :: Sprite
 createEmptySprite = StaticSprite Blank "blank"
+
+animationEnded :: Sprite -> Bool
+animationEnded StaticSprite{} = True
+animationEnded AnimatedSprite{animation=Animation{animType=Repeating}} = False
+animationEnded AnimatedSprite{animation=Animation{animType=Single, animState=AnimationState{current}, frameCount}}
+    | current == frameCount - 1 = True
+    | otherwise = False

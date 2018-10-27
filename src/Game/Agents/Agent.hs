@@ -28,6 +28,9 @@ instance Inputable Agent where
 instance Drawable Agent where
     draw a@Agent{position, sprite} = [DrawInstruction position sprite]
 
+instance Resetable Agent where
+    reset a@Agent{agentType=at} = a{agentType=reset at, direction=DNone, sprite=createEmptySprite}
+
 {- Functions -}
 agent :: AgentType -> Float -> AgentBehaviour -> Agent
 agent t s b = Agent t coordZ DNone s createEmptySprite b posZ
