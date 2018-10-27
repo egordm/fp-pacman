@@ -33,13 +33,15 @@ inputGame0 e state = input e state
 inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "a" ResumeRoom}
 inputGame1 e state = input e state
 
-window :: Display
-window = InWindow gameName (width, height) (offset, offset)
 
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
 stdRules = [Rules.pacmansOnPacdots, Rules.ghostsOnPacmansRule]
+
+
+window :: Display
+window = InWindow gameName (width, height) (offset, offset)
 
 stdPlay = play window background fps
 
