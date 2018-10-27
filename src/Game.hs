@@ -25,7 +25,7 @@ inputGame1 e state = input e state
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
-stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart]
+stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume]
 
 window :: Display
 window = InWindow gameName (width, height) (offset, offset)

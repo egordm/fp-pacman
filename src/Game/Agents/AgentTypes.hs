@@ -3,6 +3,7 @@ module Game.Agents.AgentTypes (
     GhostType(..),
     agentTypeToSprite,
     agentTypeToMarker,
+    isInScatterMode,
     ghost
 ) where
 
@@ -10,6 +11,7 @@ import Engine.Core.Base
 import Engine.Graphics.Base
 import Game.Level.Level(Marker(..))
 import Resources
+import Constants
 
 {- Data structures -}
 data GhostType = Blinky | Pinky | Inky | Clyde deriving (Eq, Ord, Show)
@@ -18,7 +20,7 @@ data AgentType = Pacman {
                    died :: Bool
                  } | Ghost {
                    ghostType :: GhostType,
-                   scatterTicks :: Int,
+                   scatterTicks :: Float,
                    died :: Bool,
                    homePosition :: Coordinate
                  } deriving (Show)
@@ -32,6 +34,10 @@ instance Eq AgentType where
     Ghost{ghostType=ga} == Ghost{ghostType=gb} = ga == gb
     _ == _ = False
 
+instance Updateable AgentType where
+    update dt t at@Pacman{} = at
+    update dt t at@Ghost{} = at{scatterTicks=max 0 (scatterTicks at - dt)}
+
 instance Resetable AgentType where
     reset a@Pacman{} = a{died=False}
     reset a@Ghost{} = a{died=False, scatterTicks=0}
@@ -39,6 +45,10 @@ instance Resetable AgentType where
 {- Functions -}
 ghost :: GhostType -> Coordinate -> AgentType
 ghost t h = Ghost t 0 False h
+
+isInScatterMode :: AgentType -> Bool
+isInScatterMode Pacman{} = False
+isInScatterMode Ghost{scatterTicks} = scatterTicks > 0
 
 agentTypeToMarker :: AgentType -> Marker
 agentTypeToMarker agent = case agent of Pacman{}                -> Marker 'M'
@@ -64,7 +74,8 @@ agentTypeToSprite direction Ghost{died=True}
     DDown  -> spriteEyesDown
     DLeft  -> spriteEyesLeft
     DRight -> spriteEyesRight
-agentTypeToSprite direction Ghost{ghostType, scatterTicks} | (scatterTicks > 0) = spriteScatterRight
+agentTypeToSprite direction Ghost{ghostType, scatterTicks} | (scatterTicks > scatterModeEnding) = spriteScatter
+                                                           | (scatterTicks > 0) = spriteScatterEnding
                                                            | otherwise = ghostTypeToSprite direction ghostType
 
 ghostTypeToSprite :: Direction -> GhostType -> Sprite

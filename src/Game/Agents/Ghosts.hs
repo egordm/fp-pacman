@@ -24,40 +24,49 @@ import Data.List
 
 
 {- Functions -}
-
-
 blinky, pinky, inky, clyde :: Agent
-blinky = agent (ghost Blinky coordZ) ghostSpeed (AIBehaviour blinkyBehaviour)
-pinky = agent (ghost Pinky coordZ) ghostSpeed (AIBehaviour pinkyBehaviour)
-inky = agent (ghost Inky coordZ) ghostSpeed (AIBehaviour inkyBehaviour)
-clyde = agent (ghost Clyde coordZ) ghostSpeed (AIBehaviour clydeBehaviour)
+blinky = agent (ghost Blinky blinkyHome) ghostSpeed (AIBehaviour blinkyBehaviour)
+pinky = agent (ghost Pinky pinkyHome) ghostSpeed (AIBehaviour pinkyBehaviour)
+inky = agent (ghost Inky inkyHome) ghostSpeed (AIBehaviour inkyBehaviour)
+clyde = agent (ghost Clyde clydeHome) ghostSpeed (AIBehaviour clydeBehaviour)
+
+blinkyHome = Coordinate 9999 9999
+pinkyHome = Coordinate (-9999) 9999
+inkyHome = Coordinate 9999 (-9999)
+clydeHome = Coordinate (-9999) (-9999)
+
+-- TODO: cleanup. Lots of duplicate code
 
 blinkyBehaviour :: Float -> Agent -> World -> Direction
-blinkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
+blinkyBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
       where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             target = case pacmans of
                 (Agent{position=p}:as) -> p
                 _ -> homePosition
-            ndirection = pathFindDumb a w target
+            targetFinal | isInScatterMode at = homePosition
+                        | otherwise = target
+            ndirection = pathFindDumb a w targetFinal
             agentPos = coordToTile (tiles level) position
 
 
 pinkyBehaviour :: Float -> Agent -> World -> Direction
-pinkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
+pinkyBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
       where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             target = case pacmans of
                 (Agent{position=p, direction=d}:as) -> p + dirToCoord d * fromInteger tileSize * 4
                 _ -> homePosition
-            ndirection = pathFindDumb a w target
+            targetFinal | isInScatterMode at = homePosition
+                        | otherwise = target
+            ndirection = pathFindDumb a w targetFinal
             agentPos = coordToTile (tiles level) position
 
 
 inkyBehaviour :: Float -> Agent -> World -> Direction
-inkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
+inkyBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
       where pacmans = sortClosestAgents position (filterAgentsPacman agents)
@@ -66,11 +75,13 @@ inkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, la
                 = (pp + dirToCoord pd * fromInteger tileSize * 2 - bp) * 2 + position
             targetFn _ _ = homePosition
             target = targetFn pacmans blinkies
-            ndirection = pathFindDumb a w target
+            targetFinal | isInScatterMode at = homePosition
+                        | otherwise = target
+            ndirection = pathFindDumb a w targetFinal
             agentPos = coordToTile (tiles level) position
 
 clydeBehaviour :: Float -> Agent -> World -> Direction
-clydeBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
+clydeBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
       where pacmans = sortClosestAgents position (filterAgentsPacman agents)
@@ -78,6 +89,8 @@ clydeBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, l
                                             | otherwise = homePosition
             targetFn _ = homePosition
             target = targetFn pacmans
+            targetFinal | isInScatterMode at = homePosition
+                        | otherwise = target
             ndirection = pathFindDumb a w target
             agentPos = coordToTile (tiles level) position
 

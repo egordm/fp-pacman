@@ -41,7 +41,8 @@ spriteEyesDown    = loadStaticSprite "ghosts/eyes/down"
 spriteEyesLeft    = loadStaticSprite "ghosts/eyes/left"
 spriteEyesRight   = loadStaticSprite "ghosts/eyes/right"
 
-spriteScatterRight  = loadAnimatedSprite "ghosts/scatter" 1 Repeating spriteInterval
+spriteScatter  = loadAnimatedSprite "ghosts/scatter" 1 Repeating spriteInterval
+spriteScatterEnding  = loadAnimatedSprite "ghosts/scatter" 3 Repeating spriteInterval
 
 -- Powerups
 spritePowerupPacDot      = loadStaticSpriteFile "powerups/pacdot"

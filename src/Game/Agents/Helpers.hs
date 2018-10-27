@@ -3,7 +3,8 @@ module Game.Agents.Helpers (
     filterAgentsByType,
     filterAgentsGhost,
     filterAgentsPacman,
-    pathFindDumb
+    pathFindDumb,
+    agentSetScatterTicks
 ) where
 
 import Engine.Core.Base
@@ -27,7 +28,6 @@ import Debug.Trace
 {- Functions -}
 sortClosestAgents :: Coordinate -> [Agent] -> [Agent]
 sortClosestAgents c = sortBy (\Agent{position=p1} Agent{position=p2} -> compare (coordDist p1 c) (coordDist p2 c))
-
 
 filterAgentsByType :: AgentType -> [Agent] -> [Agent]
 filterAgentsByType atype = filter (\Agent{agentType} -> atype == agentType)
@@ -61,3 +61,8 @@ isGhostWalkablePos :: Level -> Pos -> Bool
 isGhostWalkablePos Level{tiles} pos = case tiles ! pos of TileWall _ -> False
                                                           TileMarker (Marker '9') -> False
                                                           _ -> True
+
+agentSetScatterTicks :: Float -> Agent -> Agent
+agentSetScatterTicks _ a@Agent{agentType=Pacman{}} = a
+agentSetScatterTicks t a@Agent{agentType=at@Ghost{}} = a{agentType=at{scatterTicks=t}}
+

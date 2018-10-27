@@ -37,6 +37,10 @@ pacmanSpeed = 110
 ghostSpeed :: Float
 ghostSpeed = 105
 
+scatterModeDuration, scatterModeEnding :: Float
+scatterModeDuration = 7
+scatterModeEnding = 3
+
 turnTolerance :: Float
 turnTolerance = fromInteger tileSize * 0.2
 

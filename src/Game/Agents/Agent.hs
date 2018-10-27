@@ -37,9 +37,10 @@ agent t s b = Agent t coordZ DNone s createEmptySprite b posZ
 
 updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour, lastTurn}
-     = a{sprite=nsprite, direction=ndirection, position=nposition, lastTurn=nlastTurn}
+     = a{agentType=ntype, sprite=nsprite, direction=ndirection, position=nposition, lastTurn=nlastTurn}
        where
           desiredDirection = updateAgentDirection t world a behaviour
+          ntype = update dt t agentType
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
           nposition | agentAllowedMove a = updateAgentPosition dt world a
                     | otherwise = position
