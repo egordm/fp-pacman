@@ -3,7 +3,7 @@ module Game.Level.Loading (
 ) where
 
 import qualified Data.Vector as Vec
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Engine.Graphics.Sprite
 import Game.Level.Level
 import Resources
@@ -93,7 +93,7 @@ extractMarkers t@(Table vec w h) = foldr (++) [] (map mergeMarkers groupedMarker
 
 -- | Averages given markers by position
 averageMarkers :: [(Marker, Coordinate)] -> (Marker, Coordinate)
-averageMarkers ms = let (m, c) = foldr (\(fa, sa) (fb, sb) -> (fa, sa + sb)) (Marker ' ', coordinateZero) ms
+averageMarkers ms = let (m, c) = foldr (\(fa, sa) (fb, sb) -> (fa, sa + sb)) (Marker ' ', coordZ) ms
                     in (m, c / fromIntegral (length ms))
 
 -- | Merges given markers if they are singular. Otherwise nothing is done

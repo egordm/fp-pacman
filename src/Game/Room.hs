@@ -41,5 +41,5 @@ applyRules rls st = (foldl (>>>) id rls) st
 makeRoom :: GameState -> [Rule] -> RoomFunctions -> Room
 makeRoom istate rules (i,r,u) = Room istate istate rules i r u
 
-playRoom f Room{ initState, rRender, rInput, rUpdate } = 
+playRoom f Room{ initState, rRender, rInput, rUpdate } =
     f initState rRender rInput [rUpdate]

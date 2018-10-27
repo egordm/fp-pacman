@@ -8,7 +8,7 @@ module Game.Agents.AgentTypes (
     ghost
 ) where
 
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Engine.Graphics.Sprite
 import Game.Level.Level(Marker(..))
 import Resources

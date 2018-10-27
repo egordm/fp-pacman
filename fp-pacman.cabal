@@ -37,9 +37,9 @@ library
       Game.Agents.Pacman
       Game.Agents.Ghosts
       Game.Agents.Helpers
+      Game.Agents.Agent
       Game.Internal
       Game.Input
-      Game.Agent
       Game.GameState
       Game.World
       Game.Level.Level

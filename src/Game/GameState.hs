@@ -11,7 +11,7 @@ module Game.GameState (
 import Engine.Core.Classes
 import Game.World
 import Game.Input
-import Game.Agent
+import Game.Agents.Agent
 import Debug.Trace
 import Game.SwitchRoom
 

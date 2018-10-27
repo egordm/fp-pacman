@@ -7,7 +7,7 @@ import Game.GameState
 import Game.Rule
 import Game.Level.Level
 import Game.Agents.AgentTypes
-import Game.Agent
+import Game.Agents.Agent
 import Game.World
 
 testRule :: Rule
@@ -30,7 +30,7 @@ _pacmanOnPacdot Agent{agentType = Pacman, position = pos} old@(lvl, inc)
     | otherwise = old
     where
         table = tiles lvl
-        tablePos = coordinateToTile table pos
+        tablePos = coordToTile table pos
         tile = table ! tablePos
         onDot = tile == TilePowerup PacDot
         makeNewLvl = lvl{tiles = set table tablePos TileEmpty}
@@ -48,6 +48,6 @@ ghostsOnPacmansRule state@GameState{world = World{agents = agnts, level = lvl}}
 _ghostOnPacman table Agent{agentType = Ghost{}, position = pos0} Agent{agentType = Pacman, position = pos1} = 
     tablePos0 == tablePos1
     where
-        tablePos0 = coordinateToTile table pos0
-        tablePos1 = coordinateToTile table pos1
+        tablePos0 = coordToTile table pos0
+        tablePos1 = coordToTile table pos1
 _ghostOnPacman _ _ _ = False

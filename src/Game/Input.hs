@@ -8,7 +8,7 @@ module Game.Input (
 
 import Prelude hiding (Left, Right)
 import Graphics.Gloss.Game(Key(..), Event(..), KeyState(..), SpecialKey(..))
-import Engine.Core.Coordinate(Direction(..))
+import Engine.Core.Base
 
     
 {- Data structures -}

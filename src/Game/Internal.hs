@@ -6,7 +6,7 @@ module Game.Internal (
     AgentBehaviour(..),
 ) where
 
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Engine.Graphics.Sprite
 import Game.Agents.AgentTypes
 import Game.Input

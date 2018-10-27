@@ -11,11 +11,11 @@ import Data.List
 import Engine.Graphics.Sprite
 import Engine.Graphics.Rendering
 import Engine.Core.Classes
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Game.Internal(World(..))
 import Game.Input
 import Game.Agents.AgentTypes
-import Game.Agent
+import Game.Agents.Agent
 import Game.Level.Level
 import Debug.Trace
 

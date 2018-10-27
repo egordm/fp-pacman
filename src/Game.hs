@@ -8,11 +8,11 @@ import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
 import Constants
 import Resources
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Game.World
 import Game.GameState
 import Game.Input
-import Game.Agent
+import Game.Agents.Agent
 import Game.Agents.Pacman
 import Game.Agents.Ghosts
 import Game.Level.Loading
@@ -22,7 +22,7 @@ import Game.SwitchRoom
 import qualified Game.Rules as Rules
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
-pacBoi1 = pacman coordinateZero (InputBehaviour (wasdInput))
+pacBoi1 = pacman coordZ (InputBehaviour (wasdInput))
 
 updateGame :: RoomUpdateFunc
 updateGame dt state@GameState{t} = update dt (t + dt) state

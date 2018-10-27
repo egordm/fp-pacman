@@ -8,7 +8,7 @@ module Engine.Graphics.Rendering (
 
 import Graphics.Gloss
 import Engine.Core.Classes
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Engine.Graphics.Sprite
 
 {- Data structures -}

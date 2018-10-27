@@ -6,9 +6,9 @@ module Game.Agents.Helpers (
     pathFindDumb
 ) where
 
-import Engine.Core.Coordinate
+import Engine.Core.Base
 import Game.Agents.AgentTypes
-import Game.Agent
+import Game.Agents.Agent
 import Game.World
 import Game.Level.Level
 import Data.List
@@ -26,7 +26,7 @@ import Debug.Trace
 
 {- Functions -}
 sortClosestAgents :: Coordinate -> [Agent] -> [Agent]
-sortClosestAgents c = sortBy (\Agent{position=p1} Agent{position=p2} -> compare (distance p1 c) (distance p2 c))
+sortClosestAgents c = sortBy (\Agent{position=p1} Agent{position=p2} -> compare (coordDist p1 c) (coordDist p2 c))
 
 
 filterAgentsByType :: AgentType -> [Agent] -> [Agent]
@@ -35,20 +35,20 @@ filterAgentsByType atype = filter (\Agent{agentType} -> atype == agentType)
 
 pathFindDumb :: Agent -> World -> Coordinate -> Direction
 pathFindDumb a@Agent{position, direction} World{level} target
-    = case rankedDirections of (r:_) -> r
-                               _     -> direction
-      where agentPos = coordinateToTile (tiles level) position
-            candidateDirections = ghostMoveDirectionCandidates level a
-            directionTargetDistance d = distance target (position + directionToCoordinate d)
-            rankedDirections = sortBy (\a b -> compare (directionTargetDistance a) (directionTargetDistance b)) candidateDirections
+    = case rankeddirs of (r:_) -> r
+                         _     -> direction
+      where agentPos = coordToTile (tiles level) position
+            candidatedirs = ghostMoveDirectionCandidates level a
+            directionTargetcoordDist d = coordDist target (position + dirToCoord d)
+            rankeddirs = sortBy (\a b -> compare (directionTargetcoordDist a) (directionTargetcoordDist b)) candidatedirs
 
 
 ghostMoveDirectionCandidates :: Level -> Agent -> [Direction]
 ghostMoveDirectionCandidates l@Level{tiles, markers} Agent{position, direction}
-  = freeDirections
-    where agentPos = coordinateToTile tiles position
-          legalDirections = filter (\d -> d /= DNone && d /= oppositeDirection direction) directions
-          freeDirections = filter (\d -> isGhostWalkablePos l (agentPos + directionToPos d)) legalDirections
+  = freedirs
+    where agentPos = coordToTile tiles position
+          legaldirs = filter (\d -> d /= DNone && d /= dirOpposite direction) dirs
+          freedirs = filter (\d -> isGhostWalkablePos l (agentPos + dirToPos d)) legaldirs
 
 isGhostWalkablePos :: Level -> Pos -> Bool
 isGhostWalkablePos Level{tiles} pos = case tiles ! pos of TileWall _ -> False
