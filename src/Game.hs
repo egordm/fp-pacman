@@ -9,17 +9,7 @@ import Graphics.Gloss.Game
 import Constants
 import Resources
 import Engine.Core.Base
-import Game.World
-import Game.GameState
-import Game.Input
-import Game.Agents.Agent
-import Game.Agents.Pacman
-import Game.Agents.Ghosts
-import Game.Level.Loading
-import Game.Room
-import Game.Context
-import Game.SwitchRoom
-import qualified Game.Rules as Rules
+import Game.Base
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordZ (InputBehaviour (wasdInput))
@@ -37,7 +27,7 @@ inputGame1 e state = input e state
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
-stdRules = [Rules.pacmansOnPacdots, Rules.ghostsOnPacmansRule]
+stdRules = [pacmansOnPacdots, ghostsOnPacmansRule]
 
 
 window :: Display

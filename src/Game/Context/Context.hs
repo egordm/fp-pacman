@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game.Context(
+module Game.Context.Context(
     Context,
     RoomCollection(..),
     RoomEntry,
@@ -10,10 +10,10 @@ module Game.Context(
 
 import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
-import Game.SwitchRoom
-import Game.GameState
-import Game.Room
-import Game.Rule
+import Game.Context.SwitchRoom
+import Game.Context.Room
+import Game.Structure.GameState
+import Game.Rules.Base
 import qualified Data.Map as Map
 import Control.Arrow
 

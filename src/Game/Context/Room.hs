@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game.Room(
+module Game.Context.Room(
     Room(..),
     RoomInputFunc,
     RoomRenderFunc,
@@ -13,8 +13,8 @@ module Game.Room(
 
 import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
-import Game.GameState
-import Game.Rule
+import Game.Structure.GameState
+import Game.Rules.Rule
 import Control.Arrow
 
 {- Data structures -}

@@ -1,21 +1,21 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game.World (
+module Game.Structure.World (
     World(..),
     Updateable(..),
     Renderable(..),
     addAgent
 ) where
 
+import Debug.Trace
 import Data.List
 import Engine.Graphics.Base
 import Engine.Core.Base
-import Game.Internal(World(..))
-import Game.Input
-import Game.Agents.AgentTypes
+import Game.Structure.Internal(World(..))
+import Game.Input.Base
 import Game.Agents.Agent
-import Game.Level.Level
-import Debug.Trace
+import Game.Agents.AgentTypes
+import Game.Level.Base
 
 {- Data structures -}
 
@@ -36,7 +36,9 @@ instance Inputable World where
                                   where nagents = map (input event) agents
 
 {- Functions -}
+-- | Adds agent to world. Also sets position based on the markers in the level
 addAgent :: Agent -> World -> World
-addAgent a@Agent{agentType} w@World{level, agents} = w{agents=nagents}
-                                             where nagents = a{position=coord}:agents
-                                                   coord = markerCoordinate (agentTypeToMarker agentType) level
+addAgent a@Agent{agentType} w@World{level, agents}
+    = w{agents=nagents}
+      where nagents = a{position=coord}:agents
+            coord = markerCoordinate (agentTypeToMarker agentType) level

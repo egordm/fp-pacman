@@ -1,4 +1,4 @@
-module Game.SwitchRoom(
+module Game.Context.SwitchRoom(
     SwitchRoomMode(..),
     SwitchRoom(..)
 ) where

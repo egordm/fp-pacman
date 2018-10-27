@@ -9,7 +9,7 @@ import Engine.Core.Base
 import Game.Agents.Helpers
 import Game.Agents.AgentTypes
 import Game.Agents.Agent
-import Game.World
+import Game.Structure.World
 import Game.Level.Level
 import Constants
 import Resources

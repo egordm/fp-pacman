@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game.Internal (
+module Game.Structure.Internal (
     World(..),
     Agent(..),
     AgentBehaviour(..),
@@ -9,8 +9,8 @@ module Game.Internal (
 import Engine.Core.Base
 import Engine.Graphics.Base
 import Game.Agents.AgentTypes
-import Game.Input
-import Game.Level.Level
+import Game.Input.Base
+import Game.Level.Base
 
 {- Data structures -}
 data World = World {

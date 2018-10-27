@@ -1,4 +1,4 @@
-module Game.Input (
+module Game.Input.Input (
     InputType(..),
     InputData(..),
     Inputable(..),
@@ -7,8 +7,9 @@ module Game.Input (
 ) where
 
 import Prelude hiding (Left, Right)
-import Graphics.Gloss.Game(Key(..), Event(..), KeyState(..), SpecialKey(..))
+import Graphics.Gloss.Game
 import Engine.Core.Base
+import Game.Input.Classes
 
     
 {- Data structures -}
@@ -17,11 +18,10 @@ data InputType = Keyboard [(Key, Direction)] deriving (Eq, Show)
 data InputData = InputData InputType Direction deriving (Eq, Show)
 
 {- Classes -}
-class Inputable a where
-    input :: Event -> a -> a
+
 
 {- Instances -}
-instance Inputable InputData where -- TODO: can be done better by storing all pressed kay and the making one from them
+instance Inputable InputData where -- TODO: can be done better by storing all pressed kays and the making one from them
     input (EventKey key state _ _) (InputData inputType@(Keyboard keyMapping) currentDirection)
         = InputData inputType newDirection
           where matchDirection = matchKey key keyMapping

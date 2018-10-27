@@ -11,10 +11,10 @@ module Game.Agents.Agent (
 import Debug.Trace
 import Engine.Core.Base
 import Engine.Graphics.Base
-import Game.Internal(Agent(..), AgentBehaviour(..), World(..))
-import Game.Input
+import Game.Structure.Internal(Agent(..), AgentBehaviour(..), World(..))
+import Game.Input.Base
+import Game.Level.Base
 import Game.Agents.AgentTypes
-import Game.Level.Level
 import Constants
 
 {- Data structures -}

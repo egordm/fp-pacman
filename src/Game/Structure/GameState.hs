@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Game.GameState (
+module Game.Structure.GameState (
     GameState(..),
     Updateable(..),
     Renderable(..),
@@ -8,12 +8,12 @@ module Game.GameState (
     makeState
 ) where
 
-import Engine.Core.Classes
-import Game.World
-import Game.Input
-import Game.Agents.Agent
 import Debug.Trace
-import Game.SwitchRoom
+import Engine.Core.Base
+import Game.Structure.World
+import Game.Input.Base
+import Game.Agents.Base
+import Game.Context.SwitchRoom
 
 {- Data structures -}
 data GameState = GameState {

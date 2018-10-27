@@ -28,32 +28,50 @@ source-repository head
 library
   exposed-modules:
       Engine.Base
+
       Engine.Core.Base
       Engine.Core.Coordinate
       Engine.Core.Direction
       Engine.Core.Position
       Engine.Core.Classes
+
       Engine.Graphics.Base
       Engine.Graphics.Animation
       Engine.Graphics.Loading
       Engine.Graphics.Rendering
       Engine.Graphics.Sprite
+
+      Game.Base
+
+      Game.Agents.Base
       Game.Agents.AgentTypes
       Game.Agents.Pacman
       Game.Agents.Ghosts
       Game.Agents.Helpers
       Game.Agents.Agent
-      Game.Internal
-      Game.Input
-      Game.GameState
-      Game.World
+
+      Game.Level.Base
       Game.Level.Level
       Game.Level.Loading
-      Game.Room
-      Game.Context
-      Game.SwitchRoom
-      Game.Rule
-      Game.Rules
+
+      Game.Input.Base
+      Game.Input.Classes
+      Game.Input.Input
+
+      Game.Rules.Base
+      Game.Rules.Rule
+      Game.Rules.Rules
+
+      Game.Context.Base
+      Game.Context.Context
+      Game.Context.Room
+      Game.Context.SwitchRoom
+
+      Game.Structure.Base
+      Game.Structure.GameState
+      Game.Structure.World
+      Game.Structure.Internal
+
       Game
       Constants
       Resources

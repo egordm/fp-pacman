@@ -1,14 +1,12 @@
-module Game.Rules (
+module Game.Rules.Rules (
     testRule, pacmansOnPacdots, ghostsOnPacmansRule
 ) where
 
-import Game.SwitchRoom
-import Game.GameState
-import Game.Rule
-import Game.Level.Level
-import Game.Agents.AgentTypes
-import Game.Agents.Agent
-import Game.World
+import Game.Context.SwitchRoom
+import Game.Structure.Base
+import Game.Rules.Rule
+import Game.Level.Base
+import Game.Agents.Base
 
 testRule :: Rule
 testRule state@GameState{t = time}
