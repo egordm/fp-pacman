@@ -11,6 +11,7 @@ module Game.Level.Level (
     tileToCoordinate,
     coordinateToTile,
     markerCoordinate,
+    markerCoordinates,
     isWall
 ) where
     
@@ -74,7 +75,11 @@ coordinateToTile (Table _ w h) c = coordinateToPos (c / fromInteger tileSize + c
 markerCoordinate :: Marker -> Level -> Coordinate
 markerCoordinate m Level{markers} = case lookup m markers of Just c -> c; Nothing -> coordinateZero
 
+markerCoordinates :: Marker -> [(Marker, Coordinate)] -> [Coordinate]
+markerCoordinates _ [] = []
+markerCoordinates m ((mo, c):ms) | mo == m   = c:(markerCoordinates m ms)
+                                 | otherwise = markerCoordinates m ms
+
 isWall :: Tile -> Bool
 isWall (TileWall _) = True
-isWall TileDoor = True
 isWall _ = False

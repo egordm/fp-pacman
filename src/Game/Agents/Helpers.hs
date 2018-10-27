@@ -11,8 +11,8 @@ import Game.Agents.AgentTypes
 import Game.Agent
 import Game.World
 import Game.Level.Level
-
 import Data.List
+import Debug.Trace
 
     
 {- Data structures -}
@@ -44,9 +44,13 @@ pathFindDumb a@Agent{position, direction} World{level} target
 
 
 ghostMoveDirectionCandidates :: Level -> Agent -> [Direction]
-ghostMoveDirectionCandidates Level{tiles} Agent{position, direction}
+ghostMoveDirectionCandidates l@Level{tiles, markers} Agent{position, direction}
   = freeDirections
-    where legalDirections = filter (\d -> d /= DNone && d /= oppositeDirection direction) directions
-          agentPos = coordinateToTile tiles position
-          freeDirections = filter (\d -> not (isWall (tiles ! (agentPos + directionToPos d)))) legalDirections
+    where agentPos = coordinateToTile tiles position
+          legalDirections = filter (\d -> d /= DNone && d /= oppositeDirection direction) directions
+          freeDirections = filter (\d -> isGhostWalkablePos l (agentPos + directionToPos d)) legalDirections
 
+isGhostWalkablePos :: Level -> Pos -> Bool
+isGhostWalkablePos Level{tiles} pos = case tiles ! pos of TileWall _ -> False
+                                                          TileMarker (Marker '9') -> False
+                                                          _ -> True

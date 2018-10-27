@@ -30,6 +30,8 @@ readRawLevel :: String -> IO [[Char]]
 readRawLevel file = do contents <- readFile file
                        return (lines contents)
 
+
+
 -- | Parses a tile from a char
 parseTile :: Char -> Tile
 parseTile char = case char of '#' -> TileWall createEmptySprite
@@ -41,8 +43,12 @@ parseTile char = case char of '#' -> TileWall createEmptySprite
                               'l' -> TileWall spriteTileSStraightL
                               'r' -> TileWall spriteTileSStraightR
                               _   -> otherTile char
-                              where otherTile c | c `elem` ['A'.. 'Z'] = TileMarker (Marker c)
+                              where otherTile c | c `elem` markerChars = TileMarker (Marker c)
                                                 | otherwise            = TileEmpty
+
+markersSingular = ['A'.. 'Z']
+markersMultiple = ['0'.. '9']
+markerChars = markersSingular ++ markersMultiple
 
 -- | Creates table from given list of lists of a type
 createTable :: [[a]] -> Table a
@@ -78,15 +84,23 @@ readLevel file = do rawLevel <- readRawLevel file
 
 -- | Reads markers from the level and averages their position of more of the same is placed.
 extractMarkers :: Table Tile -> [(Marker, Coordinate)]
-extractMarkers t@(Table vec w h) = map mergeMarkers groupedMarkerTiles
-                                   where markerTiles  = [(tileToCoordinate t (Pos x y), marker x y) | x <- [0.. w-1], y <- [0.. h-1], isMarker x y]
+extractMarkers t@(Table vec w h) = foldr (++) [] (map mergeMarkers groupedMarkerTiles)
+                                   where markerTiles  = [(marker x y, tileToCoordinate t (Pos x y)) | x <- [0.. w-1], y <- [0.. h-1], isMarker x y]
                                          isMarker x y = case (t!(Pos x y)) of TileMarker _ -> True; _ -> False
                                          marker x y = case (t!(Pos x y)) of TileMarker m -> m; _ -> Marker ' '
-                                         sortedMarkerTiles = sortBy (\a b -> compare (snd a) (snd b)) markerTiles
-                                         groupedMarkerTiles = groupBy (\a b -> snd a == snd b) sortedMarkerTiles
-                                         sumMarkers ms = foldr (\(fa, sa) (fb,_) -> (fa + fb, sa)) (coordinateZero, Marker ' ') ms
-                                         mergeMarkers ms = (snd (sumMarkers ms), fst (sumMarkers ms) / fromIntegral (length ms))
+                                         sortedMarkerTiles = sortBy (\a b -> compare (fst a) (fst b)) markerTiles
+                                         groupedMarkerTiles = groupBy (\a b -> fst a == fst b) sortedMarkerTiles
 
+-- | Averages given markers by position
+averageMarkers :: [(Marker, Coordinate)] -> (Marker, Coordinate)
+averageMarkers ms = let (m, c) = foldr (\(fa, sa) (fb, sb) -> (fa, sa + sb)) (Marker ' ', coordinateZero) ms
+                    in (m, c / fromIntegral (length ms))
+
+-- | Merges given markers if they are singular. Otherwise nothing is done
+mergeMarkers :: [(Marker, Coordinate)] -> [(Marker, Coordinate)]
+mergeMarkers [] = []
+mergeMarkers ms@((Marker m, _):_) | m `elem` markersSingular = [averageMarkers ms]
+                                  | otherwise = ms
 
 -- LEVEL DECORATION =====================================
 
