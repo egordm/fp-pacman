@@ -39,14 +39,16 @@ window = InWindow gameName (width, height) (offset, offset)
 stdFuncs :: RoomFunctions
 stdFuncs = (input, render, updateGame)
 
+stdRules = [Rules.pacmansOnPacdots, Rules.ghostsOnPacmansRule]
+
 stdPlay = play window background fps
 
 start :: IO ()
 start = do  level <- readLevel levelClassic
             let init0 = makeState level [pacBoi0, blinky, pinky]
             let init1 = makeState level [pacBoi0, pacBoi1]
-            let room0 = makeRoom init0 [Rules.pacdotsRule] (inputGame0, render, updateGame)
-            let room1 = makeRoom init1 [Rules.pacdotsRule] (inputGame1, render, updateGame)
+            let room0 = makeRoom init0 stdRules (inputGame0, render, updateGame)
+            let room1 = makeRoom init1 stdRules (inputGame1, render, updateGame)
             let rooms = RoomCollection ("a", room0) [("b", room1)]
             let context = makeContext rooms
             playFun <- playContext stdPlay context
