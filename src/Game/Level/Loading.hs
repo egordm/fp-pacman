@@ -4,7 +4,7 @@ module Game.Level.Loading (
 
 import qualified Data.Vector as Vec
 import Engine.Core.Base
-import Engine.Graphics.Sprite
+import Engine.Graphics.Base
 import Game.Level.Level
 import Resources
 import Constants

@@ -9,7 +9,7 @@ module Game.Agents.AgentTypes (
 ) where
 
 import Engine.Core.Base
-import Engine.Graphics.Sprite
+import Engine.Graphics.Base
 import Game.Level.Level(Marker(..))
 import Resources
 

@@ -1,7 +1,5 @@
 module Resources where
-
-import Engine.Graphics.Animation
-import Engine.Graphics.Loading
+import Engine.Graphics.Base
 import Constants
 
 

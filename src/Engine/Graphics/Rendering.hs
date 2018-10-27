@@ -7,7 +7,6 @@ module Engine.Graphics.Rendering (
 ) where
 
 import Graphics.Gloss
-import Engine.Core.Classes
 import Engine.Core.Base
 import Engine.Graphics.Sprite
 

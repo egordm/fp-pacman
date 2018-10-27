@@ -27,12 +27,17 @@ source-repository head
 
 library
   exposed-modules:
+      Engine.Base
+      Engine.Core.Base
+      Engine.Core.Coordinate
+      Engine.Core.Direction
+      Engine.Core.Position
+      Engine.Core.Classes
+      Engine.Graphics.Base
       Engine.Graphics.Animation
       Engine.Graphics.Loading
       Engine.Graphics.Rendering
       Engine.Graphics.Sprite
-      Engine.Core.Coordinate
-      Engine.Core.Classes
       Game.Agents.AgentTypes
       Game.Agents.Pacman
       Game.Agents.Ghosts

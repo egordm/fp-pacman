@@ -17,8 +17,7 @@ module Game.Level.Level (
     
 import Prelude hiding (length)
 import qualified Data.Vector as Vec
-import Engine.Graphics.Sprite
-import Engine.Graphics.Rendering
+import Engine.Graphics.Base
 import Engine.Core.Base
 import Resources
 import Constants

@@ -8,9 +8,7 @@ module Game.World (
 ) where
 
 import Data.List
-import Engine.Graphics.Sprite
-import Engine.Graphics.Rendering
-import Engine.Core.Classes
+import Engine.Graphics.Base
 import Engine.Core.Base
 import Game.Internal(World(..))
 import Game.Input

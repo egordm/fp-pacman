@@ -7,7 +7,7 @@ module Game.Internal (
 ) where
 
 import Engine.Core.Base
-import Engine.Graphics.Sprite
+import Engine.Graphics.Base
 import Game.Agents.AgentTypes
 import Game.Input
 import Game.Level.Level

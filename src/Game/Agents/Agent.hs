@@ -9,10 +9,8 @@ module Game.Agents.Agent (
 ) where
     
 import Debug.Trace
-import Engine.Core.Classes
 import Engine.Core.Base
-import Engine.Graphics.Rendering
-import Engine.Graphics.Sprite
+import Engine.Graphics.Base
 import Game.Internal(Agent(..), AgentBehaviour(..), World(..))
 import Game.Input
 import Game.Agents.AgentTypes
