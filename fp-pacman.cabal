@@ -63,7 +63,7 @@ library
 
       Game.Rules.Base
       Game.Rules.Rule
-      Game.Rules.Rules
+      Game.Rules.BaseRules
 
       Game.Context.Base
       Game.Context.Context
@@ -74,6 +74,7 @@ library
       Game.Structure.GameState
       Game.Structure.World
       Game.Structure.Internal
+      Game.Structure.ScoreHolder
 
       Game
       Constants

@@ -1,6 +1,8 @@
 module Game.Agents.Helpers (
     sortClosestAgents,
     filterAgentsByType,
+    filterAgentsGhost,
+    filterAgentsPacman,
     pathFindDumb
 ) where
 
@@ -30,6 +32,13 @@ sortClosestAgents c = sortBy (\Agent{position=p1} Agent{position=p2} -> compare 
 filterAgentsByType :: AgentType -> [Agent] -> [Agent]
 filterAgentsByType atype = filter (\Agent{agentType} -> atype == agentType)
 
+filterAgentsPacman :: [Agent] -> [Agent]
+filterAgentsPacman = filterAgentsByType Pacman{died=False}
+
+filterAgentsGhost :: [Agent] -> [Agent]
+filterAgentsGhost [] = []
+filterAgentsGhost (a@Agent{agentType}:as) = case agentType of Ghost{} -> a:(filterAgentsGhost as)
+                                                              _       -> filterAgentsGhost as
 
 pathFindDumb :: Agent -> World -> Coordinate -> Direction
 pathFindDumb a@Agent{position, direction} World{level} target

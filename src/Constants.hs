@@ -32,10 +32,10 @@ epsilon :: Float
 epsilon = 0.5
 
 pacmanSpeed :: Float
-pacmanSpeed = 100
+pacmanSpeed = 110
 
 ghostSpeed :: Float
-ghostSpeed = 80
+ghostSpeed = 105
 
 turnTolerance :: Float
 turnTolerance = fromInteger tileSize * 0.2

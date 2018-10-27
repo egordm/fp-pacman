@@ -34,14 +34,20 @@ agent t s b = Agent t coordZ DNone s createEmptySprite b posZ
 
 updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour, lastTurn}
-     = a{sprite=nsprite, direction=ndirection, position=sposition, lastTurn=nlastTurn}
+     = a{sprite=nsprite, direction=ndirection, position=nposition, lastTurn=nlastTurn}
        where
           desiredDirection = updateAgentDirection t world a behaviour
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
-          sposition = updateAgentPosition dt world a
+          nposition | agentAllowedMove a = updateAgentPosition dt world a
+                    | otherwise = position
           ndirection = adjustDirection desiredDirection (level world) a
           nlastTurn | direction /= ndirection && direction /= DNone = coordToTile (tiles (level world)) position
                     | otherwise = lastTurn
+
+-- | Checks whether agent can move
+agentAllowedMove :: Agent -> Bool
+agentAllowedMove Agent{agentType=Pacman{died=True}} = False
+agentAllowedMove _ = True
 
 -- | Updates agent direction if it is not none. We keep the premise of contineous movement
 updateAgentDirection :: Float -> World -> Agent -> AgentBehaviour -> Direction

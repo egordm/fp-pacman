@@ -9,6 +9,7 @@ module Game.Structure.GameState (
 import Debug.Trace
 import Engine.Core.Base
 import Game.Structure.World
+import Game.Structure.ScoreHolder
 import Game.Input.Base
 import Game.Agents.Base
 import Game.Context.SwitchRoom
@@ -16,8 +17,8 @@ import Game.Context.SwitchRoom
 {- Data structures -}
 data GameState = GameState {
                      t :: Float,
-                     score :: Int,
                      world :: World,
+                     scoreInfo :: ScoreHolder,
                      switch :: SwitchRoom
                  } deriving (Show)
 
@@ -36,6 +37,6 @@ instance Inputable GameState where
 
 {- Functions -}
 
-makeState level bois = GameState 0 0 world RoomStay
+makeState level bois = GameState 0 world scoreholder RoomStay
                        where baseWorld = World level []
                              world = foldr addAgent baseWorld bois

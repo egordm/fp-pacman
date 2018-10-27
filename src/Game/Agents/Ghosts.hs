@@ -36,7 +36,7 @@ blinkyBehaviour :: Float -> Agent -> World -> Direction
 blinkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
-      where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
+      where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             target = case pacmans of
                 (Agent{position=p}:as) -> p
                 _ -> homePosition
@@ -48,7 +48,7 @@ pinkyBehaviour :: Float -> Agent -> World -> Direction
 pinkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
-      where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
+      where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             target = case pacmans of
                 (Agent{position=p, direction=d}:as) -> p + dirToCoord d * fromInteger tileSize * 4
                 _ -> homePosition
@@ -60,7 +60,7 @@ inkyBehaviour :: Float -> Agent -> World -> Direction
 inkyBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
-      where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
+      where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             blinkies = sortClosestAgents position (filterAgentsByType (ghost Blinky coordZ) agents)
             targetFn (Agent{position=pp, direction=pd}:_) (Agent{position=bp, direction=bd}:_)
                 = (pp + dirToCoord pd * fromInteger tileSize * 2 - bp) * 2 + position
@@ -73,7 +73,7 @@ clydeBehaviour :: Float -> Agent -> World -> Direction
 clydeBehaviour t a@Agent{agentType = Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level}
     | agentPos == lastTurn = direction
     | otherwise = ndirection
-      where pacmans = sortClosestAgents position (filterAgentsByType Pacman agents)
+      where pacmans = sortClosestAgents position (filterAgentsPacman agents)
             targetFn (Agent{position=pp}:_) | coordDist position pp > fromInteger tileSize * 8 = pp
                                             | otherwise = homePosition
             targetFn _ = homePosition
