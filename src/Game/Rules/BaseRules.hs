@@ -4,7 +4,8 @@ module Game.Rules.BaseRules (
     ruleGhostCatchPacman,
     rulePacmanDiedRestart,
     rulePacmanEatGhost,
-    ruleGhostRevives
+    ruleGhostRevives,
+    ruleGhostRelease
 ) where
 
 import Debug.Trace
@@ -82,6 +83,15 @@ ruleGhostRevives :: Rule
 ruleGhostRevives s@GameState{world=w@World{agents, level}}
     = s{world=w{agents=nagents}}
       where nagents = predicateMap condition action agents
-            marker = markerCoordinate (Marker 'R') level
-            action a = a{agentType=(agentType a){died=False, scatterTicks=0}}
+            marker = markerCoordinate markerRevivalPoint level
+            action a = a{agentType=(agentType a){died=False, scatterTicks=0, caged=True}}
             condition = compoundPredicate [isGhost . agentType, died . agentType, \x -> opAgentOverlapsPos (fromInteger tileSize/4) x marker]
+
+-- | RULE -------------
+-- | If ghost is caged and pacman has eaten enough dots, the ghost will be released
+ruleGhostRelease :: Rule
+ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder{score}}
+    = s{world=w{agents=nagents}}
+      where nagents = predicateMap condition action agents
+            action a = a{agentType=(agentType a){caged=False}}
+            condition = compoundPredicate [isGhost . agentType, caged . agentType, ((>=) score) . dotsUntilRelease . agentType]

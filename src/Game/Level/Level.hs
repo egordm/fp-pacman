@@ -11,6 +11,9 @@ module Game.Level.Level (
     coordToTile,
     markerCoordinate,
     markerCoordinates,
+    markerCageCorner,
+    markerRevivalPoint,
+    markerDoor,
     isWall
 ) where
     
@@ -83,3 +86,8 @@ markerCoordinates m ((mo, c):ms) | mo == m   = c:(markerCoordinates m ms)
 isWall :: Tile -> Bool
 isWall (TileWall _) = True
 isWall _ = False
+
+markerCageCorner, markerRevivalPoint :: Marker
+markerCageCorner = Marker '6'
+markerRevivalPoint = Marker 'R'
+markerDoor = Marker '_'

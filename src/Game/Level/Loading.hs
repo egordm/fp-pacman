@@ -37,7 +37,7 @@ parseTile :: Char -> Tile
 parseTile char = case char of '#' -> TileWall createEmptySprite
                               '.' -> TilePowerup PacDot
                               '@' -> TilePowerup PowerPill
-                              '_' -> TileDoor
+                              '_' -> TileMarker (Marker '_')
                               'u' -> TileWall spriteTileSStraightU
                               'd' -> TileWall spriteTileSStraightD
                               'l' -> TileWall spriteTileSStraightL
@@ -46,7 +46,7 @@ parseTile char = case char of '#' -> TileWall createEmptySprite
                               where otherTile c | c `elem` markerChars = TileMarker (Marker c)
                                                 | otherwise            = TileEmpty
 
-markersSingular = ['A'.. 'Z']
+markersSingular = '_' : ['A'.. 'Z']
 markersMultiple = ['0'.. '9']
 markerChars = markersSingular ++ markersMultiple
 
@@ -157,8 +157,8 @@ matchWallSprite TileMatcher{none=Wall _, left = NotWall _, right = Wall _, up = 
 matchWallSprite TileMatcher{none=Wall _, left = Wall lw, right = NotWall TileEmpty, up = NotWall _, down = NotWall _, upLeft = NotWall _, downLeft = NotWall _} = lw
 matchWallSprite TileMatcher{none=Wall _, left = NotWall TileEmpty, right = Wall rw, up = NotWall _, down = NotWall _, upRight = NotWall _, downRight = NotWall _} = rw
 
-matchWallSprite TileMatcher{none=Wall _, left = Wall lw, right = NotWall TileDoor, up = NotWall _, down = NotWall _, upLeft = NotWall _, downLeft = NotWall _} = TileWall spriteTileCEndR
-matchWallSprite TileMatcher{none=Wall _, left = NotWall TileDoor, right = Wall rw, up = NotWall _, down = NotWall _, upRight = NotWall _, downRight = NotWall _} = TileWall spriteTileCEndL
+matchWallSprite TileMatcher{none=Wall _, left = Wall lw, right = NotWall (TileMarker (Marker '_')), up = NotWall _, down = NotWall _, upLeft = NotWall _, downLeft = NotWall _} = TileWall spriteTileCEndR
+matchWallSprite TileMatcher{none=Wall _, left = NotWall (TileMarker (Marker '_')), right = Wall rw, up = NotWall _, down = NotWall _, upRight = NotWall _, downRight = NotWall _} = TileWall spriteTileCEndL
 
 matchWallSprite TileMatcher{none=Wall r} = r
 matchWallSprite TileMatcher{none=NotWall r} = r

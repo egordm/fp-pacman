@@ -6,7 +6,8 @@ module Game.Agents.AgentTypes (
     agentTypeToSpeed,
     isInScatterMode,
     isGhost,
-    ghost
+    ghost,
+    ghostEmpty
 ) where
 
 import Engine.Core.Base
@@ -22,9 +23,11 @@ data AgentType = Pacman {
                    died :: Bool
                  } | Ghost {
                    ghostType :: GhostType,
+                   homePosition :: Coordinate,
+                   dotsUntilRelease :: Int,
                    scatterTicks :: Float,
                    died :: Bool,
-                   homePosition :: Coordinate
+                   caged :: Bool
                  } deriving (Show)
 
 {- Classes -}
@@ -45,8 +48,11 @@ instance Resetable AgentType where
     reset a@Ghost{} = a{died=False, scatterTicks=0}
 
 {- Functions -}
-ghost :: GhostType -> Coordinate -> AgentType
-ghost t h = Ghost t 0 False h
+ghost :: GhostType -> Coordinate -> Bool -> Int -> AgentType
+ghost t h c d = Ghost t h d 0 False c
+
+ghostEmpty :: GhostType -> AgentType
+ghostEmpty t = ghost t coordZ False 0
 
 isInScatterMode :: AgentType -> Bool
 isInScatterMode Pacman{} = False

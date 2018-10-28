@@ -79,8 +79,8 @@ updateAgentPosition dt World{level} a@Agent{agentType, position, direction, spee
 
 -- | Adjusts the desired position. If direction is obstructed, it will not be applied.
 adjustDirection :: Direction -> Level -> Agent -> Direction
-adjustDirection desiredDir level a@Agent{position, direction}
-    | (direction /= desiredDir) && not canTurn = adjustDirection direction level a{direction=DNone}
+adjustDirection desiredDir level a@Agent{agentType, position, direction}
+    | (direction /= desiredDir) && not canTurn && not ec1 = adjustDirection direction level a{direction=DNone}
     | isObstructed = adjustDirection direction level a{direction=DNone}
     | otherwise = desiredDir
       where tilePos = coordToTile (tiles level) position
@@ -89,10 +89,19 @@ adjustDirection desiredDir level a@Agent{position, direction}
             nextTileCoord = tileToCoordinate (tiles level) nextTilePos
             orthDir = dirOrh desiredDir
             -- Can turn of close enough to center of the tile
+            ec1 = edgecaseTwoFreeTilesInDir desiredDir level a
             canTurn = coordDist (coordComp orthDir nextTileCoord) (coordComp orthDir position) < turnTolerance
             -- Check whether next tile is a wall and agent is close enough to it
             nextTile = tiles level ! nextTilePos
             isObstructed = isWall nextTile && coordDist (coordComp desiredDir nextTileCoord) (coordComp desiredDir position) <= fromInteger tileSize
+
+edgecaseTwoFreeTilesInDir :: Direction -> Level -> Agent -> Bool
+edgecaseTwoFreeTilesInDir desiredDir Level{tiles} a@Agent{position}
+    = not (isWall (tiles ! neighbor1Cord)) && not (isWall (tiles ! neighbor2Cord))
+      where nextCoord = position + dirToCoord desiredDir * fromInteger tileSize
+            orthDir = dirOrh desiredDir
+            neighbor1Cord = coordToTile tiles (nextCoord + dirToCoord orthDir * 1 * fromInteger tileSize * 0.75)
+            neighbor2Cord = coordToTile tiles (nextCoord + dirToCoord orthDir * (-1) * fromInteger tileSize * 0.75)
 
 -- | Adjusts position by checking for collisions and clamping position to possible travel coordDist
 adjustCollision :: Direction -> Level -> Coordinate -> Coordinate -> Coordinate
