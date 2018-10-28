@@ -87,3 +87,5 @@ spriteTileCCornerLU        = loadStaticSpriteFile "tiles/31"
 spriteTileCCornerRU        = loadStaticSpriteFile "tiles/32"
 spriteTileCEndL            = loadStaticSpriteFile "tiles/33"
 spriteTileCEndR            = loadStaticSpriteFile "tiles/34"
+
+spriteTileDoor            = loadStaticSpriteFile "tiles/45"

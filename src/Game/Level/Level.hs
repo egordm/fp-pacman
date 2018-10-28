@@ -61,13 +61,14 @@ setl :: Level -> Pos -> Tile -> Level
 setl l@Level{tiles=t} p tile = l{tiles=set t p tile}
 
 tileToSprite :: Tile -> Sprite
-tileToSprite tile = case tile of TileEmpty               -> createEmptySprite
-                                 (TilePowerup PacDot)    -> spritePowerupPacDot
-                                 (TilePowerup PowerPill) -> spritePowerupPowerPellet
-                                 (TilePowerup Cherry)    -> spritePowerupCherry
-                                 (TileWall sprite)       -> sprite
-                                 TileDoor                -> createEmptySprite
-                                 (TileMarker _)          -> createEmptySprite
+tileToSprite tile = case tile of TileEmpty                 -> createEmptySprite
+                                 (TilePowerup PacDot)      -> spritePowerupPacDot
+                                 (TilePowerup PowerPill)   -> spritePowerupPowerPellet
+                                 (TilePowerup Cherry)      -> spritePowerupCherry
+                                 (TileWall sprite)         -> sprite
+                                 TileDoor                  -> createEmptySprite
+                                 (TileMarker (Marker '_')) -> spriteTileDoor
+                                 (TileMarker _)            -> createEmptySprite
 
 tileToCoordinate :: Table Tile -> Pos -> Coordinate
 tileToCoordinate (Table _ w h) (Pos x y) = (coord x y - coord (w-1) (h-1) / 2) * fromInteger tileSize
