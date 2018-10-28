@@ -5,6 +5,7 @@ module Game.Agents.AgentTypes (
     agentTypeToMarker,
     agentTypeToSpeed,
     isInScatterMode,
+    isGhost,
     ghost
 ) where
 
@@ -54,6 +55,10 @@ isInScatterMode Ghost{scatterTicks} = scatterTicks > 0
 agentTypeToSpeed :: AgentType -> Float -> Float
 agentTypeToSpeed at defaultSpeed | isInScatterMode at = ghostSpeedScatter
                                  | otherwise = defaultSpeed
+
+isGhost :: AgentType -> Bool
+isGhost Ghost{} = True
+isGhost _ = False
 
 agentTypeToMarker :: AgentType -> Marker
 agentTypeToMarker agent = case agent of

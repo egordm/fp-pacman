@@ -1,8 +1,9 @@
 module Game.Rules.BaseRules (
     rulePacmanDotConsume,
+    rulePacmanPowerpillConsume,
     ruleGhostCatchPacman,
     rulePacmanDiedRestart,
-    rulePacmanPowerpillConsume
+    rulePacmanEatGhost
 ) where
 
 import Debug.Trace
@@ -32,6 +33,22 @@ pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo=si}
             nscore = incrementScore si 1
 
 -- | RULE -------------
+-- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
+rulePacmanPowerpillConsume :: Rule
+rulePacmanPowerpillConsume gs@GameState{world}
+    = predicateFoldr condition pacmanPowerpillConsume gs pacmans
+      where pacmans = filterAgentsPacman (agents world)
+            condition a GameState{world} = agentOnTile a (level world) (TilePowerup PowerPill)
+
+-- | Handles consuming the powerpill, turning on scatter mode and incrementing the score
+pacmanPowerpillConsume :: Agent -> GameState -> GameState
+pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
+    = s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
+      where nlevel = setl level (agentPos a level) TileEmpty
+            nscore = incrementScore si 10
+            nagents = map (agentSetScatterTicks scatterModeDuration) (agents)
+
+-- | RULE -------------
 -- | If pacman is caught by ghost, he dies
 ruleGhostCatchPacman :: Rule
 ruleGhostCatchPacman s@GameState{world=w@World{agents}}
@@ -50,17 +67,10 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
             pacmanDied = any (\Agent{agentType, sprite} -> died agentType && animationEnded sprite) pacmans
 
 -- | RULE -------------
--- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
-rulePacmanPowerpillConsume :: Rule
-rulePacmanPowerpillConsume gs@GameState{world}
-    = predicateFoldr condition pacmanPowerpillConsume gs pacmans
-      where pacmans = filterAgentsPacman (agents world)
-            condition a GameState{world} = agentOnTile a (level world) (TilePowerup PowerPill)
-
--- | Handles consuming the powerpill, turning on scatter mode and incrementing the score
-pacmanPowerpillConsume :: Agent -> GameState -> GameState
-pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
-    = s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
-      where nlevel = setl level (agentPos a level) TileEmpty
-            nscore = incrementScore si 10
-            nagents = map (agentSetScatterTicks scatterModeDuration) (agents)
+-- | If ghost is eaten by pacman in scatter mode, ghost dies
+rulePacmanEatGhost :: Rule
+rulePacmanEatGhost s@GameState{world=w@World{agents}}
+    = s{world=w{agents=nagents}}
+      where nagents = predicateMap selectPred agentSetDied agents
+            pacmans = filterAgentsPacman agents
+            selectPred = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
