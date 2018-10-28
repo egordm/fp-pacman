@@ -53,9 +53,9 @@ pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
 ruleGhostCatchPacman :: Rule
 ruleGhostCatchPacman s@GameState{world=w@World{agents}}
     = s{world=w{agents=nagents}}
-      where nagents = predicateMap selectPred agentSetDied agents
+      where nagents = predicateMap condition agentSetDied agents
             ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
-            selectPred = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
+            condition = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
 
 -- | RULE -------------
 -- | If pacman has died and death animation has finished, game is reset
@@ -71,6 +71,6 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
 rulePacmanEatGhost :: Rule
 rulePacmanEatGhost s@GameState{world=w@World{agents}}
     = s{world=w{agents=nagents}}
-      where nagents = predicateMap selectPred agentSetDied agents
+      where nagents = predicateMap condition agentSetDied agents
             pacmans = filterAgentsPacman agents
-            selectPred = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
+            condition = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
