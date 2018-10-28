@@ -67,11 +67,12 @@ updateAgentSprite old new | old == new = old
 
 -- | Update agent position by applying movement in given direction. Also snaps agent orthogonal component to direction to the tile center
 updateAgentPosition :: Float -> World -> Agent -> Coordinate
-updateAgentPosition dt World{level} a@Agent{position, direction, speed}
+updateAgentPosition dt World{level} a@Agent{agentType, position, direction, speed}
     = wrapPosition level (position + deltaTileSnap + deltaDirection)
       where tileCoord = tileToCoordinate (tiles level) (coordToTile (tiles level) position)
             orthDir = dirOrh direction
-            deltaDesired = coordComp direction ((dirToCoord direction) * (coordf (speed * dt)))
+            desiredSpeed = agentTypeToSpeed agentType speed
+            deltaDesired = coordComp direction ((dirToCoord direction) * (coordf (desiredSpeed * dt)))
             deltaTileSnap = coordComp orthDir (tileCoord - position)
             -- Adjust for collision is agent is moving towards a wall
             deltaDirection = adjustCollision direction level position deltaDesired

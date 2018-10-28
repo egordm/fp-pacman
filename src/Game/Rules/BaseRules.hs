@@ -8,6 +8,7 @@ module Game.Rules.BaseRules (
 import Debug.Trace
 import Engine.Base
 import Game.Rules.Rule
+import Game.Rules.Helpers
 import Game.Structure.Base
 import Game.Level.Base
 import Game.Agents.Base
@@ -18,35 +19,26 @@ import Constants
 -- | RULE -------------
 -- | If pacman consumes a dot, dot disappears and score is incremented by one
 rulePacmanDotConsume :: Rule
-rulePacmanDotConsume s@GameState{world}
-    = foldr agentConsumeDot s (filterAgentsPacman (agents world))
+rulePacmanDotConsume gs@GameState{world}
+    = predicateFoldr condition pacmanDotConsume gs pacmans
+      where pacmans = filterAgentsPacman (agents world)
+            condition a GameState{world} = agentOnTile a (level world) (TilePowerup PacDot)
 
--- | Handles consuming the dot and inrementing the score
-agentConsumeDot :: Agent -> GameState -> GameState
-agentConsumeDot Agent{position} s@GameState{world=w@World{level=l}, scoreInfo=pscoreInfo}
-    | tile == TilePowerup PacDot = s{scoreInfo = incrementScore pscoreInfo 1, world = nworld}
-    | otherwise = s
-      where pos = coordToTile (tiles l) position
-            tile = tiles l ! pos
-            nworld = w{level=l{tiles = set (tiles l) pos TileEmpty}}
+-- | Handles consumption of a dot
+pacmanDotConsume :: Agent -> GameState -> GameState
+pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo=si}
+    = s{world=w{level=nlevel}, scoreInfo=nscore}
+      where nlevel = setl level (agentPos a level) TileEmpty
+            nscore = incrementScore si 1
 
 -- | RULE -------------
 -- | If pacman is caught by ghost, he dies
 ruleGhostCatchPacman :: Rule
-ruleGhostCatchPacman s@GameState{world=w@World{agents=pagents}}
+ruleGhostCatchPacman s@GameState{world=w@World{agents}}
     = s{world=w{agents=nagents}}
-      where nagents = map (pacmanCheckCaught s) pagents
-
--- | Checks if current agent is pacman and sets died to true if pacman is in the same tile as a ghost
-pacmanCheckCaught :: GameState -> Agent -> Agent
-pacmanCheckCaught s@GameState{world=w@World{level, agents}} a@Agent{agentType=at@Pacman{died=False}}
-    | isCaught = a{agentType=at{died=True}}
-    | otherwise = a
-      where ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
-            onSameTile o = coordDist (position a) (position o) < fromInteger tileSize
-            isCaught = any (\o -> onSameTile o) ghosts
-pacmanCheckCaught _ a = a
-
+      where nagents = predicateMap selectPred agentSetDied agents
+            ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
+            selectPred = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
 
 -- | RULE -------------
 -- | If pacman has died and death animation has finished, game is reset
@@ -60,15 +52,15 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
 rulePacmanPowerpillConsume :: Rule
-rulePacmanPowerpillConsume s@GameState{world}
-    = foldr agentConsumePowerpill s (filterAgentsPacman (agents world))
+rulePacmanPowerpillConsume gs@GameState{world}
+    = predicateFoldr condition pacmanPowerpillConsume gs pacmans
+      where pacmans = filterAgentsPacman (agents world)
+            condition a GameState{world} = agentOnTile a (level world) (TilePowerup PowerPill)
 
 -- | Handles consuming the powerpill, turning on scatter mode and incrementing the score
-agentConsumePowerpill :: Agent -> GameState -> GameState
-agentConsumePowerpill Agent{position} s@GameState{world=w@World{level=l}, scoreInfo=pscoreInfo}
-    | tile == TilePowerup PowerPill = s{scoreInfo = incrementScore pscoreInfo 10, world = nworld}
-    | otherwise = s
-      where pos = coordToTile (tiles l) position
-            tile = tiles l ! pos
-            nagents = map (agentSetScatterTicks scatterModeDuration) (agents w)
-            nworld = w{level=l{tiles = set (tiles l) pos TileEmpty}, agents=nagents}
+pacmanPowerpillConsume :: Agent -> GameState -> GameState
+pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
+    = s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
+      where nlevel = setl level (agentPos a level) TileEmpty
+            nscore = incrementScore si 10
+            nagents = map (agentSetScatterTicks scatterModeDuration) (agents)

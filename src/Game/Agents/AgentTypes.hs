@@ -3,6 +3,7 @@ module Game.Agents.AgentTypes (
     GhostType(..),
     agentTypeToSprite,
     agentTypeToMarker,
+    agentTypeToSpeed,
     isInScatterMode,
     ghost
 ) where
@@ -50,13 +51,18 @@ isInScatterMode :: AgentType -> Bool
 isInScatterMode Pacman{} = False
 isInScatterMode Ghost{scatterTicks} = scatterTicks > 0
 
+agentTypeToSpeed :: AgentType -> Float -> Float
+agentTypeToSpeed at defaultSpeed | isInScatterMode at = ghostSpeedScatter
+                                 | otherwise = defaultSpeed
+
 agentTypeToMarker :: AgentType -> Marker
-agentTypeToMarker agent = case agent of Pacman{}                -> Marker 'M'
-                                        Ghost{ghostType=Blinky} -> Marker 'B'
-                                        Ghost{ghostType=Pinky}  -> Marker 'P'
-                                        Ghost{ghostType=Inky}   -> Marker 'I'
-                                        Ghost{ghostType=Clyde}  -> Marker 'C'
-                                        _                       -> Marker '_'
+agentTypeToMarker agent = case agent of
+    Pacman{}                -> Marker 'M'
+    Ghost{ghostType=Blinky} -> Marker 'B'
+    Ghost{ghostType=Pinky}  -> Marker 'P'
+    Ghost{ghostType=Inky}   -> Marker 'I'
+    Ghost{ghostType=Clyde}  -> Marker 'C'
+    _                       -> Marker '_'
 
 agentTypeToSprite :: Direction -> AgentType -> Sprite
 agentTypeToSprite direction Pacman{died=True} = spritePacmanDie

@@ -6,6 +6,7 @@ module Game.Level.Level (
     Level(..),
     (!),
     set,
+    setl,
     tileToCoordinate,
     coordToTile,
     markerCoordinate,
@@ -33,7 +34,6 @@ data Level = Level {tiles :: Table Tile, markers :: [(Marker, Coordinate)]} deri
 
 {- Classes -}
 
-
 {- Instances -}
 instance Functor Table where
     fmap f (Table vec w h) = Table vecn w h where vecn = Vec.map (Vec.map f) vec
@@ -53,6 +53,9 @@ set t@(Table vec w h) (Pos x y) v
     where 
         nvec = vec Vec.// [(y, nrow)]
         nrow = (vec Vec.! y) Vec.// [(x, v)]
+
+setl :: Level -> Pos -> Tile -> Level
+setl l@Level{tiles=t} p tile = l{tiles=set t p tile}
 
 tileToSprite :: Tile -> Sprite
 tileToSprite tile = case tile of TileEmpty               -> createEmptySprite

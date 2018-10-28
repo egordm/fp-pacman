@@ -64,6 +64,7 @@ library
       Game.Rules.Base
       Game.Rules.Rule
       Game.Rules.BaseRules
+      Game.Rules.Helpers
 
       Game.Context.Base
       Game.Context.Context
