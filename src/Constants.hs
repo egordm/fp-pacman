@@ -34,9 +34,10 @@ epsilon = 0.5
 pacmanSpeed :: Float
 pacmanSpeed = 110
 
-ghostSpeed, ghostSpeedScatter :: Float
+ghostSpeed, ghostSpeedScatter, ghostSpeedDead :: Float
 ghostSpeed = 105
 ghostSpeedScatter = 60
+ghostSpeedDead = 180
 
 scatterModeDuration, scatterModeEnding :: Float
 scatterModeDuration = 7

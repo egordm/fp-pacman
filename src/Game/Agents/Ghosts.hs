@@ -39,6 +39,7 @@ clydeHome = Coordinate (-9999) (-9999)
 ghostBehaviourWrapper :: (Float -> Agent -> World -> Direction) -> Float -> Agent -> World -> Direction
 ghostBehaviourWrapper behaviour dt a@Agent{agentType=at@Ghost{homePosition}, lastTurn, direction, position} w@World{level}
     | agentPos == lastTurn = direction
+    | died at              = pathFindDumb a w (markerCoordinate (Marker 'R') level)
     | isInScatterMode at   = pathFindDumb a w homePosition
     | otherwise            = behaviour dt a w
       where agentPos = coordToTile (tiles level) position

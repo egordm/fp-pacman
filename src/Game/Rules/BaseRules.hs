@@ -3,7 +3,8 @@ module Game.Rules.BaseRules (
     rulePacmanPowerpillConsume,
     ruleGhostCatchPacman,
     rulePacmanDiedRestart,
-    rulePacmanEatGhost
+    rulePacmanEatGhost,
+    ruleGhostRevives
 ) where
 
 import Debug.Trace
@@ -53,7 +54,7 @@ pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
 ruleGhostCatchPacman :: Rule
 ruleGhostCatchPacman s@GameState{world=w@World{agents}}
     = s{world=w{agents=nagents}}
-      where nagents = predicateMap condition agentSetDied agents
+      where nagents = predicateMap condition (agentSetDied True) agents
             ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
             condition = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
 
@@ -71,6 +72,16 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
 rulePacmanEatGhost :: Rule
 rulePacmanEatGhost s@GameState{world=w@World{agents}}
     = s{world=w{agents=nagents}}
-      where nagents = predicateMap condition agentSetDied agents
+      where nagents = predicateMap condition (agentSetDied True) agents
             pacmans = filterAgentsPacman agents
             condition = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
+
+-- | RULE -------------
+-- | If ghost is dead and arrives back in the cage. Then it comes back to live
+ruleGhostRevives :: Rule
+ruleGhostRevives s@GameState{world=w@World{agents, level}}
+    = s{world=w{agents=nagents}}
+      where nagents = predicateMap condition action agents
+            marker = markerCoordinate (Marker 'R') level
+            action a = a{agentType=(agentType a){died=False, scatterTicks=0}}
+            condition = compoundPredicate [isGhost . agentType, died . agentType, \x -> opAgentOverlapsPos (fromInteger tileSize/4) x marker]

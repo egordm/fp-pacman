@@ -42,20 +42,24 @@ filterAgentsGhost (a@Agent{agentType}:as) = case agentType of Ghost{} -> a:(filt
 
 pathFindDumb :: Agent -> World -> Coordinate -> Direction
 pathFindDumb a@Agent{position, direction} World{level} target
-    = case rankeddirs of (r:_) -> r
-                         _     -> direction
+    = case rankedCandidates of
+        (r:_) -> r
+        _     -> direction
       where agentPos = coordToTile (tiles level) position
-            candidatedirs = ghostMoveDirectionCandidates level a
-            directionTargetcoordDist d = coordDist target (position + dirToCoord d)
-            rankeddirs = sortBy (\a b -> compare (directionTargetcoordDist a) (directionTargetcoordDist b)) candidatedirs
+            candidates = ghostLegalDirs level a
+            rankedCandidates = rankDirs position target candidates
 
+ghostLegalDirs :: Level -> Agent -> [Direction]
+ghostLegalDirs l a@Agent{direction} = filter (\d -> d /= dirOpposite direction) (ghostWalkableDirs l a)
 
-ghostMoveDirectionCandidates :: Level -> Agent -> [Direction]
-ghostMoveDirectionCandidates l@Level{tiles, markers} Agent{position, direction}
-  = freedirs
+ghostWalkableDirs :: Level -> Agent -> [Direction]
+ghostWalkableDirs l@Level{tiles, markers} Agent{position, direction}
+  = filter (\d -> d /= DNone && isGhostWalkablePos l (agentPos + dirToPos d)) dirs
     where agentPos = coordToTile tiles position
-          legaldirs = filter (\d -> d /= DNone && d /= dirOpposite direction) dirs
-          freedirs = filter (\d -> isGhostWalkablePos l (agentPos + dirToPos d)) legaldirs
+
+rankDirs :: Coordinate -> Coordinate -> [Direction] -> [Direction]
+rankDirs position target directions = sortBy (\a b -> compare (distToTarget a) (distToTarget b)) directions
+                                      where distToTarget d = coordDist target (position + dirToCoord d)
 
 isGhostWalkablePos :: Level -> Pos -> Bool
 isGhostWalkablePos Level{tiles} pos = case tiles ! pos of TileWall _ -> False

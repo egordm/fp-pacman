@@ -15,6 +15,9 @@ import Constants
 
 
 {- Functions -}
+opAgentOverlapsPos :: Float -> Agent -> Coordinate -> Bool
+opAgentOverlapsPos maxDist a bc = coordDist (position a) bc < maxDist
+
 onAgentsOverlap :: Float -> Agent -> Agent -> Bool
 onAgentsOverlap maxDist a b = coordDist (position a) (position b) < maxDist
 
@@ -24,8 +27,8 @@ onAgentsSameTile = onAgentsOverlap (fromInteger tileSize)
 anyAgentSameTile :: [Agent] -> Agent -> Bool
 anyAgentSameTile as a = any (==True) (map (onAgentsSameTile a) as)
 
-agentSetDied :: Agent -> Agent
-agentSetDied a = a{agentType=(agentType a){died=True}}
+agentSetDied :: Bool -> Agent -> Agent
+agentSetDied v a = a{agentType=(agentType a){died=v}}
 
 agentPos :: Agent -> Level -> Pos
 agentPos Agent{position} Level{tiles} = coordToTile tiles position
