@@ -44,6 +44,9 @@ spriteEyesRight   = loadStaticSprite "ghosts/eyes/right"
 spriteScatter  = loadAnimatedSprite "ghosts/scatter" 1 Repeating spriteInterval
 spriteScatterEnding  = loadAnimatedSprite "ghosts/scatter" 3 Repeating spriteInterval
 
+spriteFont = frames (loadAnimatedSprite "font" 40 Repeating spriteInterval)
+fontMapping = ['A'.. 'Z'] ++ "'c" ++ ['0'..'9'] ++ "/-" ++ ['"']
+
 -- Powerups
 spritePowerupPacDot      = loadStaticSpriteFile "powerups/pacdot"
 spritePowerupPowerPellet = loadStaticSpriteFile "powerups/power_pellet"

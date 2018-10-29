@@ -57,3 +57,5 @@ scorePacdot = 10
 scorePowerpill = 20
 scoreEatGhost = 100
 scoreEatCherry = 200
+
+fontSize =  floor (8 * spriteScale)

@@ -46,6 +46,9 @@ library
 
       Game.Base
 
+      Game.Graphics.Base
+      Game.Graphics.Text
+
       Game.Agents.Base
       Game.Agents.AgentTypes
       Game.Agents.Pacman
