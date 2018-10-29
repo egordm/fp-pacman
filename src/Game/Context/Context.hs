@@ -53,7 +53,6 @@ instance BaseUpdateable Context where
                               ReloadRoom -> initState
                       in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
 
-
 {- Functions -}
 makeContext :: RoomCollection -> Context
 makeContext (RoomCollection first@(name,start) others) = Context start name roomMap

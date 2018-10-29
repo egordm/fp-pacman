@@ -27,8 +27,8 @@ instance Updateable World where
     update dt t w@World{agents} = w{agents=nagents}
                                   where nagents = map (updateAgent dt t w) agents
 
-instance Renderable World where
-    render World{agents, level} = renderInstructions (levelDrawings ++ agentDrawings)
+instance Drawable World where
+    draw World{agents, level} = levelDrawings ++ agentDrawings
                                   where agentDrawings = concatMap draw agents
                                         levelDrawings = draw level
 

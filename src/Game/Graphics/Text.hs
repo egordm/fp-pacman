@@ -17,8 +17,8 @@ data FontString = FontString [Char] Coordinate
 
 {- Instances -}
 
-instance Renderable FontString where
-    render (FontString string coor) = renderInstructions $ putInDraws string coor
+instance Drawable FontString where
+    draw (FontString string coor) = putInDraws string coor
 
 {- Functions -}
 putInDraws :: [Char] -> Coordinate -> [DrawInstruction]

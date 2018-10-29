@@ -29,8 +29,8 @@ data GameState = GameState {
 instance Updateable GameState where
     update dt nt s@GameState{t=pt, world=pworld} = s{t=nt, world=update dt nt pworld}
 
-instance Renderable GameState where
-    render GameState{world=world} = render world
+instance Drawable GameState where
+    draw GameState{world=world} = draw world
 
 instance Inputable GameState where
     input event s@GameState{world=pworld} = s{world=input event pworld}
