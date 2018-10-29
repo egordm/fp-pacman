@@ -51,3 +51,9 @@ tileSize = floor (8 * spriteScale)
 
 liveCount :: Int
 liveCount = 3
+
+scorePacdot, scorePowerpill, scoreEatGhost, scoreEatCherry :: Int
+scorePacdot = 10
+scorePowerpill = 20
+scoreEatGhost = 100
+scoreEatCherry = 200

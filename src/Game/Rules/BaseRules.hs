@@ -29,10 +29,10 @@ rulePacmanDotConsume gs@GameState{world}
 
 -- | Handles consumption of a dot
 pacmanDotConsume :: Agent -> GameState -> GameState
-pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo=si}
+pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
     = s{world=w{level=nlevel}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
-            nscore = incrementScore si 1
+            nscore = incrementScore scoreInfo scorePacdot
 
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
@@ -44,10 +44,10 @@ rulePacmanPowerpillConsume gs@GameState{world}
 
 -- | Handles consuming the powerpill, turning on scatter mode and incrementing the score
 pacmanPowerpillConsume :: Agent -> GameState -> GameState
-pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo=si}
+pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo}
     = s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
-            nscore = incrementScore si 10
+            nscore = incrementScore scoreInfo scorePacdot
             nagents = map (agentSetScatterTicks scatterModeDuration) (agents)
 
 -- | RULE -------------
@@ -63,7 +63,7 @@ ruleGhostCatchPacman s@GameState{world=w@World{agents}}
 -- | If pacman has died and death animation has finished, game is reset
 rulePacmanDiedRestart :: Rule
 rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscoreInfo}
-    | pacmanDied = reset s{scoreInfo = decrementLife pscoreInfo}
+    | pacmanDied = reset s{scoreInfo = decrementLife pscoreInfo} -- IF lives < 0 just gameover
     | otherwise = s
       where pacmans = filterAgentsPacman pagents
             pacmanDied = any (\Agent{agentType, sprite} -> died agentType && animationEnded sprite) pacmans
