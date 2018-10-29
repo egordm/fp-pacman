@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game.Level.Level (
     Powerup(..),
     Tile(..),

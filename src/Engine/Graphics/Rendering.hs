@@ -24,8 +24,3 @@ instance Renderable DrawInstruction where
 {- Functions -}
 renderInstructions :: [DrawInstruction] -> Picture
 renderInstructions instructions = pictures (map render instructions)
-
-
-
-
-

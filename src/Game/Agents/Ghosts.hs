@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Game.Agents.Ghosts (
     blinky, pinky, inky, clyde
 ) where

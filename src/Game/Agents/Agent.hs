@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Game.Agents.Agent (
     Agent(..),
     Drawable(..),

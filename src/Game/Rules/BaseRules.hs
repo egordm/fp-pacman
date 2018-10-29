@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Game.Rules.BaseRules (
     rulePacmanDotConsume,
     rulePacmanPowerpillConsume,

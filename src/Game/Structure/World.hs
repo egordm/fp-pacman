@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Game.Structure.World (
     World(..),
     Updateable(..),

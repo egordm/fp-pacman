@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Game.Agents.AgentTypes (
     AgentType(..),
     GhostType(..),
