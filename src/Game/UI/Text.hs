@@ -7,7 +7,7 @@ import Engine.Base
 import Constants
 import Resources
 import Data.List
-    
+
 {- Data structures -}
 data FontString = FontString [Char] Coordinate
 

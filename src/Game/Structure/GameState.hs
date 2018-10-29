@@ -30,7 +30,7 @@ instance Updateable GameState where
     update dt nt s@GameState{t=pt, world=pworld} = s{t=nt, world=update dt nt pworld}
 
 instance Drawable GameState where
-    draw GameState{world=world} = draw world
+    draw GameState{world, scoreInfo} = draw world ++ draw scoreInfo
 
 instance Inputable GameState where
     input event s@GameState{world=pworld} = s{world=input event pworld}

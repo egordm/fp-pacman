@@ -6,6 +6,8 @@ module Game.Structure.ScoreHolder (
 ) where
 
 import Constants
+import Engine.Base
+import Game.UI.Base
 
 {- Data structures -}
 data ScoreHolder = ScoreHolder {
@@ -17,7 +19,11 @@ data ScoreHolder = ScoreHolder {
 
 
 {- Instances -}
-
+instance Drawable ScoreHolder where
+    draw ScoreHolder{score = sc, lives = lv} = draw $ FontString msg coor
+        where
+            msg = "score - " ++ show sc ++ "    lives - " ++ show lv
+            coor = (Coordinate (fromIntegral((-width)`div`2)) (fromIntegral((-height)`div`2)) + 20)
 
 {- Functions -}
 scoreholder :: ScoreHolder
