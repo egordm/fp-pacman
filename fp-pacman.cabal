@@ -46,8 +46,8 @@ library
 
       Game.Base
 
-      Game.Graphics.Base
-      Game.Graphics.Text
+      Game.UI.Base
+      Game.UI.Text
 
       Game.Agents.Base
       Game.Agents.AgentTypes

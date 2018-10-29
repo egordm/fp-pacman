@@ -1,4 +1,4 @@
-module Game.Graphics.Text (
+module Game.UI.Text (
     FontString(..),
     putInDraws
 ) where

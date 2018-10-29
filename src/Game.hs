@@ -9,7 +9,7 @@ import Constants
 import Resources
 import Engine.Core.Base
 import Game.Base
-import Game.Graphics.Text
+import Game.UI.Text
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordZ (InputBehaviour (wasdInput))
