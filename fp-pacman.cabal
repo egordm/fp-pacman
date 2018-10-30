@@ -38,6 +38,10 @@ library
       Engine.Core.Position
       Engine.Core.Classes
 
+      Engine.Audio.Base
+      Engine.Audio.Loading
+      Engine.Audio.Sound
+
       Engine.Graphics.Base
       Engine.Graphics.Animation
       Engine.Graphics.Loading

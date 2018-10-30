@@ -1,10 +1,12 @@
 module Resources where
 import Engine.Graphics.Base
+import Engine.Audio.Base
 import Constants
 
-
+-- Levels
 levelClassic = resourceDir ++ "levels/classic.txt"
 
+-- Sprites
 spritePacmanDie   = loadAnimatedSprite "pacman/die" 11 Single spriteInterval
 spritePacmanStill = loadStaticSprite "pacman/up"
 spritePacmanUp    = loadAnimatedSprite "pacman/up" 2 Repeating spriteInterval
@@ -92,3 +94,49 @@ spriteTileCEndL            = loadStaticSpriteFile "tiles/33"
 spriteTileCEndR            = loadStaticSpriteFile "tiles/34"
 
 spriteTileDoor            = loadStaticSpriteFile "tiles/45"
+
+-- Audio
+data Sounds = Sounds {
+                soundDeath1 :: Sound,
+                soundDeath2 :: Sound,
+                soundDeath3 :: Sound,
+                soundExtraMan :: Sound,
+                soundFruit :: Sound,
+                soundGhostEat1 :: Sound,
+                soundGhostEat2 :: Sound,
+                soundGhostEat3 :: Sound,
+                soundInsertCoin :: Sound,
+                soundIntermission :: Sound,
+                soundIntro :: Sound,
+                soundLargePelletBlip :: Sound,
+                soundLargePelletLoop :: Sound,
+                soundMunchA :: Sound,
+                soundMunchB :: Sound,
+                soundSirenFast :: Sound,
+                soundSirenMedium :: Sound,
+                soundSirenSlow :: Sound
+              }
+
+loadSounds :: IO Sounds
+loadSounds = do
+    soundDeath1          <- loadSound "sounds/death_1"
+    soundDeath2          <- loadSound "sounds/death_2"
+    soundDeath3          <- loadSound "sounds/death_3"
+    soundExtraMan        <- loadSound "sounds/extra_man"
+    soundFruit           <- loadSound "sounds/fruit"
+    soundGhostEat1       <- loadSound "sounds/ghost_eat_1"
+    soundGhostEat2       <- loadSound "sounds/ghost_eat_2"
+    soundGhostEat3       <- loadSound "sounds/ghost_eat_3"
+    soundInsertCoin      <- loadSound "sounds/insert_coin"
+    soundIntermission    <- loadSound "sounds/intermission"
+    soundIntro           <- loadSound "sounds/intro"
+    soundLargePelletBlip <- loadSound "sounds/large_pellet_blip"
+    soundLargePelletLoop <- loadSound "sounds/large_pellet_loop"
+    soundMunchA          <- loadSound "sounds/munch_a"
+    soundMunchB          <- loadSound "sounds/munch_b"
+    soundSirenFast       <- loadSound "sounds/siren_fast"
+    soundSirenMedium     <- loadSound "sounds/siren_medium"
+    soundSirenSlow       <- loadSound "sounds/siren_slow"
+    return (Sounds soundDeath1 soundDeath2 soundDeath3 soundExtraMan soundFruit soundGhostEat1 soundGhostEat2
+      soundGhostEat3 soundInsertCoin soundIntermission soundIntro soundLargePelletBlip soundLargePelletLoop soundMunchA
+      soundMunchB soundSirenFast soundSirenMedium soundSirenSlow)
