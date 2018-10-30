@@ -15,14 +15,15 @@ import Game.Structure.GameState
 import Game.Rules.Base
 import Game.Input.Base
 import qualified Data.Map as Map
-import Control.Arrow
+import Resources
 
 {- Data structures -}
 
 data Context = Context {
     room :: Room,
     roomName :: String,
-    rooms :: Map.Map String Room
+    rooms :: Map.Map String Room,
+    sounds :: Sounds
 }
 
 type RoomEntry = (String, Room)
@@ -52,10 +53,20 @@ instance BaseUpdateable Context where
                       in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
 
 {- Functions -}
-makeContext :: RoomCollection -> Context
-makeContext (RoomCollection first@(name,start) others) = Context start name roomMap
-    where
-        roomMap = Map.fromList $ first:others
+makeContext :: RoomCollection -> Sounds -> Context
+makeContext (RoomCollection first@(name,start) others) sounds = Context start name roomMap sounds
+    where roomMap = Map.fromList $ first:others
 
-playContext f context@Context{room,rooms} = 
-    f context render input [baseUpdate]
+-- IO Wrapping
+inputIO :: Event -> Context -> IO Context
+inputIO e c = return (input e c)
+
+renderIO :: Context -> IO Picture
+renderIO c = return (render c)
+
+updateIO :: Float -> Context -> IO Context
+updateIO dt c = do
+                  let bc = baseUpdate dt c
+                  return bc
+
+playContext playFn context@Context{room,rooms} = playFn context renderIO inputIO updateIO

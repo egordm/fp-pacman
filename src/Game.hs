@@ -4,11 +4,13 @@ module Game (
 
 import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
+import Graphics.Gloss.Interface.IO.Game
+import qualified SDL
+import qualified SDL.Mixer as Mix
 import Constants
 import Resources
-import Engine.Core.Base
+import Engine.Base
 import Game.Base
-import Game.UI.Text
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordZ (InputBehaviour (wasdInput))
@@ -27,15 +29,20 @@ stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, r
 window :: Display
 window = InWindow gameName (width, height) (offset, offset)
 
-stdPlay = play window background fps
+playFn = playIO window background fps
 
 start :: IO ()
-start = do  level <- readLevel levelClassic
-            let init0 = makeState level [pacBoi0, blinky, pinky, inky, clyde]
-            let init1 = makeState level [pacBoi0, pacBoi1]
-            let room0 = makeRoom init0 stdRules (inputGame0, updateGame)
-            let room1 = makeRoom init1 stdRules (inputGame1, updateGame)
-            let rooms = RoomCollection ("a", room0) [("b", room1)]
-            let context = makeContext rooms
-            playFun <- playContext stdPlay context
-            return playFun
+start = do
+    level <- readLevel levelClassic
+    let init0 = makeState level [pacBoi0, blinky, pinky, inky, clyde]
+    let init1 = makeState level [pacBoi0, pacBoi1]
+    let room0 = makeRoom init0 stdRules (inputGame0, updateGame)
+    let room1 = makeRoom init1 stdRules (inputGame1, updateGame)
+    let rooms = RoomCollection ("a", room0) [("b", room1)]
+
+    SDL.initialize [SDL.InitAudio]
+    let chunkSz = 256 in Mix.withAudio Mix.defaultAudio chunkSz $ do
+        sounds <- loadSounds
+        let context = makeContext rooms sounds
+        playContext playFn context
+    SDL.quit
