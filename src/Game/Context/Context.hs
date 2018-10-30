@@ -52,6 +52,9 @@ instance BaseUpdateable Context where
                               ReloadRoom -> initState
                       in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
 
+instance Soundable Context where
+    doSound c = [SoundInstruction PlayIfEnded playForever soundSirenSlow]
+
 {- Functions -}
 makeContext :: RoomCollection -> Sounds -> Context
 makeContext (RoomCollection first@(name,start) others) sounds = Context start name roomMap sounds
@@ -67,6 +70,7 @@ renderIO c = return (render c)
 updateIO :: Float -> Context -> IO Context
 updateIO dt c = do
                   let bc = baseUpdate dt c
+                  playSoundInstructions (sounds bc) (doSound bc)
                   return bc
 
 playContext playFn context@Context{room,rooms} = playFn context renderIO inputIO updateIO

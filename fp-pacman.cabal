@@ -41,6 +41,7 @@ library
       Engine.Audio.Base
       Engine.Audio.Loading
       Engine.Audio.Sound
+      Engine.Audio.Playback
 
       Engine.Graphics.Base
       Engine.Graphics.Animation

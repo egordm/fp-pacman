@@ -18,5 +18,7 @@ import Constants
 
 
 {- Functions -}
-loadSound :: String -> IO Sound
-loadSound identifier = (Mix.load (resourceDir ++ identifier ++ ".wav"))
+loadSound :: String -> Integer -> Integer -> IO Sound
+loadSound identifier channel volume = do
+    snd <- Mix.load (resourceDir ++ identifier ++ ".wav")
+    return $ Sound snd channel volume

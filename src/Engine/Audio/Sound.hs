@@ -1,5 +1,5 @@
 module Engine.Audio.Sound (
-  Sound
+  Sound(..)
 ) where
     
 import qualified SDL
@@ -7,7 +7,12 @@ import qualified SDL.Mixer as Mix
 
     
 {- Data structures -}
-type Sound = Mix.Chunk
+data Sound = Sound {
+                signal :: Mix.Chunk,
+                channel :: Integer,
+                volume :: Integer
+             }
+
 
 
 {- Classes -}
@@ -17,4 +22,3 @@ type Sound = Mix.Chunk
 
 
 {- Functions -}
-
