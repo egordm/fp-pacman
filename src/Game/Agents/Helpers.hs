@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Game.Agents.Helpers (
     sortClosestAgents,
     filterAgentsByType,

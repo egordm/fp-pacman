@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Game.Context.Context(
     Context,
     RoomCollection(..),

@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Engine.Graphics.Sprite (
     Sprite(..),
     Renderable(..),
