@@ -17,6 +17,8 @@ import Game.Level.Base
 import Game.Agents.Base
 import Game.Context.SwitchRoom
 import Constants
+import Resources
+
 
 {- Functions -}
 -- | RULE -------------
@@ -30,9 +32,10 @@ rulePacmanDotConsume gs@GameState{world}
 -- | Handles consumption of a dot
 pacmanDotConsume :: Agent -> GameState -> GameState
 pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
-    = s{world=w{level=nlevel}, scoreInfo=nscore}
+    = eatSound s{world=w{level=nlevel}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
             nscore = incrementScore scoreInfo scorePacdot
+            eatSound = addSound PlayForce playOnce soundMunchA
 
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks

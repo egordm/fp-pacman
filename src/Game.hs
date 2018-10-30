@@ -34,8 +34,8 @@ playFn = playIO window background fps
 start :: IO ()
 start = do
     level <- readLevel levelClassic
-    let init0 = makeState level [pacBoi0, blinky, pinky, inky, clyde]
-    let init1 = makeState level [pacBoi0, pacBoi1]
+    let init0 = gamestate level [pacBoi0, blinky, pinky, inky, clyde]
+    let init1 = gamestate level [pacBoi0, pacBoi1]
     let room0 = makeRoom init0 stdRules (inputGame0, updateGame)
     let room1 = makeRoom init1 stdRules (inputGame1, updateGame)
     let rooms = RoomCollection ("a", room0) [("b", room1)]

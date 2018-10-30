@@ -18,7 +18,7 @@ import Resources
 {- Data structures -}
 type SoundCall = (Sounds -> Sound)
 
-data PlayAction = PlayIfEnded | PlayForce | Stop
+data PlayAction = PlayIfEnded | PlayForce | Stop deriving (Eq, Show)
 
 type PlayRepeat = Mix.Times
 
@@ -29,7 +29,8 @@ class Soundable a where
     doSound :: a -> [SoundInstruction]
 
 {- Instances -}
-
+instance Show SoundInstruction where
+    show (SoundInstruction action repeat _) = "SoundInstruction(" ++ show action ++ ")"
 
 {- Functions -}
 playSoundInstructions :: Sounds -> [SoundInstruction] -> IO ()

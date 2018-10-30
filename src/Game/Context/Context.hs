@@ -53,7 +53,7 @@ instance BaseUpdateable Context where
                       in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
 
 instance Soundable Context where
-    doSound c = [SoundInstruction PlayIfEnded playForever soundSirenSlow]
+    doSound Context{room} = doSound room
 
 {- Functions -}
 makeContext :: RoomCollection -> Sounds -> Context

@@ -13,7 +13,6 @@ import Graphics.Gloss.Game
 import Engine.Base
 import Game.Structure.GameState
 import Game.Rules.Rule
-import Engine.Graphics.Rendering
 
 {- Data structures -}
 data Room = Room {
@@ -38,6 +37,9 @@ instance Renderable Room where
 
 instance BaseUpdateable Room where
     baseUpdate dt r@Room{rules, rUpdate, state} = r{state=nstate} where nstate = applyRules rules $ rUpdate dt state
+
+instance Soundable Room where
+    doSound Room{state} = doSound state
 
 {- Functions -}
 makeRoom :: GameState -> [Rule] -> RoomFunctions -> Room
