@@ -24,7 +24,8 @@ inputGame0 e state = input e state
 inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "a" ResumeRoom}
 inputGame1 e state = input e state
 
-stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume, rulePacmanEatGhost, ruleGhostRevives, ruleGhostRelease]
+stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume,
+  rulePacmanEatGhost, ruleGhostRevives, ruleGhostRelease, ruleBackgroundSound]
 
 window :: Display
 window = InWindow gameName (width, height) (offset, offset)

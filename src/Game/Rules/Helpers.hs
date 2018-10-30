@@ -3,7 +3,9 @@ module Game.Rules.Helpers where
 import Engine.Base
 import Game.Agents.Base
 import Game.Level.Base
+import Game.Structure.Base
 import Constants
+import Resources
 
 {- Data structures -}
 
@@ -36,6 +38,8 @@ agentPos Agent{position} Level{tiles} = coordToTile tiles position
 agentOnTile :: Agent -> Level -> Tile -> Bool
 agentOnTile a l t = tiles l ! agentPos a l == t
 
+stopBackgroundSound :: GameState -> GameState
+stopBackgroundSound s = addSound Stop playForever soundSirenSlow s
 
 
 predicateMap :: (a -> Bool) -> (a -> a) -> [a] -> [a]

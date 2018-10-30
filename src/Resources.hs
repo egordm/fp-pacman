@@ -120,9 +120,9 @@ data Sounds = Sounds {
 
 loadSounds :: IO Sounds
 loadSounds = do
-    soundDeath1          <- loadSound "sounds/death_1" 0 100
-    soundDeath2          <- loadSound "sounds/death_2" 0 100
-    soundDeath3          <- loadSound "sounds/death_3" 0 100
+    soundDeath1          <- loadSound "sounds/death_1" 4 100
+    soundDeath2          <- loadSound "sounds/death_2" 4 100
+    soundDeath3          <- loadSound "sounds/death_3" 4 100
     soundExtraMan        <- loadSound "sounds/extra_man" 3 100
     soundFruit           <- loadSound "sounds/fruit" 1 100
     soundGhostEat1       <- loadSound "sounds/ghost_eat_1" 2 100
@@ -132,12 +132,12 @@ loadSounds = do
     soundIntermission    <- loadSound "sounds/intermission" 4 100
     soundIntro           <- loadSound "sounds/intro" 4 100
     soundLargePelletBlip <- loadSound "sounds/large_pellet_blip" 5 100
-    soundLargePelletLoop <- loadSound "sounds/large_pellet_loop" 5 100
+    soundLargePelletLoop <- loadSound "sounds/large_pellet_loop" 4 100
     soundMunchA          <- loadSound "sounds/munch_a" 5 100
     soundMunchB          <- loadSound "sounds/munch_b" 5 100
-    soundSirenFast       <- loadSound "sounds/siren_fast" 6 100
-    soundSirenMedium     <- loadSound "sounds/siren_medium" 6 100
-    soundSirenSlow       <- loadSound "sounds/siren_slow" 6 100
+    soundSirenFast       <- loadSound "sounds/siren_fast" 4 100
+    soundSirenMedium     <- loadSound "sounds/siren_medium" 4 100
+    soundSirenSlow       <- loadSound "sounds/siren_slow" 4 100
     return (Sounds soundDeath1 soundDeath2 soundDeath3 soundExtraMan soundFruit soundGhostEat1 soundGhostEat2
       soundGhostEat3 soundInsertCoin soundIntermission soundIntro soundLargePelletBlip soundLargePelletLoop soundMunchA
       soundMunchB soundSirenFast soundSirenMedium soundSirenSlow)

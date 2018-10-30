@@ -1,10 +1,12 @@
 module Game.Structure.GameState (
     GameState(..),
+    BackgroundSound(..),
     Updateable(..),
     Renderable(..),
     Inputable(..),
     gamestate,
-    addSound
+    addSound,
+    addEffect
 ) where
 
 import Debug.Trace
@@ -22,8 +24,11 @@ data GameState = GameState {
                      world :: World,
                      scoreInfo :: ScoreHolder,
                      switch :: SwitchRoom,
-                     soundInstructions :: [SoundInstruction]
+                     soundInstructions :: [SoundInstruction],
+                     bgSound :: BackgroundSound
                  } deriving (Show)
+
+data BackgroundSound = None | Intro | ScatterMode | SirenSlow | SirenMedium | SirenFast | DeathSound deriving (Show, Eq)
 
 {- Classes -}
 
@@ -45,10 +50,14 @@ instance Soundable GameState where
     doSound GameState{soundInstructions} = soundInstructions
 
 {- Functions -}
-gamestate level bois = GameState 0 world scoreholder RoomStay []
+gamestate level bois = GameState 0 world scoreholder RoomStay [] None
                        where baseWorld = World level []
                              world = addAgents bois baseWorld
 
 addSound :: PlayAction -> PlayRepeat -> SoundCall -> GameState -> GameState
 addSound action repeat soundCall state
     = state{soundInstructions=SoundInstruction action repeat soundCall : soundInstructions state}
+
+addEffect :: SoundCall -> GameState -> GameState
+addEffect soundCall state
+    = state{soundInstructions=SoundInstruction PlayForce playOnce soundCall : soundInstructions state}

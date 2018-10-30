@@ -5,7 +5,8 @@ module Game.Rules.BaseRules (
     rulePacmanDiedRestart,
     rulePacmanEatGhost,
     ruleGhostRevives,
-    ruleGhostRelease
+    ruleGhostRelease,
+    ruleBackgroundSound
 ) where
 
 import Debug.Trace
@@ -24,18 +25,17 @@ import Resources
 -- | RULE -------------
 -- | If pacman consumes a dot, dot disappears and score is incremented by one
 rulePacmanDotConsume :: Rule
-rulePacmanDotConsume gs@GameState{world}
-    = predicateFoldr condition pacmanDotConsume gs pacmans
+rulePacmanDotConsume s@GameState{world}
+    = predicateFoldr condition pacmanDotConsume s pacmans
       where pacmans = filterAgentsPacman (agents world)
             condition a GameState{world} = agentOnTile a (level world) (TilePowerup PacDot)
 
 -- | Handles consumption of a dot
 pacmanDotConsume :: Agent -> GameState -> GameState
 pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
-    = eatSound s{world=w{level=nlevel}, scoreInfo=nscore}
+    = addEffect soundMunchA s{world=w{level=nlevel}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
             nscore = incrementScore scoreInfo scorePacdot
-            eatSound = addSound PlayForce playOnce soundMunchA
 
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
@@ -48,7 +48,7 @@ rulePacmanPowerpillConsume gs@GameState{world}
 -- | Handles consuming the powerpill, turning on scatter mode and incrementing the score
 pacmanPowerpillConsume :: Agent -> GameState -> GameState
 pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo}
-    = s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
+    = addEffect soundMunchB s{world=w{level=nlevel, agents=nagents}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
             nscore = incrementScore scoreInfo scorePacdot
             nagents = map (agentSetScatterTicks scatterModeDuration) (agents)
@@ -56,11 +56,18 @@ pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo}
 -- | RULE -------------
 -- | If pacman is caught by ghost, he dies
 ruleGhostCatchPacman :: Rule
-ruleGhostCatchPacman s@GameState{world=w@World{agents}}
-    = s{world=w{agents=nagents}}
+ruleGhostCatchPacman s@GameState{world=w@World{agents}, scoreInfo}
+    = nstate{world=w{agents=nagents}}
       where nagents = predicateMap condition (agentSetDied True) agents
             ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
             condition = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
+            nstate = predicateFoldr (\a gs -> condition a) addSoundEffect s agents
+            addSoundEffect a gs = setBackgroundSound DeathSound playOnce (pacmanDiedSound (lives scoreInfo)) gs
+
+pacmanDiedSound :: Int -> SoundCall
+pacmanDiedSound livesLeft = case livesLeft of
+    1 -> soundDeath2
+    _ -> soundDeath1
 
 -- | RULE -------------
 -- | If pacman has died and death animation has finished, game is reset
@@ -75,10 +82,12 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
 -- | If ghost is eaten by pacman in scatter mode, ghost dies
 rulePacmanEatGhost :: Rule
 rulePacmanEatGhost s@GameState{world=w@World{agents}}
-    = s{world=w{agents=nagents}}
+    = nstate{world=w{agents=nagents}}
       where nagents = predicateMap condition (agentSetDied True) agents
             pacmans = filterAgentsPacman agents
             condition = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
+            nstate = predicateFoldr (\a gs -> condition a) addSoundEffect s agents
+            addSoundEffect a gs = addEffect soundGhostEat2 gs
 
 -- | RULE -------------
 -- | If ghost is dead and arrives back in the cage. Then it comes back to live
@@ -98,3 +107,25 @@ ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder
       where nagents = predicateMap condition action agents
             action a = a{agentType=(agentType a){caged=False}}
             condition = compoundPredicate [isGhost . agentType, caged . agentType, ((>=) score) . dotsUntilRelease . agentType]
+
+
+-- | RULE SORTOF -------------
+-- | Plays the appropriate background audio
+ruleBackgroundSound :: Rule
+ruleBackgroundSound s@GameState{t, world=w@World{agents, level}, scoreInfo}
+    | t < 3 = setBackgroundSound Intro playOnce soundIntro s
+    | isScatterMode = setBackgroundSound ScatterMode playForever soundLargePelletLoop s
+    | not isPacmanDead && score scoreInfo > 1500 = setBackgroundSound SirenSlow playForever soundSirenFast s
+    | not isPacmanDead && score scoreInfo > 600 = setBackgroundSound SirenSlow playForever soundSirenMedium s
+    | not isPacmanDead = setBackgroundSound SirenSlow playForever soundSirenSlow s
+    | otherwise = s
+      where isPacmanDead = any (died . agentType) (filterAgentsPacman agents)
+            isScatterMode = any (((<) 0) . scatterTicks . agentType) (filterAgentsGhost agents)
+
+
+setBackgroundSound :: BackgroundSound -> PlayRepeat -> SoundCall -> GameState -> GameState
+setBackgroundSound soundType repeat soundCall s@GameState{bgSound}
+    | bgSound == soundType = startBgNonIntrusive s
+    | bgSound == Intro || bgSound == DeathSound = startBgNonIntrusive s{bgSound=soundType}
+    | otherwise = stopBackgroundSound $ startBgNonIntrusive s{bgSound=soundType}
+      where startBgNonIntrusive = addSound PlayIfEnded repeat soundCall
