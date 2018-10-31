@@ -1,6 +1,7 @@
 module Game.UI.Text (
     FontString(..),
-    putInDraws
+    putInDraws,
+    textDimensions
 ) where
 
 import Engine.Base
@@ -31,3 +32,8 @@ charToSprite c = case charIdx of
     (Just i) -> spriteFont !! i
     Nothing -> createEmptySprite
     where charIdx = elemIndex c fontMapping
+
+textDimensions :: String -> (Float, Float)
+textDimensions string = (charSize * fromIntegral (length string), charSize)
+    where
+        charSize = 8 * spriteScale

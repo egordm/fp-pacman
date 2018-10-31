@@ -40,7 +40,7 @@ start = do
     let init1 = gamestate level [pacBoi0, pacBoi1]
     let room0 = makeRoom init0 stdRules (inputGame0, updateGame)
     let room1 = makeRoom init1 stdRules (inputGame1, updateGame)
-    let overMenu = makeMenu [Label (FontString "game over!" (Coordinate 0 0))]
+    let overMenu = makeMenu [makeLabel "game over!" coordZ TopLeft]
     let rooms = RoomCollection ("a", room0) [("b", room1),("gameover", overMenu)]
 
     SDL.initialize [SDL.InitAudio]

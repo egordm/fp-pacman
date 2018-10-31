@@ -1,5 +1,7 @@
 module Game.UI.MenuItem (
-    MenuItem(..), MenuItem_(..)
+    MenuItem(..), MenuItem_(..),
+    Anchor(..),
+    makeLabel
 ) where
 
 import Game.UI.Text
@@ -14,6 +16,8 @@ class MenuItem_ a where
     inputItem :: Event -> a -> a
     soundItem :: a -> [SoundInstruction]
 
+data Anchor = TopLeft | Center
+
 data MenuItem = Label {msg :: FontString}
 
 instance MenuItem_ MenuItem where
@@ -26,3 +30,15 @@ instance MenuItem_ MenuItem where
     inputItem e mi@Label{msg} = mi
 
     soundItem mi@Label{msg} = []
+
+calcPosWithAnchor :: String -> Coordinate -> Anchor -> Coordinate
+calcPosWithAnchor msg pos TopLeft = pos
+calcPosWithAnchor msg pos Center = finalPos pos dimensions
+    where
+        dimensions = textDimensions msg
+        finalPos (Coordinate x y) (w, h) = Coordinate (x - w/2) (y - h/2)
+
+makeLabel :: String -> Coordinate -> Anchor -> MenuItem
+makeLabel msg pos anchor = Label $ FontString msg finalPos
+    where
+        finalPos = calcPosWithAnchor msg pos anchor
