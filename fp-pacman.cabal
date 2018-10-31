@@ -55,6 +55,9 @@ library
       Game.UI.Text
       Game.UI.MenuItem
 
+      Game.Menu.Base
+      Game.Menu.GameOverMenu
+
       Game.Agents.Base
       Game.Agents.AgentTypes
       Game.Agents.Pacman

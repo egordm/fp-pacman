@@ -46,7 +46,13 @@ instance Renderable Room where
 
 instance BaseUpdateable Room where
     baseUpdate dt r@Room{rules, rUpdate, state} = r{state=nstate} where nstate = applyRules rules $ rUpdate dt state
-    baseUpdate dt m@Menu{menuState} = m{menuState = nstate} where nstate = map (updateItem 0) menuState
+    baseUpdate dt m@Menu{menuState} = m{menuState = nstate, menuSwitch = nswitch nstate} 
+        where 
+            nstate = map (updateItem 0) menuState
+            nswitch [] = RoomStay
+            nswitch (x:xs) = case (decide x) of
+                RoomStay -> nswitch xs
+                other -> other
 
 instance Soundable Room where
     doSound Room{state} = doSound state

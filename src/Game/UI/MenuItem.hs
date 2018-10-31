@@ -1,7 +1,7 @@
 module Game.UI.MenuItem (
     MenuItem(..), MenuItem_(..),
     Anchor(..),
-    makeLabel
+    makeLabel, makeButton
 ) where
 
 import Game.UI.Text
@@ -18,18 +18,30 @@ class MenuItem_ a where
 
 data Anchor = TopLeft | Center
 
-data MenuItem = Label {msg :: FontString}
+data MenuItem = 
+    Label {msg :: FontString} |
+    Button {normalMsg :: String, selectedMsg :: String, msg :: FontString, nr :: Int, isSelected :: Bool, itemSwitch :: SwitchRoom, inputF :: (Event -> MenuItem -> MenuItem)}
 
 instance MenuItem_ MenuItem where
     decide mi@Label{msg} = RoomStay
+    decide mi@Button{itemSwitch} = itemSwitch
 
     updateItem i mi@Label{msg} = mi
-
+    updateItem i mi@Button{nr, msg = omsg, normalMsg, selectedMsg}
+        = mi{isSelected = selected, msg = nmsg selected omsg}
+        where 
+            selected = (i == nr)
+            nmsg True (FontString str coor) = FontString selectedMsg coor
+            nmsg False (FontString str coor) = FontString normalMsg coor
+    
     drawItem mi@Label{msg} = draw msg
+    drawItem mi@Button{msg} = draw msg
 
     inputItem e mi@Label{msg} = mi
+    inputItem e mi@Button{inputF = f} = f e mi 
 
     soundItem mi@Label{msg} = []
+    soundItem mi@Button{msg} = []
 
 calcPosWithAnchor :: String -> Coordinate -> Anchor -> Coordinate
 calcPosWithAnchor msg pos TopLeft = pos
@@ -42,3 +54,8 @@ makeLabel :: String -> Coordinate -> Anchor -> MenuItem
 makeLabel msg pos anchor = Label $ FontString msg finalPos
     where
         finalPos = calcPosWithAnchor msg pos anchor
+
+makeButton :: String -> String -> Int -> (Event -> MenuItem -> MenuItem) -> Coordinate -> MenuItem
+makeButton normalMsg selectedMsg nr func pos
+    = Button normalMsg selectedMsg msg nr False RoomStay func
+    where msg = FontString normalMsg (calcPosWithAnchor normalMsg pos Center)
