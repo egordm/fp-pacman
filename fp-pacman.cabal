@@ -53,6 +53,7 @@ library
 
       Game.UI.Base
       Game.UI.Text
+      Game.UI.MenuItem
 
       Game.Agents.Base
       Game.Agents.AgentTypes

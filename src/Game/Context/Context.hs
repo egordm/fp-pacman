@@ -37,20 +37,36 @@ instance Renderable Context where
     render c@Context{room} = render room
 
 instance BaseUpdateable Context where
-    baseUpdate dt c@Context{room=r, rooms, roomName} -- TODO: Function still does too much
-        = case r of
-            Room{state = GameState{switch = RoomStay}} -> c{room = baseUpdate dt r}
-            Room{state = GameState{switch = RoomReload}} -> roomAction roomName ReloadRoom
-            Room{state = GameState{switch = (RoomSwitch req mode)}} -> roomAction req mode
-          where
-              roomAction newRoomName mode = case (Map.lookup newRoomName rooms) of
-                  Nothing -> c{room = baseUpdate dt r}
-                  Just nr@Room{state, initState} ->
-                      let nrooms = Map.insert roomName r rooms
-                          nstate = case mode of
-                              ResumeRoom -> state
-                              ReloadRoom -> initState
-                      in c{roomName = newRoomName, rooms = nrooms, room = nr{state = nstate{t = 0, switch = RoomStay}}}
+    baseUpdate dt c@Context{room=r, rooms, roomName}
+        = case (extractSwitch r) of
+            RoomStay -> c{room = baseUpdate dt r}
+            RoomReload -> roomAction roomName ReloadRoom
+            (RoomSwitch req mode) -> roomAction req mode
+        where
+            roomAction nn mo = newContext c rooms r roomName nn mo dt
+
+extractSwitch :: Room -> SwitchRoom
+extractSwitch Room{state = GameState{switch = s}} = s
+extractSwitch Menu{menuSwitch = s} = s
+
+findRoom :: String -> Map.Map String Room -> Maybe Room
+findRoom name rooms = Map.lookup name rooms
+
+insertRoom :: String -> Room -> Map.Map String Room -> Map.Map String Room
+insertRoom name room rooms = Map.insert name room rooms
+
+switchTo :: Room -> SwitchRoomMode -> Room
+switchTo r@Room{state = st} ResumeRoom = r{state = st{t = 0, switch = RoomStay}} 
+switchTo r@Room{initState = st} ReloadRoom = r{state = st{t = 0, switch = RoomStay}}
+switchTo m@Menu{menuState = st} ResumeRoom = m{menuSwitch = RoomStay}
+switchTo m@Menu{initMenu = st} ReloadRoom = m{menuSwitch = RoomStay, menuState = st}
+
+newContext oldContext oldRooms oldRoom oldRoomName newRoomName mode dt = case (findRoom newRoomName oldRooms) of
+    Nothing -> oldContext{room = baseUpdate dt oldRoom}
+    Just found ->
+        let nrooms = insertRoom oldRoomName oldRoom oldRooms
+            nroom = switchTo found mode
+        in oldContext{roomName = newRoomName, rooms = nrooms, room = nroom}
 
 instance Soundable Context where
     doSound Context{room} = doSound room
