@@ -73,10 +73,12 @@ pacmanDiedSound livesLeft = case livesLeft of
 -- | If pacman has died and death animation has finished, game is reset
 rulePacmanDiedRestart :: Rule
 rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscoreInfo}
-    | pacmanDied = reset s{scoreInfo = decrementLife pscoreInfo} -- IF lives < 0 just gameover
+    | pacmanDied && (isGameOver == False) = reset s{scoreInfo = decrementLife pscoreInfo}
+    | pacmanDied && (isGameOver == True) = s{switch = RoomSwitch "gameover" ReloadRoom}
     | otherwise = s
       where pacmans = filterAgentsPacman pagents
             pacmanDied = any (\Agent{agentType, sprite} -> died agentType && animationEnded sprite) pacmans
+            isGameOver = (lives pscoreInfo) <= 0 --because this is before we decrement lives
 
 -- | RULE -------------
 -- | If ghost is eaten by pacman in scatter mode, ghost dies

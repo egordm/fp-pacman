@@ -11,6 +11,7 @@ import Constants
 import Resources
 import Engine.Base
 import Game.Base
+import Game.UI.Base
 
 pacBoi0 = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
 pacBoi1 = pacman coordZ (InputBehaviour (wasdInput))
@@ -39,7 +40,8 @@ start = do
     let init1 = gamestate level [pacBoi0, pacBoi1]
     let room0 = makeRoom init0 stdRules (inputGame0, updateGame)
     let room1 = makeRoom init1 stdRules (inputGame1, updateGame)
-    let rooms = RoomCollection ("a", room0) [("b", room1)]
+    let overMenu = makeMenu [Label (FontString "game over!" (Coordinate 0 0))]
+    let rooms = RoomCollection ("a", room0) [("b", room1),("gameover", overMenu)]
 
     SDL.initialize [SDL.InitAudio]
     let chunkSz = 256 in Mix.withAudio Mix.defaultAudio chunkSz $ do
