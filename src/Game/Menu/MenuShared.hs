@@ -9,12 +9,12 @@ import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Structure.Base
 
-clamp :: Int -> Int -> Int -> Int
-clamp x min max
-    | x <= min = min
-    | x >= max = max
+cycleClamp :: Int -> Int -> Int -> Int
+cycleClamp x min max
+    | x < min = max
+    | x > max = min
     | otherwise = x 
 
-basicSelectorRule maxnr (EventKey (Char 's') Up _ _) ms@MenuState{selector = s} = ms{selector = clamp (s + 1) 0 maxnr}
-basicSelectorRule maxnr (EventKey (Char 'w') Up _ _) ms@MenuState{selector = s} = ms{selector = clamp (s - 1) 0 maxnr}
+basicSelectorRule maxnr (EventKey (Char 's') Up _ _) ms@MenuState{selector = s} = ms{selector = cycleClamp (s + 1) 0 maxnr}
+basicSelectorRule maxnr (EventKey (Char 'w') Up _ _) ms@MenuState{selector = s} = ms{selector = cycleClamp (s - 1) 0 maxnr}
 basicSelectorRule _ _ ms = ms
