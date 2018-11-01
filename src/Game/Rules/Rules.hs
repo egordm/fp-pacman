@@ -1,5 +1,5 @@
-module Game.Rules.Rule (
-    Rule,
+module Game.Rules.Rules (
+    GameRule,
     applyRules
 ) where
 
@@ -7,8 +7,7 @@ import Control.Arrow
 import Game.Structure.GameState
 
 {- Data structures -}
-type Rule = (GameState -> GameState)
-
+type GameRule = (GameState -> GameState)
 
 {- Classes -}
 
@@ -17,5 +16,5 @@ type Rule = (GameState -> GameState)
 
 
 {- Functions -}
-applyRules :: [Rule] -> GameState -> GameState
+applyRules :: [GameRule] -> GameState -> GameState
 applyRules rls st = (foldl (>>>) id rls) st

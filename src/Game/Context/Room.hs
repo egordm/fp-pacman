@@ -13,7 +13,7 @@ import Graphics.Gloss(Picture)
 import Graphics.Gloss.Game
 import Engine.Base
 import Game.Structure.GameState
-import Game.Rules.Rule
+import Game.Rules.Rules
 import Game.UI.Base
 import Game.Context.SwitchRoom
 
@@ -21,7 +21,7 @@ import Game.Context.SwitchRoom
 data Room = Room {
     state :: GameState,
     initState :: GameState,
-    rules :: [Rule],
+    rules :: [GameRule],
     rInput :: RoomInputFunc,
     rUpdate :: RoomUpdateFunc
 } | Menu {
@@ -59,7 +59,7 @@ instance Soundable Room where
     doSound Menu{menuState} = concatMap soundItem menuState
 
 {- Functions -}
-makeRoom :: GameState -> [Rule] -> RoomFunctions -> Room
+makeRoom :: GameState -> [GameRule] -> RoomFunctions -> Room
 makeRoom istate rules (i,u) = Room istate istate rules i u
 
 makeMenu :: [MenuItem] -> Room

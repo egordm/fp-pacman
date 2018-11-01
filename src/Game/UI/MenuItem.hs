@@ -20,7 +20,8 @@ data Anchor = TopLeft | Center
 
 data MenuItem = 
     Label {msg :: FontString} |
-    Button {normalMsg :: String, selectedMsg :: String, msg :: FontString, nr :: Int, isSelected :: Bool, itemSwitch :: SwitchRoom, inputF :: (Event -> MenuItem -> MenuItem)}
+    Button {normalMsg :: String, selectedMsg :: String, msg :: FontString, nr :: Int, 
+            isSelected :: Bool, itemSwitch :: SwitchRoom, inputF :: (Event -> MenuItem -> MenuItem)}
 
 instance MenuItem_ MenuItem where
     decide mi@Label{msg} = RoomStay

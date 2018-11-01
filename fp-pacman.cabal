@@ -74,7 +74,7 @@ library
       Game.Input.Input
 
       Game.Rules.Base
-      Game.Rules.Rule
+      Game.Rules.Rules
       Game.Rules.BaseRules
       Game.Rules.Helpers
 

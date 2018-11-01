@@ -11,7 +11,7 @@ module Game.Rules.BaseRules (
 
 import Debug.Trace
 import Engine.Base
-import Game.Rules.Rule
+import Game.Rules.Rules
 import Game.Rules.Helpers
 import Game.Structure.Base
 import Game.Level.Base
@@ -24,7 +24,7 @@ import Resources
 {- Functions -}
 -- | RULE -------------
 -- | If pacman consumes a dot, dot disappears and score is incremented by one
-rulePacmanDotConsume :: Rule
+rulePacmanDotConsume :: GameRule
 rulePacmanDotConsume s@GameState{world}
     = predicateFoldr condition pacmanDotConsume s pacmans
       where pacmans = filterAgentsPacman (agents world)
@@ -39,7 +39,7 @@ pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
 
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
-rulePacmanPowerpillConsume :: Rule
+rulePacmanPowerpillConsume :: GameRule
 rulePacmanPowerpillConsume gs@GameState{world}
     = predicateFoldr condition pacmanPowerpillConsume gs pacmans
       where pacmans = filterAgentsPacman (agents world)
@@ -55,7 +55,7 @@ pacmanPowerpillConsume a s@GameState{world=w@World{level, agents}, scoreInfo}
 
 -- | RULE -------------
 -- | If pacman is caught by ghost, he dies
-ruleGhostCatchPacman :: Rule
+ruleGhostCatchPacman :: GameRule
 ruleGhostCatchPacman s@GameState{world=w@World{agents}, scoreInfo}
     = nstate{world=w{agents=nagents}}
       where nagents = predicateMap condition (agentSetDied True) agents
@@ -71,7 +71,7 @@ pacmanDiedSound livesLeft = case livesLeft of
 
 -- | RULE -------------
 -- | If pacman has died and death animation has finished, game is reset
-rulePacmanDiedRestart :: Rule
+rulePacmanDiedRestart :: GameRule
 rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscoreInfo}
     | pacmanDied && (isGameOver == False) = reset s{scoreInfo = decrementLife pscoreInfo}
     | pacmanDied && (isGameOver == True) = s{switch = RoomSwitch "gameover" ReloadRoom}
@@ -82,7 +82,7 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
 
 -- | RULE -------------
 -- | If ghost is eaten by pacman in scatter mode, ghost dies
-rulePacmanEatGhost :: Rule
+rulePacmanEatGhost :: GameRule
 rulePacmanEatGhost s@GameState{world=w@World{agents}}
     = nstate{world=w{agents=nagents}}
       where nagents = predicateMap condition (agentSetDied True) agents
@@ -93,7 +93,7 @@ rulePacmanEatGhost s@GameState{world=w@World{agents}}
 
 -- | RULE -------------
 -- | If ghost is dead and arrives back in the cage. Then it comes back to live
-ruleGhostRevives :: Rule
+ruleGhostRevives :: GameRule
 ruleGhostRevives s@GameState{world=w@World{agents, level}}
     = s{world=w{agents=nagents}}
       where nagents = predicateMap condition action agents
@@ -103,7 +103,7 @@ ruleGhostRevives s@GameState{world=w@World{agents, level}}
 
 -- | RULE -------------
 -- | If ghost is caged and pacman has eaten enough dots, the ghost will be released
-ruleGhostRelease :: Rule
+ruleGhostRelease :: GameRule
 ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder{score}}
     = s{world=w{agents=nagents}}
       where nagents = predicateMap condition action agents
@@ -113,7 +113,7 @@ ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder
 
 -- | RULE SORTOF -------------
 -- | Plays the appropriate background audio
-ruleBackgroundSound :: Rule
+ruleBackgroundSound :: GameRule
 ruleBackgroundSound s@GameState{t, world=w@World{agents, level}, scoreInfo}
     | t < 3 = setBackgroundSound Intro playOnce soundIntro s
     | isScatterMode = setBackgroundSound ScatterMode playForever soundLargePelletLoop s
