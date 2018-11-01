@@ -45,7 +45,7 @@ instance BaseUpdateable Room where
     baseUpdate dt r@Room{gameRules, rUpdate, state} = r{state=nstate} where nstate = applyGameRules gameRules $ rUpdate dt state
     baseUpdate dt m@Menu{menuState=ms} = m{menuState = nstate, menuSwitch = nswitch (items nstate)} 
         where
-            nstate = ms{items = map (updateItem 0) (items ms)}
+            nstate = ms{items = map (updateItem (selector ms)) (items ms)}
             nswitch [] = RoomStay
             nswitch (x:xs) = case (decide x) of
                 RoomStay -> nswitch xs

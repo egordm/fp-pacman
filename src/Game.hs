@@ -22,7 +22,7 @@ playFn = playIO window background fps
 start :: IO ()
 start = do
     classic <- Mode.classicMode
-    let rooms = RoomCollection ("classic", classic) [("gameover", Menu.gameOverMenu)]
+    let rooms = RoomCollection ("main", Menu.mainMenu) [("classic", classic), ("gameover", Menu.gameOverMenu)]
     SDL.initialize [SDL.InitAudio]
     let chunkSz = 256 in Mix.withAudio Mix.defaultAudio chunkSz $ do
         sounds <- loadSounds

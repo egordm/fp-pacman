@@ -57,6 +57,8 @@ library
 
       Game.Menu.Base
       Game.Menu.GameOverMenu
+      Game.Menu.MainMenu
+      Game.Menu.MenuShared
 
       Game.GameModes.Base
       Game.GameModes.CommonShared

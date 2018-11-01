@@ -20,8 +20,15 @@ data Anchor = TopLeft | Center
 
 data MenuItem = 
     Label {msg :: FontString} |
-    Button {normalMsg :: String, selectedMsg :: String, msg :: FontString, nr :: Int, 
-            isSelected :: Bool, itemSwitch :: SwitchRoom, inputF :: (Event -> MenuItem -> MenuItem)}
+    Button {
+        normalMsg :: String, 
+        selectedMsg :: String, 
+        msg :: FontString, 
+        nr :: Int, 
+        isSelected :: Bool, 
+        itemSwitch :: SwitchRoom, 
+        inputF :: (Event -> MenuItem -> MenuItem)
+    }
 
 instance MenuItem_ MenuItem where
     decide mi@Label{msg} = RoomStay
@@ -37,9 +44,10 @@ instance MenuItem_ MenuItem where
     
     drawItem mi@Label{msg} = draw msg
     drawItem mi@Button{msg} = draw msg
-
+    
     inputItem e mi@Label{msg} = mi
-    inputItem e mi@Button{inputF = f} = f e mi 
+    inputItem e mi@Button{inputF = f, isSelected = True} = f e mi
+    inputItem e mi = mi
 
     soundItem mi@Label{msg} = []
     soundItem mi@Button{msg} = []
