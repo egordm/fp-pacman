@@ -21,10 +21,10 @@ updateGame :: RoomUpdateFunc
 updateGame dt state@GameState{t} = update dt (t + dt) state
 
 inputGame0 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "b" ReloadRoom}
-inputGame0 e state = input e state
+inputGame0 _ state = state
 
 inputGame1 (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomSwitch "a" ResumeRoom}
-inputGame1 e state = input e state
+inputGame1 _ state = state
 
 stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume,
   rulePacmanEatGhost, ruleGhostRevives, ruleGhostRelease, ruleBackgroundSound]

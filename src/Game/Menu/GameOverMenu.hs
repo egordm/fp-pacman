@@ -14,4 +14,4 @@ replayButtonF _ b = b
 overMenuList = [makeLabel "game over!" (Coordinate 0 (-200)) Center,
             makeButton "replay" "-replay-" 0 replayButtonF (Coordinate 0 0)]
 
-gameOverMenu = makeMenu overMenuList
+gameOverMenu = makeMenu overMenuList []

@@ -1,8 +1,6 @@
 module Game.Context.Room(
     Room(..),
-    RoomInputFunc,
     RoomUpdateFunc,
-    RoomFunctions,
     makeRoom,
     makeMenu,
     playRoom
@@ -27,18 +25,17 @@ data Room = Room {
 } | Menu {
     menuState :: MenuState,
     initMenu :: MenuState,
-    menuSwitch :: SwitchRoom
+    menuSwitch :: SwitchRoom,
+    menuInputRules :: [MenuInputRule]
 }
 
-type RoomInputFunc = (Event -> GameState -> GameState)
-type RoomRenderFunc = (GameState -> Picture)
 type RoomUpdateFunc = (Float -> GameState -> GameState)
-type RoomFunctions = (RoomInputFunc, RoomUpdateFunc)
 
 {- Instances -}
 instance Inputable Room where
-    input e r@Room{state, gameInputRules} = r{state=nstate} where nstate = applyGameInputRules e gameInputRules state
-    input e m@Menu{menuState=ms} = m{menuState=ms{items = map (inputItem e) (items ms)}}
+    input e r@Room{state, gameInputRules = gir} = r{state=nstate} where nstate = input e $ applyGameInputRules e gir state
+    input e m@Menu{menuState=ms, menuInputRules = mir} = m{menuState=nstate{items = map (inputItem e) (items nstate)}}
+        where nstate = applyMenuInputRules e mir ms
 
 instance Renderable Room where
     render r@Room{state} = renderInstructions $ draw state
@@ -62,10 +59,10 @@ instance Soundable Room where
 makeRoom :: GameState -> [GameRule] -> [GameInputRule] -> RoomUpdateFunc -> Room
 makeRoom istate gameRules inputRules u = Room istate istate gameRules inputRules u
 
-makeMenu :: [MenuItem] -> Room
-makeMenu items = Menu startState startState RoomStay
+makeMenu :: [MenuItem] -> [MenuInputRule] -> Room
+makeMenu items inputRules = Menu startState startState RoomStay inputRules
     where
-        startState = MenuState items 0
+        startState = MenuState items 0 
 
 playRoom f Room{ initState, rUpdate } =
     f initState render input [rUpdate]
