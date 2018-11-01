@@ -8,7 +8,7 @@ import Game.UI.Base
 import Game.Context.SwitchRoom
 import Game.Context.Room
 
-replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "a" ReloadRoom}
+replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "classic" ReloadRoom}
 replayButtonF _ b = b
 
 overMenuList = [makeLabel "game over!" (Coordinate 0 (-200)) Center,

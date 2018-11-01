@@ -58,6 +58,10 @@ library
       Game.Menu.Base
       Game.Menu.GameOverMenu
 
+      Game.GameModes.Base
+      Game.GameModes.CommonShared
+      Game.GameModes.Classic
+
       Game.Agents.Base
       Game.Agents.AgentTypes
       Game.Agents.Pacman
