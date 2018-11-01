@@ -85,6 +85,7 @@ library
 
       Game.Structure.Base
       Game.Structure.GameState
+      Game.Structure.MenuState
       Game.Structure.World
       Game.Structure.Internal
       Game.Structure.ScoreHolder
