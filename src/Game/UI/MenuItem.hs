@@ -21,6 +21,7 @@ data Anchor = TopLeft | Center
 data MenuItem = 
     Label {msg :: FontString} |
     Button {
+        buttonPos :: Coordinate,
         normalMsg :: String, 
         selectedMsg :: String, 
         msg :: FontString, 
@@ -35,12 +36,12 @@ instance MenuItem_ MenuItem where
     decide mi@Button{itemSwitch} = itemSwitch
 
     updateItem i mi@Label{msg} = mi
-    updateItem i mi@Button{nr, msg = omsg, normalMsg, selectedMsg}
-        = mi{isSelected = selected, msg = nmsg selected omsg}
+    updateItem i mi@Button{nr, buttonPos = pos, normalMsg, selectedMsg}
+        = mi{isSelected = selected, msg = nmsg selected}
         where 
             selected = (i == nr)
-            nmsg True (FontString str coor) = FontString selectedMsg coor
-            nmsg False (FontString str coor) = FontString normalMsg coor
+            nmsg True = msg $ makeLabel selectedMsg pos Center
+            nmsg False = msg $ makeLabel normalMsg pos Center
     
     drawItem mi@Label{msg} = draw msg
     drawItem mi@Button{msg} = draw msg
@@ -57,7 +58,7 @@ calcPosWithAnchor msg pos TopLeft = pos
 calcPosWithAnchor msg pos Center = finalPos pos dimensions
     where
         dimensions = textDimensions msg
-        finalPos (Coordinate x y) (w, h) = Coordinate (x - w/2) (y - h/2)
+        finalPos (Coordinate x y) (w, h) = Coordinate (fromIntegral $ floor(x - (w-1)/2)) (fromIntegral $ floor(y - (h-1)/2))
 
 makeLabel :: String -> Coordinate -> Anchor -> MenuItem
 makeLabel msg pos anchor = Label $ FontString msg finalPos
@@ -66,5 +67,5 @@ makeLabel msg pos anchor = Label $ FontString msg finalPos
 
 makeButton :: String -> String -> Int -> (Event -> MenuItem -> MenuItem) -> Coordinate -> MenuItem
 makeButton normalMsg selectedMsg nr func pos
-    = Button normalMsg selectedMsg msg nr False RoomStay func
-    where msg = FontString normalMsg (calcPosWithAnchor normalMsg pos Center)
+    = Button pos normalMsg selectedMsg fmsg nr False RoomStay func
+    where fmsg = msg $ makeLabel normalMsg pos Center
