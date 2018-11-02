@@ -1,7 +1,7 @@
 module Game.GameModes.CommonShared (
     stdPacman,
     stdUpdateGame,
-    reloadOnSpace,
+    reloadOnSpace, pauseOnP,
     stdRules
 ) where
 
@@ -22,6 +22,9 @@ stdUpdateGame dt state@GameState{t} = update dt (t + dt) state
 reloadOnSpace :: Event -> GameState -> GameState
 reloadOnSpace (EventKey (SpecialKey KeySpace) Up _ _) state = state{switch = RoomReload}
 reloadOnSpace _ state = state
+
+pauseOnP (EventKey (Char 'p') Up _ _) state = state{switch = RoomSwitch "pause" ReloadRoom}
+pauseOnP _ state = state
 
 stdRules :: [GameRule]
 stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume,

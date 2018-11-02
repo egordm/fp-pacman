@@ -23,7 +23,7 @@ applyGameRules :: [GameRule] -> GameState -> GameState
 applyGameRules rls st = (foldl (>>>) id rls) st
 
 applyMenuInputRules :: Event -> [MenuInputRule] -> MenuState -> MenuState
---applyInputRules e rls st = (foldl (\a b -> a e >>> b) id (rls e)) st
+--applyMenuInputRules e rls st = (foldl (\a b -> a e >>> b) id rls) st
 applyMenuInputRules e rls st = (applyMenuInputRules_ e rls) st
 applyMenuInputRules_ e [] = id
 applyMenuInputRules_ e (r:rls) = r e >>> applyMenuInputRules_ e rls
