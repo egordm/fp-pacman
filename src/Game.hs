@@ -22,7 +22,8 @@ playFn = playIO window background fps
 start :: IO ()
 start = do
     classic <- Mode.classicMode
-    let rooms = RoomCollection ("main", Menu.mainMenu) [
+    let rooms = RoomCollection  ("tut", Menu.menuTut) [
+                                ("main", Menu.mainMenu),
                                 ("classic", classic), 
                                 ("gameover", Menu.gameOverMenu), 
                                 ("pause", Menu.pauseMenu),

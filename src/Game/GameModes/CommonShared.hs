@@ -14,7 +14,7 @@ import Game.Context.Base
 import Game.Structure.Base
 import Game.Input.Base
 
-stdPacman = pacman (Coordinate 9999 9999) (InputBehaviour (arrowInput))
+stdPacman = pacman (Coordinate 9999 9999) (InputBehaviour (wasdInput))
 
 stdUpdateGame :: RoomUpdateFunc
 stdUpdateGame dt state@GameState{t} = update dt (t + dt) state
