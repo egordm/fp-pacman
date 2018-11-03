@@ -12,10 +12,12 @@ import Engine.Base
 import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Structure.GameState
+import Game.Structure.MenuState
 import Game.Rules.Base
 import Game.Input.Base
 import qualified Data.Map as Map
 import Resources
+import Game.Context.Persistant
 
 {- Data structures -}
 
@@ -61,11 +63,21 @@ switchTo r@Room{initState = st} ReloadRoom = r{state = st{t = 0, switch = RoomSt
 switchTo m@Menu{menuState = st} ResumeRoom = m{menuSwitch = RoomStay}
 switchTo m@Menu{initMenu = st} ReloadRoom = m{menuSwitch = RoomStay, menuState = st}
 
+transferPersistant :: Room -> Room -> Room
+transferPersistant r@Room{state = os} newroom@Room{state = ns} = 
+    newroom{state = ns{gameOldPersistant = gameNewPersistant os}}
+transferPersistant r@Room{state = os} newroom@Menu{menuState = ns} = 
+    newroom{menuState = ns{menuOldPersistant = gameNewPersistant os}}
+transferPersistant r@Menu{menuState = os} newroom@Room{state = ns} = 
+    newroom{state = ns{gameOldPersistant = menuNewPersistant os}}
+transferPersistant r@Menu{menuState = os} newroom@Menu{menuState = ns} = 
+    newroom{menuState = ns{menuOldPersistant = menuNewPersistant os}}
+
 newContext oldContext oldRooms oldRoom oldRoomName newRoomName mode dt = case (findRoom newRoomName oldRooms) of
     Nothing -> oldContext{room = baseUpdate dt oldRoom}
     Just found ->
         let nrooms = insertRoom oldRoomName oldRoom oldRooms
-            nroom = switchTo found mode
+            nroom = transferPersistant oldRoom $ switchTo found mode
         in oldContext{roomName = newRoomName, rooms = nrooms, room = nroom}
 
 instance Soundable Context where

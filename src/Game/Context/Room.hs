@@ -14,6 +14,7 @@ import Game.Structure.MenuState
 import Game.Rules.Rules
 import Game.UI.Base
 import Game.Context.SwitchRoom
+import Game.Context.Persistant
 
 {- Data structures -}
 data Room = Room {
@@ -45,7 +46,7 @@ instance BaseUpdateable Room where
     baseUpdate dt r@Room{gameRules, rUpdate, state} = r{state=nstate} where nstate = applyGameRules gameRules $ rUpdate dt state
     baseUpdate dt m@Menu{menuState=ms} = m{menuState = nstate, menuSwitch = nswitch (items nstate)} 
         where
-            nstate = ms{items = map (updateItem (selector ms)) (items ms)}
+            nstate = ms{items = map (updateItem (selector ms) (menuOldPersistant ms) (menuNewPersistant ms)) (items ms)}
             nswitch [] = RoomStay
             nswitch (x:xs) = case (decide x) of
                 RoomStay -> nswitch xs
@@ -62,7 +63,7 @@ makeRoom istate gameRules inputRules u = Room istate istate gameRules inputRules
 makeMenu :: [MenuItem] -> [MenuInputRule] -> Room
 makeMenu items inputRules = Menu startState startState RoomStay inputRules
     where
-        startState = MenuState items 0 
+        startState = makeMenuState items 0 
 
 playRoom f Room{ initState, rUpdate } =
     f initState render input [rUpdate]

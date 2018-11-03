@@ -91,6 +91,7 @@ library
       Game.Context.Context
       Game.Context.Room
       Game.Context.SwitchRoom
+      Game.Context.Persistant
 
       Game.Structure.Base
       Game.Structure.GameState

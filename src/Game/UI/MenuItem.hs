@@ -1,17 +1,18 @@
 module Game.UI.MenuItem (
     MenuItem(..), MenuItem_(..),
     Anchor(..),
-    makeLabel, makeButton
+    makeLabel, makeLabelF, makeButton
 ) where
 
 import Game.UI.Text
 import Game.Context.SwitchRoom
 import Engine.Base
 import Graphics.Gloss.Game(Event(..))
+import Game.Context.Persistant
 
 class MenuItem_ a where
     decide :: a -> SwitchRoom
-    updateItem :: Int -> a -> a
+    updateItem :: Int -> Persistant -> Persistant -> a -> a
     drawItem :: a -> [DrawInstruction]
     inputItem :: Event -> a -> a
     soundItem :: a -> [SoundInstruction]
@@ -19,7 +20,11 @@ class MenuItem_ a where
 data Anchor = TopLeft | Center
 
 data MenuItem = 
-    Label {msg :: FontString} |
+    Label {
+        msg :: FontString,
+        labelPos :: Coordinate,
+        labelUpdate :: (MenuItem -> Persistant -> Persistant -> MenuItem)
+    } |
     Button {
         buttonPos :: Coordinate,
         normalMsg :: String, 
@@ -35,8 +40,8 @@ instance MenuItem_ MenuItem where
     decide mi@Label{msg} = RoomStay
     decide mi@Button{itemSwitch} = itemSwitch
 
-    updateItem i mi@Label{msg} = mi
-    updateItem i mi@Button{nr, buttonPos = pos, normalMsg, selectedMsg}
+    updateItem i oldPD newPD mi@Label{msg, labelUpdate} = labelUpdate mi oldPD newPD
+    updateItem i _ _ mi@Button{nr, buttonPos = pos, normalMsg, selectedMsg}
         = mi{isSelected = selected, msg = nmsg selected}
         where 
             selected = (i == nr)
@@ -61,7 +66,12 @@ calcPosWithAnchor msg pos Center = finalPos pos dimensions
         finalPos (Coordinate x y) (w, h) = Coordinate (fromIntegral $ floor(x - (w-1)/2)) (fromIntegral $ floor(y - (h-1)/2))
 
 makeLabel :: String -> Coordinate -> Anchor -> MenuItem
-makeLabel msg pos anchor = Label $ FontString msg finalPos
+makeLabel msg pos anchor = Label (FontString msg finalPos) pos (\l _ _ -> l)
+    where
+        finalPos = calcPosWithAnchor msg pos anchor
+
+makeLabelF :: String -> Coordinate -> Anchor -> (MenuItem -> Persistant -> Persistant -> MenuItem) -> MenuItem
+makeLabelF msg pos anchor f = Label (FontString msg finalPos)  pos f
     where
         finalPos = calcPosWithAnchor msg pos anchor
 

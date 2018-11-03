@@ -8,6 +8,7 @@ import Game.UI.Base
 import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Menu.MenuShared
+import Game.Context.Persistant
 
 replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "classic" ReloadRoom}
 replayButtonF _ b = b
@@ -15,8 +16,16 @@ replayButtonF _ b = b
 mainButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "main" ReloadRoom}
 mainButtonF _ b = b
 
+updateScoreLabelF Label{msg = m, labelPos = p, labelUpdate = u} oldPD _ = makeLabelF ms p Center u
+    where
+        ms = case (getInt oldPD "score") of
+            Nothing -> "score - error!"
+            Just x -> "score - " ++ (show x)
+updateScoreLabelF l _ _ = l
+
 uiElements = [
     makeLabel "game over!" (Coordinate 0 (-200)) Center,
+    makeLabelF "score - error" (Coordinate 0 (-160)) Center updateScoreLabelF,
     makeButton "replay" "-replay-" 0 replayButtonF (Coordinate 0 0),
     makeButton "main menu" "-main menu-" 1 mainButtonF (Coordinate 0 40)]
 

@@ -17,6 +17,7 @@ import Game.Structure.ScoreHolder
 import Game.Input.Base
 import Game.Agents.Base
 import Game.Context.SwitchRoom
+import Game.Context.Persistant
 
 {- Data structures -}
 data GameState = GameState {
@@ -25,7 +26,9 @@ data GameState = GameState {
                      scoreInfo :: ScoreHolder,
                      switch :: SwitchRoom,
                      soundInstructions :: [SoundInstruction],
-                     bgSound :: BackgroundSound
+                     bgSound :: BackgroundSound,
+                     gameOldPersistant :: Persistant,
+                     gameNewPersistant :: Persistant
                  } deriving (Show)
 
 data BackgroundSound = None | Intro | ScatterMode | SirenSlow | SirenMedium | SirenFast | DeathSound deriving (Show, Eq)
@@ -50,7 +53,7 @@ instance Soundable GameState where
     doSound GameState{soundInstructions} = soundInstructions
 
 {- Functions -}
-gamestate level bois = GameState 0 world scoreholder RoomStay [] None
+gamestate level bois = GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant
                        where baseWorld = World level []
                              world = addAgents bois baseWorld
 
