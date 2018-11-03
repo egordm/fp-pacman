@@ -13,4 +13,4 @@ import Resources
 classicMode = do
     level <- readLevel levelClassic
     let init = gamestate level [stdPacman, blinky, pinky, inky, clyde]
-    return $ makeRoom init stdRules [reloadOnSpace, pauseOnP] stdUpdateGame
+    return $ makeRoom init stdRules [pauseOnP] stdUpdateGame
