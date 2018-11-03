@@ -73,11 +73,15 @@ transferPersistant r@Menu{menuState = os} newroom@Room{state = ns} =
 transferPersistant r@Menu{menuState = os} newroom@Menu{menuState = ns} = 
     newroom{menuState = ns{menuOldPersistant = menuNewPersistant os}}
 
+killSound :: Room -> Room
+killSound r@Room{state = st} = r{state = st{bgSound = None}}
+killSound r = r
+
 newContext oldContext oldRooms oldRoom oldRoomName newRoomName mode dt = case (findRoom newRoomName oldRooms) of
     Nothing -> oldContext{room = baseUpdate dt oldRoom}
     Just found ->
         let nrooms = insertRoom oldRoomName oldRoom oldRooms
-            nroom = transferPersistant oldRoom $ switchTo found mode
+            nroom = killSound $ transferPersistant oldRoom $ switchTo found mode
         in oldContext{roomName = newRoomName, rooms = nrooms, room = nroom}
 
 instance Soundable Context where
