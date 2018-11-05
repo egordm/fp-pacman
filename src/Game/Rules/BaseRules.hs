@@ -78,7 +78,7 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
     | otherwise = s
       where pacmans = filterAgentsPacman pagents
             pacmanDied = any (\Agent{agentType, sprite} -> died agentType && animationEnded sprite) pacmans
-            isGameOver = (lives pscoreInfo) <= 0 --because this is before we decrement lives
+            isGameOver = (lives pscoreInfo) <= 1 --because this is before we decrement lives
             gnp = addInt ognp "score" $ score pscoreInfo
 
 -- | RULE -------------

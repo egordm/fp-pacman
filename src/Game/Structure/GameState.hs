@@ -6,7 +6,8 @@ module Game.Structure.GameState (
     Inputable(..),
     gamestate,
     addSound,
-    addEffect
+    addEffect,
+    stopAllSounds
 ) where
 
 import Debug.Trace
@@ -18,6 +19,7 @@ import Game.Input.Base
 import Game.Agents.Base
 import Game.Context.SwitchRoom
 import Game.Context.Persistant
+import Resources
 
 {- Data structures -}
 data GameState = GameState {
@@ -47,13 +49,13 @@ instance Inputable GameState where
     input event s@GameState{world=pworld} = s{world=input event pworld}
 
 instance Resetable GameState where
-    reset s@GameState{world=pworld} = s{world=reset pworld}
+    reset s@GameState{world=pworld} = stopAllSounds s{world=reset pworld}
 
 instance Soundable GameState where
     doSound GameState{soundInstructions} = soundInstructions
 
 {- Functions -}
-gamestate level bois = GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant
+gamestate level bois = stopAllSounds (GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant)
                        where baseWorld = World level []
                              world = addAgents bois baseWorld
 
@@ -64,3 +66,7 @@ addSound action repeat soundCall state
 addEffect :: SoundCall -> GameState -> GameState
 addEffect soundCall state
     = state{soundInstructions=SoundInstruction PlayForce playOnce soundCall : soundInstructions state}
+
+stopAllSounds :: GameState -> GameState
+stopAllSounds s = foldr (addSound Stop playOnce) s calls
+                  where calls = [soundFruit, soundGhostEat1, soundExtraMan, soundDeath3, soundMunchA]
