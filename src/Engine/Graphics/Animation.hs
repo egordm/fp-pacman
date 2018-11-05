@@ -10,15 +10,18 @@ import Constants
 import Engine.Core.Classes
 
 {- Data structures -}
+-- | Animation type
 data AnimationType = Single
                    | Repeating
                    deriving (Show, Eq)
 
+-- | Animation state which changes everytime
 data AnimationState = AnimationState {
                           current :: Int,         -- Current sprite in loop
                           changeTime :: Float     -- Time till sprite change
                       } deriving (Show, Eq)
 
+-- | Animation definition
 data Animation = Animation {
                      animType :: AnimationType,
                      animState :: AnimationState,
@@ -32,6 +35,7 @@ data Animation = Animation {
 instance Eq Animation where
     (==) Animation{animType=animType1} Animation{animType=animType2} = animType1 == animType2
 
+-- | Update the animation state. Repeatable should loop etc
 instance Updateable Animation where
     update dt t a@(Animation animType (AnimationState current changeTime) frameCount interval)
         = a{animState = AnimationState nCurrent nChangeTime}
@@ -43,6 +47,7 @@ instance Updateable Animation where
                             | otherwise       = changeTime - dt
 
 {- Functions -}
+-- | Create empty animation state
 emptyAnimationState :: AnimationState
 emptyAnimationState = AnimationState 0 0
 

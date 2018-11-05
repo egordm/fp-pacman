@@ -30,6 +30,7 @@ pinky = agent (ghost Pinky pinkyHome True 0) ghostSpeed (AIBehaviour  (ghostBeha
 inky = agent (ghost Inky inkyHome True 30) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper inkyBehaviour))
 clyde = agent (ghost Clyde clydeHome True 60) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper clydeBehaviour))
 
+-- | Ghost their home position they run to when they are in scatter mode. See explaination original game.
 blinkyHome = Coordinate 9999 9999
 pinkyHome = Coordinate (-9999) 9999
 inkyHome = Coordinate 9999 (-9999)

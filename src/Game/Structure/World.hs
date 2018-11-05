@@ -47,5 +47,6 @@ addAgent a@Agent{agentType} w@World{level, agents}
       where nagents = a{position=coord}:agents
             coord = markerCoordinate (agentTypeToMarker agentType) level
 
+-- | Add multiple agents to the world
 addAgents :: [Agent] -> World -> World
 addAgents agents world = foldr addAgent world agents

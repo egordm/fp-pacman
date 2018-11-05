@@ -48,25 +48,31 @@ instance Resetable AgentType where
     reset a@Ghost{} = a{died=False, scatterTicks=0}
 
 {- Functions -}
+-- | Quick ghost constructor
 ghost :: GhostType -> Coordinate -> Bool -> Int -> AgentType
 ghost t h c d = Ghost t h d 0 False c
 
+-- | Create empty ghost type
 ghostEmpty :: GhostType -> AgentType
 ghostEmpty t = ghost t coordZ False 0
 
+-- | Check if agent is in scatter mode
 isInScatterMode :: AgentType -> Bool
 isInScatterMode Pacman{} = False
 isInScatterMode Ghost{scatterTicks} = scatterTicks > 0
 
+-- | Get speed from agent type
 agentTypeToSpeed :: AgentType -> Float -> Float
 agentTypeToSpeed at defaultSpeed | died at = ghostSpeedDead
                                  | isInScatterMode at = ghostSpeedScatter
                                  | otherwise = defaultSpeed
 
+-- | Check whether agent is a ghost
 isGhost :: AgentType -> Bool
 isGhost Ghost{} = True
 isGhost _ = False
 
+-- | Translates agent type to a character marker in a level file
 agentTypeToMarker :: AgentType -> Marker
 agentTypeToMarker agent = case agent of
     Pacman{}                -> Marker 'M'
@@ -74,8 +80,9 @@ agentTypeToMarker agent = case agent of
     Ghost{ghostType=Pinky}  -> Marker 'P'
     Ghost{ghostType=Inky}   -> Marker 'I'
     Ghost{ghostType=Clyde}  -> Marker 'C'
-    _                       -> Marker '_'
+    _                       -> Marker '?'
 
+-- | Translate agent type to a sprite
 agentTypeToSprite :: Direction -> AgentType -> Sprite
 agentTypeToSprite direction Pacman{died=True} = spritePacmanDie
 agentTypeToSprite direction Pacman{}
@@ -96,6 +103,7 @@ agentTypeToSprite direction Ghost{ghostType, scatterTicks} | (scatterTicks > sca
                                                            | (scatterTicks > 0) = spriteScatterEnding
                                                            | otherwise = ghostTypeToSprite direction ghostType
 
+-- | Translates a ghost type and its direction to a sprite
 ghostTypeToSprite :: Direction -> GhostType -> Sprite
 ghostTypeToSprite direction Blinky
   = case direction of

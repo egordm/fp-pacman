@@ -26,7 +26,7 @@ import Game.Context.Persistant
 -- | If pacman consumes a dot, dot disappears and score is incremented by one
 rulePacmanDotConsume :: GameRule
 rulePacmanDotConsume s@GameState{world}
-    = predicateFoldr condition pacmanDotConsume s pacmans
+    = predicateFoldl condition pacmanDotConsume s pacmans
       where pacmans = filterAgentsPacman (agents world)
             condition a GameState{world} = agentOnTile a (level world) (TilePowerup PacDot)
 
@@ -41,7 +41,7 @@ pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
 rulePacmanPowerpillConsume :: GameRule
 rulePacmanPowerpillConsume gs@GameState{world}
-    = predicateFoldr condition pacmanPowerpillConsume gs pacmans
+    = predicateFoldl condition pacmanPowerpillConsume gs pacmans
       where pacmans = filterAgentsPacman (agents world)
             condition a GameState{world} = agentOnTile a (level world) (TilePowerup PowerPill)
 
@@ -61,7 +61,7 @@ ruleGhostCatchPacman s@GameState{world=w@World{agents}, scoreInfo}
       where nagents = predicateMap condition (agentSetDied True) agents
             ghosts = filter (\a -> not (isInScatterMode (agentType a))) (filterAgentsGhost agents)
             condition = compoundPredicate [(== Pacman{}) . agentType, not . died . agentType, anyAgentSameTile ghosts]
-            nstate = predicateFoldr (\a gs -> condition a) addSoundEffect s agents
+            nstate = predicateFoldl (\a gs -> condition a) addSoundEffect s agents
             addSoundEffect a gs = setBackgroundSound DeathSound playOnce (pacmanDiedSound (lives scoreInfo)) gs
 
 pacmanDiedSound :: Int -> SoundCall
@@ -89,7 +89,7 @@ rulePacmanEatGhost s@GameState{world=w@World{agents}}
       where nagents = predicateMap condition (agentSetDied True) agents
             pacmans = filterAgentsPacman agents
             condition = compoundPredicate [isGhost . agentType, not . died . agentType, isInScatterMode . agentType, anyAgentSameTile pacmans]
-            nstate = predicateFoldr (\a gs -> condition a) addSoundEffect s agents
+            nstate = predicateFoldl (\a gs -> condition a) addSoundEffect s agents
             addSoundEffect a gs = addEffect soundGhostEat2 gs
 
 -- | RULE -------------
@@ -100,7 +100,7 @@ ruleGhostRevives s@GameState{world=w@World{agents, level}}
       where nagents = predicateMap condition action agents
             marker = markerCoordinate markerRevivalPoint level
             action a = a{agentType=(agentType a){died=False, scatterTicks=0, caged=True}}
-            condition = compoundPredicate [isGhost . agentType, died . agentType, \x -> opAgentOverlapsPos (fromInteger tileSize/4) x marker]
+            condition = compoundPredicate [isGhost . agentType, died . agentType, \x -> onAgentOverlapsPos (fromInteger tileSize/4) x marker]
 
 -- | RULE -------------
 -- | If ghost is caged and pacman has eaten enough dots, the ghost will be released
@@ -125,7 +125,7 @@ ruleBackgroundSound s@GameState{t, world=w@World{agents, level}, scoreInfo}
       where isPacmanDead = any (died . agentType) (filterAgentsPacman agents)
             isScatterMode = any (((<) 0) . scatterTicks . agentType) (filterAgentsGhost agents)
 
-
+-- | Sets background sound and tries to take into account already playing ones by waiting or changing sound
 setBackgroundSound :: BackgroundSound -> PlayRepeat -> SoundCall -> GameState -> GameState
 setBackgroundSound soundType repeat soundCall s@GameState{bgSound}
     | bgSound == soundType = startBgNonIntrusive s

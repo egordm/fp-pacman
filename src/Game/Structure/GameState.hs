@@ -42,12 +42,14 @@ data BackgroundSound = None | Intro | ScatterMode | SirenSlow | SirenMedium | Si
 instance Updateable GameState where
     update dt nt s@GameState{t=pt, world=pworld} = s{t=nt, world=update dt nt pworld, soundInstructions=[]}
 
+-- | Draws gamestate. Combine draw world and score
 instance Drawable GameState where
     draw GameState{world, scoreInfo} = draw world ++ draw scoreInfo
 
 instance Inputable GameState where
     input event s@GameState{world=pworld} = s{world=input event pworld}
 
+-- | Rests the gamestate and stops all sounds
 instance Resetable GameState where
     reset s@GameState{world=pworld} = stopAllSounds s{world=reset pworld}
 
@@ -55,18 +57,22 @@ instance Soundable GameState where
     doSound GameState{soundInstructions} = soundInstructions
 
 {- Functions -}
+-- | Quick gamestate constructor
 gamestate level bois = stopAllSounds (GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant)
                        where baseWorld = World level []
                              world = addAgents bois baseWorld
 
+-- | Adds sound to the gamestate
 addSound :: PlayAction -> PlayRepeat -> SoundCall -> GameState -> GameState
 addSound action repeat soundCall state
     = state{soundInstructions=SoundInstruction action repeat soundCall : soundInstructions state}
 
+-- | Adds effect to the gamestate. Effect is forced and played once
 addEffect :: SoundCall -> GameState -> GameState
 addEffect soundCall state
     = state{soundInstructions=SoundInstruction PlayForce playOnce soundCall : soundInstructions state}
 
+-- | Stops all sounds
 stopAllSounds :: GameState -> GameState
 stopAllSounds s = foldr (addSound Stop playOnce) s calls
                   where calls = [soundFruit, soundGhostEat1, soundExtraMan, soundDeath3, soundMunchA]

@@ -104,6 +104,7 @@ mergeMarkers ms@((Marker m, _):_) | m `elem` markersSingular = [averageMarkers m
 
 -- LEVEL DECORATION =====================================
 
+-- | Creates a table matcher to match the tile
 createTileMatcher :: Pos -> Table Tile -> TileMatcher
 createTileMatcher p t = TileMatcher{
                             none      = isWallTile $ t ! p,
@@ -116,7 +117,7 @@ createTileMatcher p t = TileMatcher{
                             downLeft  = isWallTile $ t ! (p + Pos (-1) 1),
                             downRight = isWallTile $ t ! (p + Pos 1    1)
                         }
-
+-- | Check if tile is a wall
 isWallTile :: Tile -> IsWallTile
 isWallTile t@(TileWall a) = Wall t
 isWallTile t = NotWall t

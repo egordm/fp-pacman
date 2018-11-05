@@ -2,6 +2,7 @@ module Engine.Core.Position where
     
 
 {- Data structures -}
+-- | Position consistent of 2 integer points
 data Pos = Pos Int Int deriving (Eq, Ord, Show)
 
 

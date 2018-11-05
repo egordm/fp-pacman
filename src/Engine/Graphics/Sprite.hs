@@ -37,16 +37,20 @@ instance Updateable Sprite where
     update dt t s@(AnimatedSprite a _) = s{animation = update dt t a}
 
 {- Functions -}
+-- | Create animated sprite from given frames and interval
 createAnimatedSprite :: AnimationType -> [Sprite] -> Float -> Sprite
 createAnimatedSprite animType frames interval = AnimatedSprite anim frames
                                                 where anim = Animation animType emptyAnimationState (length frames) interval
 
+-- | Create static sprite
 createStaticSprite :: Picture -> String -> Sprite
 createStaticSprite = StaticSprite
 
+-- | Create empty sprite
 createEmptySprite :: Sprite
 createEmptySprite = StaticSprite Blank "blank"
 
+-- | Check whether animation has ended
 animationEnded :: Sprite -> Bool
 animationEnded StaticSprite{} = True
 animationEnded AnimatedSprite{animation=Animation{animType=Repeating}} = False

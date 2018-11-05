@@ -27,6 +27,7 @@ putInDraws [] _ = []
 putInDraws (c:cs) (Coordinate x y) =
     (DrawInstruction (Coordinate x y) (charToSprite c)) : putInDraws cs (Coordinate (x + (8*spriteScale)) y)
 
+-- | Converts character to sprite
 charToSprite :: Char -> Sprite
 charToSprite c = case charIdx of
     (Just i) -> spriteFont !! i
@@ -34,6 +35,4 @@ charToSprite c = case charIdx of
     where charIdx = elemIndex c fontMapping
 
 textDimensions :: String -> (Float, Float)
-textDimensions string = (charSize * fromIntegral (length string), charSize)
-    where
-        charSize = 8 * spriteScale
+textDimensions string = (fromInteger fontSize * fromIntegral (length string), fromInteger fontSize)
