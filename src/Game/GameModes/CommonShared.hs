@@ -28,4 +28,4 @@ pauseOnP _ state = state
 
 stdRules :: [GameRule]
 stdRules = [rulePacmanDotConsume, ruleGhostCatchPacman, rulePacmanDiedRestart, rulePacmanPowerpillConsume,
-    rulePacmanEatGhost, ruleGhostRevives, ruleGhostRelease, ruleBackgroundSound]
+    rulePacmanEatGhost, ruleGhostRevives, ruleGhostRelease, ruleBackgroundSound, rulePacmanWin]

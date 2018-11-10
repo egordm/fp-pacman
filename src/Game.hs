@@ -26,6 +26,7 @@ start = do
                                 ("main", Menu.mainMenu),
                                 ("classic", classic), 
                                 ("gameover", Menu.gameOverMenu), 
+                                ("win", Menu.winGameMenu),
                                 ("pause", Menu.pauseMenu),
                                 ("help", Menu.helpMenu)]
     SDL.initialize [SDL.InitAudio]

@@ -60,8 +60,9 @@ createTable input = Table tableData width height
 
 -- | Parses level from character table
 parseLevel :: [[Char]] -> Level
-parseLevel rawLevel = Level (createTable tiles) []
+parseLevel rawLevel = Level table [] (countDots table)
                       where tiles = map (map parseTile) rawLevel
+                            table = createTable tiles
 
 -- | Updates walls by matching a sprite to their surroundings
 updateWalls :: Table Tile -> Table Tile
@@ -76,6 +77,12 @@ processLevel level = level{
                         tiles = updateWalls (updateWalls (tiles level)),
                         markers = extractMarkers (tiles level)
                      }
+
+-- | Counts all pacdots within the level. One would mayby generalize it a bit.
+countDots :: Table Tile -> Int
+countDots (Table v _ _) = Vec.sum $ Vec.map (Vec.sum . Vec.map dotSetter) v
+                        where dotSetter t = case t of (TilePowerup PacDot) -> 1
+                                                      _ -> 0
 
 -- | Reads level from a file. Warning IO
 readLevel :: String -> IO Level

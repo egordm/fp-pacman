@@ -61,6 +61,7 @@ library
       Game.Menu.MenuShared
       Game.Menu.PauseMenu
       Game.Menu.HelpMenu
+      Game.Menu.WinGameMenu
       Game.Menu.MenuTut
 
       Game.GameModes.Base

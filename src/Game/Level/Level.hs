@@ -33,7 +33,7 @@ data Marker = Marker Char deriving (Show, Eq, Ord)
 
 data Tile = TileEmpty | TilePowerup Powerup | TileWall Sprite | TileDoor | TileMarker Marker deriving (Show, Eq)
 
-data Level = Level {tiles :: Table Tile, markers :: [(Marker, Coordinate)]} deriving (Show, Eq)
+data Level = Level {tiles :: Table Tile, markers :: [(Marker, Coordinate)], dotCount :: Int} deriving (Show, Eq)
 
 {- Classes -}
 

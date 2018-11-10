@@ -6,7 +6,8 @@ module Game.Rules.BaseRules (
     rulePacmanEatGhost,
     ruleGhostRevives,
     ruleGhostRelease,
-    ruleBackgroundSound
+    ruleBackgroundSound,
+    rulePacmanWin
 ) where
 
 import Debug.Trace
@@ -35,7 +36,7 @@ pacmanDotConsume :: Agent -> GameState -> GameState
 pacmanDotConsume a s@GameState{world=w@World{level}, scoreInfo}
     = addEffect soundMunchA s{world=w{level=nlevel}, scoreInfo=nscore}
       where nlevel = setl level (agentPos a level) TileEmpty
-            nscore = incrementScore scoreInfo scorePacdot
+            nscore = incrementDotsEaten $ incrementScore scoreInfo scorePacdot
 
 -- | RULE -------------
 -- | If pacman eats a powerpill, the scatter mode will start for an amount of ticks
@@ -78,8 +79,8 @@ rulePacmanDiedRestart s@GameState{world=w@World{agents=pagents}, scoreInfo=pscor
     | otherwise = s
       where pacmans = filterAgentsPacman pagents
             pacmanDied = any (\Agent{agentType, sprite} -> died agentType && animationEnded sprite) pacmans
-            isGameOver = (lives pscoreInfo) <= 1 --because this is before we decrement lives
-            gnp = addInt ognp "score" $ score pscoreInfo
+            isGameOver = (lives pscoreInfo) <= 1 -- because this is before we decrement lives
+            gnp = addInt ognp "score" $ score pscoreInfo -- store the score in persistent data
 
 -- | RULE -------------
 -- | If ghost is eaten by pacman in scatter mode, ghost dies
@@ -105,12 +106,19 @@ ruleGhostRevives s@GameState{world=w@World{agents, level}}
 -- | RULE -------------
 -- | If ghost is caged and pacman has eaten enough dots, the ghost will be released
 ruleGhostRelease :: GameRule
-ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder{score}}
+ruleGhostRelease s@GameState{world=w@World{agents, level}, scoreInfo=ScoreHolder{dotsEaten}}
     = s{world=w{agents=nagents}}
       where nagents = predicateMap condition action agents
             action a = a{agentType=(agentType a){caged=False}}
-            condition = compoundPredicate [isGhost . agentType, caged . agentType, ((>=) score) . dotsUntilRelease . agentType]
+            condition = compoundPredicate [isGhost . agentType, caged . agentType, ((>=) dotsEaten) . dotsUntilRelease . agentType]
 
+-- | RULE -------------
+-- | If pacman has eaten all the pacdots, then the game has been won
+rulePacmanWin :: GameRule
+rulePacmanWin s@GameState{world=w@World{level}, scoreInfo, gameNewPersistant = pgnp}
+    | dotsEaten scoreInfo >= dotCount level = s{switch = RoomSwitch "win" ReloadRoom, gameNewPersistant = gnp}
+    | otherwise = s
+      where gnp = addInt pgnp "score" $ score scoreInfo -- store the score in persistent data
 
 -- | RULE SORTOF -------------
 -- | Plays the appropriate background audio
@@ -118,8 +126,8 @@ ruleBackgroundSound :: GameRule
 ruleBackgroundSound s@GameState{t, world=w@World{agents, level}, scoreInfo}
     | t < 3 = setBackgroundSound Intro playOnce soundIntro s
     | isScatterMode = setBackgroundSound ScatterMode playForever soundLargePelletLoop s
-    | not isPacmanDead && score scoreInfo > 1500 = setBackgroundSound SirenSlow playForever soundSirenFast s
-    | not isPacmanDead && score scoreInfo > 600 = setBackgroundSound SirenSlow playForever soundSirenMedium s
+    | not isPacmanDead && dotsEaten scoreInfo > 180 = setBackgroundSound SirenSlow playForever soundSirenFast s
+    | not isPacmanDead && dotsEaten scoreInfo > 80 = setBackgroundSound SirenSlow playForever soundSirenMedium s
     | not isPacmanDead = setBackgroundSound SirenSlow playForever soundSirenSlow s
     | otherwise = s
       where isPacmanDead = any (died . agentType) (filterAgentsPacman agents)

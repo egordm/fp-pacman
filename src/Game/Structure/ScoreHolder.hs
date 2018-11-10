@@ -1,6 +1,7 @@
 module Game.Structure.ScoreHolder (
     ScoreHolder(..),
     incrementScore,
+    incrementDotsEaten,
     decrementLife,
     scoreholder
 ) where
@@ -13,6 +14,7 @@ import Game.UI.Base
 -- | Holds scores for given game
 data ScoreHolder = ScoreHolder {
                       score :: Int, -- TODO: do we need to store this per pacman mb? Needed for competitive not for rest
+                      dotsEaten :: Int,
                       lives :: Int
                    } deriving (Show, Ord, Eq)
 
@@ -29,12 +31,15 @@ instance Drawable ScoreHolder where
 {- Functions -}
 -- | Quick constructor for scoreholder
 scoreholder :: ScoreHolder
-scoreholder = ScoreHolder 0 liveCount
+scoreholder = ScoreHolder 0 0 liveCount
 
 -- | Increments score by given amount
 incrementScore :: ScoreHolder -> Int -> ScoreHolder
 incrementScore s@ScoreHolder{score=pscore} amount = s{score=pscore + amount}
 
--- Decrements lives by 1
+incrementDotsEaten :: ScoreHolder -> ScoreHolder
+incrementDotsEaten s@ScoreHolder{dotsEaten=pdotsEaten} = s{dotsEaten=pdotsEaten + 1}
+
+-- | Decrements lives by 1
 decrementLife :: ScoreHolder -> ScoreHolder
 decrementLife s = s{lives=lives s - 1}
