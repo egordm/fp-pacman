@@ -18,6 +18,7 @@ import Constants
 
 
 {- Functions -}
+-- | Loads wav sound from given path to given channel and specified volume
 loadSound :: String -> Integer -> Integer -> IO Sound
 loadSound identifier channel volume = do
     snd <- Mix.load (resourceDir ++ identifier ++ ".wav")

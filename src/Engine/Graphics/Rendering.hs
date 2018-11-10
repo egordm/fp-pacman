@@ -22,5 +22,6 @@ instance Renderable DrawInstruction where
     render (DrawInstruction (Coordinate x y) sprite) = translate x (-y) (render sprite)
 
 {- Functions -}
+-- | Renders draw instructions to a picture
 renderInstructions :: [DrawInstruction] -> Picture
 renderInstructions instructions = pictures (map render instructions)

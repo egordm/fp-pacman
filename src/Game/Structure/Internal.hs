@@ -16,6 +16,7 @@ data World = World {
                  agents :: [Agent]
              } deriving (Show)
 
+-- | Behaviour by which an agent moves
 data AgentBehaviour = AIBehaviour (Float -> Agent -> World -> Direction) | InputBehaviour InputData
 
 data Agent = Agent {

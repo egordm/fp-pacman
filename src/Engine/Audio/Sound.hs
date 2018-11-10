@@ -7,6 +7,7 @@ import qualified SDL.Mixer as Mix
 
     
 {- Data structures -}
+-- | Sound structure
 data Sound = Sound {
                 signal :: Mix.Chunk,
                 channel :: Integer,

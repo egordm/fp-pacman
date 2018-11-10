@@ -20,27 +20,31 @@ import Constants
 {- Classes -}
 
 {- Instances -}
+-- | Update agent input behaviour if has one
 instance Inputable Agent where
-    input event a@Agent{behaviour=InputBehaviour inputData} = agent -- trace (show agent) agent
-                                                              where agent = a{behaviour=InputBehaviour (input event inputData)}
+    input event a@Agent{behaviour=InputBehaviour inputData} = a{behaviour=InputBehaviour (input event inputData)}
     input _ a = a
 
+-- | Draw current agent sprite
 instance Drawable Agent where
     draw a@Agent{position, sprite} = [DrawInstruction position sprite]
 
+-- | Reset agent to default state
 instance Resetable Agent where
     reset a@Agent{agentType=at} = a{agentType=reset at, direction=DNone, sprite=createEmptySprite}
 
 {- Functions -}
+-- | Quick agent constructor
 agent :: AgentType -> Float -> AgentBehaviour -> Agent
 agent t s b = Agent t coordZ DNone s createEmptySprite b posZ
 
+-- | Update agent and its properties
 updateAgent :: Float -> Float -> World -> Agent -> Agent
 updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, behaviour, lastTurn}
      = a{agentType=ntype, sprite=nsprite, direction=ndirection, position=nposition, lastTurn=nlastTurn}
        where
-          desiredDirection = updateAgentDirection t world a behaviour
-          ntype = update dt t agentType
+          desiredDirection = updateAgentDirection t world a behaviour -- direction agent want to go
+          ntype = update dt t agentType -- Update type
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
           nposition | agentAllowedMove a = updateAgentPosition dt world a
                     | otherwise = position

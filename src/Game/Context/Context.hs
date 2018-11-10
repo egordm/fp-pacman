@@ -58,7 +58,7 @@ insertRoom :: String -> Room -> Map.Map String Room -> Map.Map String Room
 insertRoom name room rooms = Map.insert name room rooms
 
 switchTo :: Room -> SwitchRoomMode -> Room
-switchTo r@Room{state = st} ResumeRoom = r{state = st{t = 0, switch = RoomStay}} 
+switchTo r@Room{state = st} ResumeRoom = r{state = st{t = 0, switch = RoomStay}}
 switchTo r@Room{initState = st} ReloadRoom = r{state = st{t = 0, switch = RoomStay}}
 switchTo m@Menu{menuState = st} ResumeRoom = m{menuSwitch = RoomStay}
 switchTo m@Menu{initMenu = st} ReloadRoom = m{menuSwitch = RoomStay, menuState = st}

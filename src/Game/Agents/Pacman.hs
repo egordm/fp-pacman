@@ -19,5 +19,6 @@ import Constants
 
 
 {- Functions -}
+-- | Creates a pacman with given behaviour
 pacman :: Coordinate -> AgentBehaviour -> Agent
 pacman position behaviour = Agent Pacman{died=False} position DNone pacmanSpeed spritePacmanStill behaviour posZ
