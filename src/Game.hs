@@ -28,7 +28,8 @@ start = do
                                 ("gameover", Menu.gameOverMenu), 
                                 ("win", Menu.winGameMenu),
                                 ("pause", Menu.pauseMenu),
-                                ("help", Menu.helpMenu)]
+                                ("help", Menu.helpMenu),
+                                ("controls", Menu.controlsMenu)]
     SDL.initialize [SDL.InitAudio]
     let chunkSz = 256 in Mix.withAudio Mix.defaultAudio chunkSz $ do
         sounds <- loadSounds

@@ -63,6 +63,7 @@ library
       Game.Menu.HelpMenu
       Game.Menu.WinGameMenu
       Game.Menu.MenuTut
+      Game.Menu.ControlsMenu
 
       Game.GameModes.Base
       Game.GameModes.CommonShared
