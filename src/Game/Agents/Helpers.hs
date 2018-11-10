@@ -6,6 +6,7 @@ module Game.Agents.Helpers (
     pathFindNaive,
     pathFindDumb,
     agentSetScatterTicks,
+    ghostLegalDirs,
     withinArea
 ) where
 

@@ -9,6 +9,7 @@ module Game.Structure.World (
 
 import Debug.Trace
 import Data.List
+import System.Random
 import Engine.Graphics.Base
 import Engine.Core.Base
 import Game.Structure.Internal(World(..))
@@ -23,8 +24,9 @@ import Game.Level.Base
 
 {- Instances -}
 instance Updateable World where
-    update dt t w@World{agents} = w{agents=nagents}
+    update dt t w@World{agents, rng} = w{agents=nagents, rng = nrng}
                                   where nagents = map (updateAgent dt t w) agents
+                                        nrng = snd $ next rng
 
 instance Drawable World where
     draw World{agents, level} = levelDrawings ++ agentDrawings

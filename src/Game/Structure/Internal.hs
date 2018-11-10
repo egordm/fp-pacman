@@ -4,6 +4,7 @@ module Game.Structure.Internal (
     AgentBehaviour(..),
 ) where
 
+import System.Random
 import Engine.Core.Base
 import Engine.Graphics.Base
 import Game.Agents.AgentTypes
@@ -13,7 +14,8 @@ import Game.Level.Base
 {- Data structures -}
 data World = World {
                  level :: Level,
-                 agents :: [Agent]
+                 agents :: [Agent],
+                 rng :: StdGen
              } deriving (Show)
 
 -- | Behaviour by which an agent moves

@@ -11,15 +11,18 @@ module Game.Structure.GameState (
 ) where
 
 import Debug.Trace
+import System.Random
 import Engine.Core.Base
 import Engine.Audio.Base
 import Game.Structure.World
 import Game.Structure.ScoreHolder
+import Game.Level.Base
 import Game.Input.Base
 import Game.Agents.Base
 import Game.Context.SwitchRoom
 import Game.Context.Persistant
 import Resources
+
 
 {- Data structures -}
 data GameState = GameState {
@@ -58,9 +61,10 @@ instance Soundable GameState where
 
 {- Functions -}
 -- | Quick gamestate constructor
-gamestate level bois = stopAllSounds (GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant)
-                       where baseWorld = World level []
-                             world = addAgents bois baseWorld
+gamestate :: Level -> [Agent] -> StdGen -> GameState
+gamestate level bois rng = stopAllSounds (GameState 0 world scoreholder RoomStay [] None emptyPersistant emptyPersistant)
+                           where baseWorld = World level [] rng
+                                 world = addAgents bois baseWorld
 
 -- | Adds sound to the gamestate
 addSound :: PlayAction -> PlayRepeat -> SoundCall -> GameState -> GameState

@@ -1,8 +1,9 @@
 module Game.Agents.Ghosts (
-    blinky, pinky, inky, clyde
+    blinky, pinky, inky, clyde, randy
 ) where
     
 import Debug.Trace
+import System.Random
 import Engine.Core.Base
 import Game.Agents.Helpers
 import Game.Agents.AgentTypes
@@ -29,6 +30,7 @@ blinky = agent (ghost Blinky blinkyHome False 0) ghostSpeed (AIBehaviour (ghostB
 pinky = agent (ghost Pinky pinkyHome True 0) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper pinkyBehaviour))
 inky = agent (ghost Inky inkyHome True 30) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper inkyBehaviour))
 clyde = agent (ghost Clyde clydeHome True 60) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper clydeBehaviour))
+randy = agent (ghost Clyde clydeHome True 0) ghostSpeed (AIBehaviour  (ghostBehaviourWrapper randyBehaviour))
 
 -- | Ghost their home position they run to when they are in scatter mode. See explaination original game.
 blinkyHome = Coordinate 9999 9999
@@ -48,6 +50,15 @@ ghostBehaviourWrapper behaviour dt a@Agent{agentType=at@Ghost{homePosition}, las
       where agentPos = coordToTile (tiles level) position
             cageArea = markerCoordinates markerCageCorner (markers level)
             inCage = withinArea position cageArea
+
+-- | Randy walks in a random direction
+randyBehaviour :: Float -> Agent -> World -> Direction
+randyBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction, lastTurn} w@World{agents, level, rng}
+    = case candidateDirs of [] -> DUp
+                            _  -> targetDir
+      where rndVal = fst $ next rng
+            candidateDirs = ghostLegalDirs level a
+            targetDir = candidateDirs !! (rndVal `mod` length candidateDirs)
 
 -- | Blinky targets pacman directly
 blinkyBehaviour :: Float -> Agent -> World -> Direction
@@ -85,4 +96,3 @@ clydeBehaviour t a@Agent{agentType = at@Ghost{homePosition}, position, direction
                                             | otherwise = homePosition
             targetFn _ = homePosition
             target = targetFn pacmans
-
