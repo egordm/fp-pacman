@@ -19,7 +19,9 @@ cycleClamp x min max
 basicSelectorRule maxnr (EventKey (Char 's') Up _ _) ms@MenuState{selector = s} = ms{selector = cycleClamp (s + 1) 0 maxnr}
 basicSelectorRule maxnr (EventKey (Char 'w') Up _ _) ms@MenuState{selector = s} = ms{selector = cycleClamp (s - 1) 0 maxnr}
 basicSelectorRule _ _ ms = ms
-
+--read the highscore 
+--update the persistant data, used bu UI elements to display info
+--and write the new highscore
 highScoreIO oldPD = do
     raw <- readFile "HSCORE.txt"
     let prevHS = read raw

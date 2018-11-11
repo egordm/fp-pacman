@@ -21,6 +21,7 @@ import Game.Context.SwitchRoom
 import Game.Context.Persistant
 
 {- Data structures -}
+-- a room is either a playable room or a menu
 data Room = Room {
     state :: GameState,
     initState :: GameState,
@@ -47,7 +48,7 @@ instance Inputable Room where
 instance Renderable Room where
     render r@Room{state} = renderInstructions $ draw state
     render m@Menu{menuState} = renderInstructions $ concatMap drawItem $ items menuState
-
+-- in the case of the menu, we need to collect switch objects from the items to see if a switch is desired
 instance BaseUpdateable Room where
     baseUpdate dt r@Room{gameRules, rUpdate, state} = r{state=nstate} where nstate = applyGameRules gameRules $ rUpdate dt state
     baseUpdate dt m@Menu{menuState=ms} = m{menuState = nstate, menuSwitch = nswitch (items nstate)} 
@@ -81,7 +82,7 @@ resetTick m@Menu{firstTick} = m{firstTick = True}
 
 isFirstTick r@Room{state} = False
 isFirstTick m@Menu{firstTick = ft} = ft
-
+--apply the function that modifies the persistant data with io
 applyIOF r@Room{state} = do return r
 applyIOF m@Menu{menuState = ms, ioF = iof} = do
     newp <- iof $ menuOldPersistant ms

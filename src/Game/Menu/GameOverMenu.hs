@@ -15,7 +15,7 @@ replayButtonF _ b = b
 
 mainButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "main" ReloadRoom}
 mainButtonF _ b = b
-
+--read the score and display it
 updateScoreLabelF Label{msg = m, labelPos = p, labelUpdate = u} oldPD _ = makeLabelF ms p Center u
     where
         ms = case (getInt oldPD "score") of

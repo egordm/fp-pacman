@@ -9,7 +9,7 @@ import qualified Data.Map as Map
 
 type PersistantStrings = (Map.Map String String)
 type PersistantInts = (Map.Map String Int)
-
+--datatype to transfer data from room to room
 data Persistant = Persistant {
     strings :: PersistantStrings,
     ints :: PersistantInts

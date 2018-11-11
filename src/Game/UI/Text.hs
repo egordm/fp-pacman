@@ -10,6 +10,7 @@ import Resources
 import Data.List
 
 {- Data structures -}
+--used to draw text on screen
 data FontString = FontString [Char] Coordinate
 
 
@@ -22,6 +23,7 @@ instance Drawable FontString where
     draw (FontString string coor) = putInDraws string coor
 
 {- Functions -}
+--build draw instructions from a string
 putInDraws :: [Char] -> Coordinate -> [DrawInstruction]
 putInDraws [] _ = []
 putInDraws (c:cs) (Coordinate x y) =
@@ -33,6 +35,6 @@ charToSprite c = case charIdx of
     (Just i) -> spriteFont !! i
     Nothing -> createEmptySprite
     where charIdx = elemIndex c fontMapping
-
+--calculate the dimensions of the text on screen, used for centering
 textDimensions :: String -> (Float, Float)
 textDimensions string = (fromInteger fontSize * fromIntegral (length string), fromInteger fontSize)
