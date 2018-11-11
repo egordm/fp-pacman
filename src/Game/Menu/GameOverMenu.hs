@@ -9,6 +9,7 @@ import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Menu.MenuShared
 import Game.Context.Persistant
+import Game.File.Base
 
 replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "classic" ReloadRoom}
 replayButtonF _ b = b
@@ -26,7 +27,8 @@ updateScoreLabelF l _ _ = l
 uiElements = [
     makeLabel "game over!" (Coordinate 0 (-200)) Center,
     makeLabelF "score - error" (Coordinate 0 (-160)) Center updateScoreLabelF,
+    makeLabelF "highscore - error" (Coordinate 0 (-120)) Center updateHSLabel,
     makeButton "replay" "-replay-" 0 replayButtonF (Coordinate 0 0),
     makeButton "main menu" "-main menu-" 1 mainButtonF (Coordinate 0 40)]
 
-gameOverMenu = makeMenu uiElements [basicSelectorRule 1]
+gameOverMenu = makeMenuF uiElements [basicSelectorRule 1] highScoreIO
