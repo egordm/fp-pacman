@@ -87,6 +87,9 @@ newContext oldContext oldRooms oldRoom oldRoomName newRoomName mode dt = case (f
 instance Soundable Context where
     doSound Context{room} = doSound room
 
+instance Fileable Context where
+    doFile Context{room} = doFile room
+
 {- Functions -}
 makeContext :: RoomCollection -> Sounds -> Context
 makeContext (RoomCollection first@(name,start) others) sounds = Context start name roomMap sounds
@@ -103,6 +106,7 @@ updateIO :: Float -> Context -> IO Context
 updateIO dt c = do
                   let bc = baseUpdate dt c
                   playSoundInstructions (sounds bc) (doSound bc)
+                  executeFileInstructions $ doFile bc
                   return bc
 
 playContext playFn context@Context{room,rooms} = playFn context renderIO inputIO updateIO

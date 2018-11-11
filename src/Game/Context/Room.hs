@@ -3,7 +3,9 @@ module Game.Context.Room(
     RoomUpdateFunc,
     makeRoom,
     makeMenu,
-    playRoom
+    playRoom,
+    --take out later
+    Fileable(..), FileInstruction(..), executeFileInstructions
 ) where
 
 import Graphics.Gloss(Picture)
@@ -55,6 +57,28 @@ instance BaseUpdateable Room where
 instance Soundable Room where
     doSound Room{state} = doSound state
     doSound Menu{menuState} = concatMap soundItem $ items menuState
+
+--TEMP place
+class Fileable a where
+    doFile :: a -> [FileInstruction]
+
+data FileInstruction = FileWriteInst {
+    fileName :: String,
+    fileContent :: String
+} | FileReadInst {
+    fileName :: String,
+    destName :: String
+}
+
+instance Fileable Room where
+    doFile Room{state} = []
+    doFile Menu{menuState} = []
+
+executeFileInstructions :: [FileInstruction] -> IO ()
+executeFileInstructions [] = return ()
+executeFileInstructions (x:xs) = case x of
+    FileWriteInst{fileName, fileContent} -> return ()
+    FileReadInst{fileName, destName} -> return ()
 
 {- Functions -}
 makeRoom :: GameState -> [GameRule] -> [GameInputRule] -> RoomUpdateFunc -> Room
