@@ -46,9 +46,9 @@ updateAgent dt t world a@Agent{sprite, agentType, position, direction, speed, be
           desiredDirection = updateAgentDirection t world a behaviour -- direction agent want to go
           ntype = update dt t agentType -- Update type
           nsprite = update dt t (updateAgentSprite sprite (agentTypeToSprite ndirection agentType))
-          nposition | agentAllowedMove a = updateAgentPosition dt world a
+          nposition | agentAllowedMove a = updateAgentPosition dt world a -- Update position iof agent is allowed to move
                     | otherwise = position
-          ndirection = adjustDirection desiredDirection (level world) a
+          ndirection = adjustDirection desiredDirection (level world) a -- Correct direction to what is legal
           nlastTurn | direction /= ndirection && direction /= DNone = coordToTile (tiles (level world)) position
                     | otherwise = lastTurn
 

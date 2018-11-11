@@ -25,8 +25,9 @@ start = do
     classicCustom <- Mode.classicCustomMode
     let rooms = RoomCollection  ("tut", Menu.menuTut) [
                                 ("main", Menu.mainMenu),
-                                ("classic", classicCustom),
-                                ("gameover", Menu.gameOverMenu), 
+                                ("classic", classic),
+                                ("classicRnd", classicCustom),
+                                ("gameover", Menu.gameOverMenu),
                                 ("win", Menu.winGameMenu),
                                 ("pause", Menu.pauseMenu),
                                 ("help", Menu.helpMenu),
