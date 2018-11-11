@@ -19,7 +19,6 @@ import Game.Rules.Rules
 import Game.UI.Base
 import Game.Context.SwitchRoom
 import Game.Context.Persistant
-import Game.File.Base
 
 {- Data structures -}
 data Room = Room {

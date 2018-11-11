@@ -5,7 +5,6 @@ module Game.Structure.MenuState(
 import Engine.Base
 import Game.UI.Base
 import Game.Context.Persistant
-import Game.File.Base
 
 data MenuState = MenuState{
     items :: [MenuItem], 

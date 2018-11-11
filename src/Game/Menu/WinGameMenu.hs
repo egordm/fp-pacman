@@ -9,7 +9,6 @@ import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Menu.MenuShared
 import Game.Context.Persistant
-import Game.File.Base
 
 replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "classic" ReloadRoom}
 replayButtonF _ b = b

@@ -102,9 +102,6 @@ library
       Game.Structure.Internal
       Game.Structure.ScoreHolder
 
-      Game.File.Base
-      Game.File.Fileable
-
       Game
       Constants
       Resources
