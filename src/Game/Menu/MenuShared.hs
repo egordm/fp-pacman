@@ -9,7 +9,6 @@ import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Structure.Base
 import Game.Context.Persistant
-import Game.File.Base
 
 cycleClamp :: Int -> Int -> Int -> Int
 cycleClamp x min max

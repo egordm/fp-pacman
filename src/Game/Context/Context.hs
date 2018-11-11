@@ -18,7 +18,6 @@ import Game.Input.Base
 import qualified Data.Map as Map
 import Resources
 import Game.Context.Persistant
-import Game.File.Base
 
 {- Data structures -}
 
