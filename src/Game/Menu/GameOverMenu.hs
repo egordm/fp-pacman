@@ -9,6 +9,7 @@ import Game.Context.SwitchRoom
 import Game.Context.Room
 import Game.Menu.MenuShared
 import Game.Context.Persistant
+import Game.File.Base
 
 replayButtonF (EventKey (SpecialKey KeyEnter) Up _ _) b = b{itemSwitch = RoomSwitch "classic" ReloadRoom}
 replayButtonF _ b = b
@@ -23,10 +24,15 @@ updateScoreLabelF Label{msg = m, labelPos = p, labelUpdate = u} oldPD _ = makeLa
             Just x -> "score - " ++ (show x)
 updateScoreLabelF l _ _ = l
 
+iof oldP = do
+    writeFile "HSCORE.txt" "666"
+    let np = addInt oldP "testint" 0
+    return np
+
 uiElements = [
     makeLabel "game over!" (Coordinate 0 (-200)) Center,
     makeLabelF "score - error" (Coordinate 0 (-160)) Center updateScoreLabelF,
     makeButton "replay" "-replay-" 0 replayButtonF (Coordinate 0 0),
     makeButton "main menu" "-main menu-" 1 mainButtonF (Coordinate 0 40)]
 
-gameOverMenu = makeMenu uiElements [basicSelectorRule 1]
+gameOverMenu = makeMenuF uiElements [basicSelectorRule 1] iof

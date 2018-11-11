@@ -3,9 +3,11 @@ module Game.Context.Room(
     RoomUpdateFunc,
     makeRoom,
     makeMenu,
+    makeMenuF,
     playRoom,
-    --take out later
-    Fileable(..), FileInstruction(..), executeFileInstructions
+    resetTick,
+    isFirstTick,
+    applyIOF
 ) where
 
 import Graphics.Gloss(Picture)
@@ -17,6 +19,7 @@ import Game.Rules.Rules
 import Game.UI.Base
 import Game.Context.SwitchRoom
 import Game.Context.Persistant
+import Game.File.Base
 
 {- Data structures -}
 data Room = Room {
@@ -29,7 +32,9 @@ data Room = Room {
     menuState :: MenuState,
     initMenu :: MenuState,
     menuSwitch :: SwitchRoom,
-    menuInputRules :: [MenuInputRule]
+    menuInputRules :: [MenuInputRule],
+    firstTick :: Bool,
+    ioF :: (Persistant -> IO Persistant)
 }
 
 type RoomUpdateFunc = (Float -> GameState -> GameState)
@@ -58,36 +63,30 @@ instance Soundable Room where
     doSound Room{state} = doSound state
     doSound Menu{menuState} = concatMap soundItem $ items menuState
 
---TEMP place
-class Fileable a where
-    doFile :: a -> [FileInstruction]
-
-data FileInstruction = FileWriteInst {
-    fileName :: String,
-    fileContent :: String
-} | FileReadInst {
-    fileName :: String,
-    destName :: String
-}
-
-instance Fileable Room where
-    doFile Room{state} = []
-    doFile Menu{menuState} = []
-
-executeFileInstructions :: [FileInstruction] -> IO ()
-executeFileInstructions [] = return ()
-executeFileInstructions (x:xs) = case x of
-    FileWriteInst{fileName, fileContent} -> return ()
-    FileReadInst{fileName, destName} -> return ()
-
 {- Functions -}
 makeRoom :: GameState -> [GameRule] -> [GameInputRule] -> RoomUpdateFunc -> Room
 makeRoom istate gameRules inputRules u = Room istate istate gameRules inputRules u
 
 makeMenu :: [MenuItem] -> [MenuInputRule] -> Room
-makeMenu items inputRules = Menu startState startState RoomStay inputRules
+makeMenu items inputRules = Menu startState startState RoomStay inputRules True (\p -> do return p)
     where
         startState = makeMenuState items 0 
+
+makeMenuF :: [MenuItem] -> [MenuInputRule] -> (Persistant -> IO Persistant) -> Room
+makeMenuF items inputRules iof = Menu startState startState RoomStay inputRules True iof
+    where
+        startState = makeMenuState items 0 
+
+resetTick r@Room{state} = r
+resetTick m@Menu{firstTick} = m{firstTick = True}
+
+isFirstTick r@Room{state} = False
+isFirstTick m@Menu{firstTick = ft} = ft
+
+applyIOF r@Room{state} = do return r
+applyIOF m@Menu{menuState = ms, ioF = iof} = do
+    newp <- iof $ menuOldPersistant ms
+    return m{menuState = ms{menuOldPersistant = newp}}
 
 playRoom f Room{ initState, rUpdate } =
     f initState render input [rUpdate]

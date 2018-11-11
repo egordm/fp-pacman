@@ -18,6 +18,7 @@ import Game.Input.Base
 import qualified Data.Map as Map
 import Resources
 import Game.Context.Persistant
+import Game.File.Base
 
 {- Data structures -}
 
@@ -81,14 +82,11 @@ newContext oldContext oldRooms oldRoom oldRoomName newRoomName mode dt = case (f
     Nothing -> oldContext{room = baseUpdate dt oldRoom}
     Just found ->
         let nrooms = insertRoom oldRoomName oldRoom oldRooms
-            nroom = killSound $ transferPersistant oldRoom $ switchTo found mode
+            nroom = resetTick $ killSound $ transferPersistant oldRoom $ switchTo found mode
         in oldContext{roomName = newRoomName, rooms = nrooms, room = nroom}
 
 instance Soundable Context where
     doSound Context{room} = doSound room
-
-instance Fileable Context where
-    doFile Context{room} = doFile room
 
 {- Functions -}
 makeContext :: RoomCollection -> Sounds -> Context
@@ -104,9 +102,11 @@ renderIO c = return (render c)
 
 updateIO :: Float -> Context -> IO Context
 updateIO dt c = do
-                  let bc = baseUpdate dt c
-                  playSoundInstructions (sounds bc) (doSound bc)
-                  executeFileInstructions $ doFile bc
-                  return bc
+    let bc = baseUpdate dt c
+    playSoundInstructions (sounds bc) (doSound bc)
+    newr <- applyIOF $ room bc
+    if isFirstTick (room bc)
+    then return bc{room = newr}
+    else return bc
 
 playContext playFn context@Context{room,rooms} = playFn context renderIO inputIO updateIO

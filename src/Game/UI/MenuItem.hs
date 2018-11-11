@@ -9,6 +9,7 @@ import Game.Context.SwitchRoom
 import Engine.Base
 import Graphics.Gloss.Game(Event(..))
 import Game.Context.Persistant
+import Game.File.Base
 
 class MenuItem_ a where
     decide :: a -> SwitchRoom
