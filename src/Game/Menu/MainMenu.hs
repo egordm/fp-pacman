@@ -29,4 +29,4 @@ uiElements = [
     makeButton "help" "-help-" 2 helpButtonF (Coordinate 0 80),
     makeButton "controls" "-controls-" 3 controlsHelpF (Coordinate 0 120)]
 
-mainMenu = makeMenu uiElements [basicSelectorRule 2]
+mainMenu = makeMenu uiElements [basicSelectorRule 3]
