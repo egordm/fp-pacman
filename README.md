@@ -4,8 +4,8 @@ Retro pacman game made haskell by Egor Dmitriev and Cody Bloemhard.
 
 ## Video
 
-[![click this image](https://img.youtube.com/vi/DlifcJ4cexw/0.jpg)](https://www.youtube.com/watch?v=DlifcJ4cexw)
-[or click this link](https://youtu.be/DlifcJ4cexw)
+- [![click this image](https://img.youtube.com/vi/DlifcJ4cexw/0.jpg)](https://www.youtube.com/watch?v=DlifcJ4cexw)
+- [or click this link](https://youtu.be/DlifcJ4cexw)
 
 ## How to play
 
